@@ -28,9 +28,6 @@ public class Panel extends JPanel {
     public static final String NAME = "panel";
         
     private Panel () {
-//        SwingUtilities.invokeLater(() -> {
-//            initialize();
-//        });
         initialize();
     }
     

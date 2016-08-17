@@ -46,6 +46,7 @@ import net.miginfocom.swing.MigLayout;
 import org.rockyroadshub.planner.database.DatabaseConfig;
 import org.rockyroadshub.planner.database.DatabaseControl;
 import org.rockyroadshub.planner.lib.DocumentSizeFilter;
+import org.rockyroadshub.planner.lib.Event;
 import org.rockyroadshub.planner.lib.Globals;
 
 /**
@@ -117,9 +118,6 @@ public class EventForm extends JPanel {
     private String format_loc;
  
     private EventForm() {
-//        SwingUtilities.invokeLater(() -> {
-//            initialize();
-//        });
         initialize();
     }
    
@@ -287,7 +285,9 @@ public class EventForm extends JPanel {
             int    q = JOptionPane.OK_CANCEL_OPTION;
             int    o = JOptionPane.OK_OPTION;
             if(JOptionPane.showConfirmDialog(f, m, t, q) == o) {
+//                Event evt = Event.getInstance();
                 dtb.insert(event, description, location, date, year, month, day, start, end);
+//                evt.set(event, description, location, date, year, month, day, start, end);
                 Panel.getInstance().show(EventsDisplay.NAME);
                 EventsDisplay.getInstance().refresh(y_, m_, d_);
                 refresh();

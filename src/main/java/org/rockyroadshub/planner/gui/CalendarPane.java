@@ -182,9 +182,6 @@ public class CalendarPane extends JPanel {
     private static final String FORMAT = "%s %d, %d";
         
     private CalendarPane() {
-//        SwingUtilities.invokeLater(() -> {
-//            initialize();
-//        });
         initialize();
     }
     

@@ -101,9 +101,12 @@ public class EventsDisplay extends JPanel {
         initMenu();
         initButtons();
         
-        DatabaseConfig.getInstance().getTableColumns().stream().forEach((day) -> {
-            tableModel.addColumn(day);
+        DatabaseConfig config = DatabaseConfig.getInstance();
+        List<String> columns = config.getTableColumns();
+        columns.stream().forEach((d) -> {
+            tableModel.addColumn(d);
         });
+        rowData = new Object[columns.size()];
         table.setModel(tableModel);
 
         add(PNL_MU, BorderLayout.NORTH);
@@ -228,13 +231,12 @@ public class EventsDisplay extends JPanel {
             try(ResultSet rs = stmt.executeQuery(statement)) {
                 while(rs.next()) {
                     int j = 0;
-                    Object[] f = new Object[list.size()];
                     for(String i : list) {
-                        String x = rs.getString(map.get(i));
-                        f[j] = x;
+                        String data = rs.getString(map.get(i));
+                        rowData[j] = data;
                         j++;
                     }
-                    tableModel.addRow(f);
+                    tableModel.addRow(rowData);
                     table.getSelectedRow();
                 }
             }
