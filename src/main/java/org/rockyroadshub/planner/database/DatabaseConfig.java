@@ -24,6 +24,8 @@ import java.util.Map;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.XMLConfiguration;
 import org.rockyroadshub.planner.lib.Globals;
+import org.rockyroadshub.planner.lib.Initializable;
+import org.rockyroadshub.planner.main.PlannerSystem;
 
 /**
  *
@@ -31,7 +33,7 @@ import org.rockyroadshub.planner.lib.Globals;
  * @version 0.0.0
  * @since 2016-08-13
  */
-public class DatabaseConfig {
+public class DatabaseConfig implements Initializable {
     private final XMLConfiguration config = new XMLConfiguration();
     
     private static final String NAME    = "name";
@@ -56,6 +58,7 @@ public class DatabaseConfig {
     
     private DatabaseConfig() {}
     
+    @Override
     public final void initialize() {
         try {
             setup();
@@ -176,5 +179,9 @@ public class DatabaseConfig {
     
     private static final class Holder {
         private static final DatabaseConfig INSTANCE = new DatabaseConfig();
+        
+        static {
+            PlannerSystem.addToQueue(1, INSTANCE);
+        }
     }
 }

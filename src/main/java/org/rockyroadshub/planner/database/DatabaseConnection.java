@@ -16,13 +16,12 @@
 package org.rockyroadshub.planner.database;
 
 import com.jcabi.aspects.LogExceptions;
-import java.awt.EventQueue;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.rockyroadshub.planner.lib.Globals;
+import org.rockyroadshub.planner.lib.Initializable;
+import org.rockyroadshub.planner.main.PlannerSystem;
 
 /**
  *
@@ -30,7 +29,7 @@ import org.rockyroadshub.planner.lib.Globals;
  * @version 0.0.0
  * @since 2016-08-13
  */
-public class DatabaseConnection {
+public class DatabaseConnection implements Initializable {
     private static final String PROTOCOL = "jdbc:derby:%s;%s=true";
     private Connection connection;
 
@@ -40,6 +39,7 @@ public class DatabaseConnection {
         return String.format(PROTOCOL, path, cmd);
     }
                  
+    @Override
     public final void initialize() {
         try {
             setupDriver();
@@ -78,5 +78,9 @@ public class DatabaseConnection {
     
     private static class Holder {
         private static final DatabaseConnection INSTANCE = new DatabaseConnection();
+        
+        static {
+            PlannerSystem.addToQueue(0, INSTANCE);
+        }
     }
 }

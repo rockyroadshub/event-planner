@@ -23,6 +23,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import org.rockyroadshub.planner.lib.Initializable;
+import org.rockyroadshub.planner.main.PlannerSystem;
 
 /**
  *
@@ -30,7 +32,7 @@ import java.util.List;
  * @version 0.0.0
  * @since 2016-08-13
  */
-public class DatabaseControl {
+public class DatabaseControl implements Initializable {
     private static final String CREATE = "CREATE TABLE %s (%s)";
     private static final String INSERT = "INSERT INTO %s (%s) VALUES (%s)";
         
@@ -53,6 +55,7 @@ public class DatabaseControl {
     
     private DatabaseControl() {}
     
+    @Override
     public final void initialize() {
         DatabaseConfig config = DatabaseConfig.getInstance();
         connection    = DatabaseConnection.getInstance().getConnection();
@@ -305,5 +308,9 @@ public class DatabaseControl {
     
     private static final class Holder {
         private static final DatabaseControl INSTANCE = new DatabaseControl();
+        
+        static {
+            PlannerSystem.addToQueue(2, INSTANCE);
+        }
     }
 }

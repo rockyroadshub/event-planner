@@ -26,7 +26,7 @@ import java.util.Map;
  */
 public class Event {
     
-    private String title;
+    private String event;
     private String description;
     private String location;
     private String date;
@@ -36,21 +36,19 @@ public class Event {
     private String start;
     private String end;
         
-    private final Map<String, String> eventMap = new HashMap<>();
+    private final Map<String, String> eventData = new HashMap<>();
     
     private Event(){
         initialize();
     }
     
-    private void initialize() {
-        
-    }
+    private void initialize() {}
     
-    public void setParameters(
+    public void set(
         String title, String description, String location, String date,
         String year, String month, String day, String start, String end) 
     {
-        this.title       = title;
+        this.event       = title;
         this.description = description;
         this.location    = location;
         this.date        = date;
@@ -62,7 +60,7 @@ public class Event {
     }
     
     public Map<String, String> getData() {
-        return eventMap;
+        return eventData;
     }
     
     public static Event getInstance() {

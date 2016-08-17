@@ -101,8 +101,8 @@ public class EventsDisplay extends JPanel {
         initMenu();
         initButtons();
         
-        DatabaseConfig.getInstance().getTableColumns().stream().forEach((day) -> {
-            tableModel.addColumn(day);
+        DatabaseConfig.getInstance().getTableColumns().stream().forEach((d) -> {
+            tableModel.addColumn(d);
         });
         table.setModel(tableModel);
 
