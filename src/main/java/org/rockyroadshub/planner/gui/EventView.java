@@ -96,6 +96,7 @@ public class EventView extends JPanel {
     private static final String SAVE0 = "Save";
     private static final String EDIT0 = "Edit";
     
+    private int id;
     private String event;
     private String location;
     private String description;
@@ -263,6 +264,7 @@ public class EventView extends JPanel {
     
     private void onTrigger(JButton button) {
         CalendarPane.getInstance().refresh();
+        EventsDisplay.getInstance().refresh(y_, m_, d_);
         switch (button.getToolTipText()) {
             case SAVE0:
                 onSave();
@@ -295,9 +297,7 @@ public class EventView extends JPanel {
             int    q = JOptionPane.OK_CANCEL_OPTION;
             int    o = JOptionPane.OK_OPTION;
             if(JOptionPane.showConfirmDialog(f, m, t, q) == o) {
-//                Event evt = Event.getInstance();
-                dtb.insert(event, description, location, date, year, month, day, start, end);
-//                evt.set(event, description, location, date, year, month, day, start, end);
+                dtb.update(id, event, description, location, date, year, month, day, start, end);
                 Panel.getInstance().show(EventsDisplay.NAME);
                 EventsDisplay.getInstance().refresh(y_, m_, d_);
                 refresh();
@@ -307,7 +307,7 @@ public class EventView extends JPanel {
     
     
     private void onEdit() {
-        System.out.println("noob");
+        enableGUI(true);
     }
     
     public void setDate(int year, int month, int day) {
@@ -344,6 +344,20 @@ public class EventView extends JPanel {
         START_MINUTE.setValue(0);      
         END_HOUR.setValue(0);          
         END_MINUTE.setValue(0);        
+    }
+    
+    public void enableGUI(boolean bool) {
+        TITLE_INPUT.setEnabled(bool);
+        DESCRIPTION_INPUT.setEnabled(bool);
+        LOCATION_INPUT.setEnabled(bool);
+        START_HOUR.setEnabled(bool);
+        START_MINUTE.setEnabled(bool);      
+        END_HOUR.setEnabled(bool);          
+        END_MINUTE.setEnabled(bool);   
+    }
+    
+    public void setID(int id) {
+        this.id = id;
     }
     
     public static EventView getInstance() {

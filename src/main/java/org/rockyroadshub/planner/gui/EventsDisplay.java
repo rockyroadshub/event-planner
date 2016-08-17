@@ -167,7 +167,6 @@ public class EventsDisplay extends JPanel {
     };
     
     private final ActionListener view = (ActionEvent ae) -> {    
-        Panel.getInstance().show(EventView.NAME);
         onView();
     };
     
@@ -252,7 +251,42 @@ public class EventsDisplay extends JPanel {
     }
 
     private void onView() {
-//        EventView.setDate();
+        int i = getID();
+        if(i != -1) {
+            Panel.getInstance().show(EventView.NAME);
+            EventView view_ = EventView.getInstance();
+            view_.setID(i);
+            view_.enableGUI(false);
+            DatabaseConnection dtb = DatabaseConnection.getInstance();
+            Connection connection = dtb.getConnection();
+
+            GregorianCalendar cal = new GregorianCalendar(year, month, day);            
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            Date date0 = cal.getTime();      
+            String date = dateFormat.format(date0); 
+
+            tableModel.getDataVector().removeAllElements();
+            tableModel.fireTableDataChanged();
+
+            try(Statement stmt = connection.createStatement()) {
+                String statement = 
+                String.format("SELECT * FROM EVENTS WHERE EVENT_DATE = '%s'", date);
+                List<String> list = DatabaseConfig.getInstance().getTableColumns();
+                Map<String, String> map = DatabaseConfig.getInstance().getColumnMap();
+                try(ResultSet rs = stmt.executeQuery(statement)) {
+                    while(rs.next()) {
+                        for(String k : list) {
+                            String data = rs.getString(map.get(k));
+                            System.out.print(data + " ");
+                        }
+                        System.out.println();
+                    }
+                }
+            } 
+            catch (SQLException ex) {
+                ex.printStackTrace(System.out);
+            }
+        }
     }
        
     public static EventsDisplay getInstance() {

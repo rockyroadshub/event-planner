@@ -331,8 +331,10 @@ public class CalendarPane extends JPanel {
             Panel         panel   = Panel.getInstance();
             EventsDisplay display = EventsDisplay.getInstance();
             EventForm     form    = EventForm.getInstance();
+            EventView     view    = EventView.getInstance();
             
             form.setDate(y, m, d);
+            view.setDate(y, m, d);
             display.refresh(y, m, d);
             display.setTitleLabel(String.format(FORMAT, MONTHS[m], d, y));
             panel.show(EventsDisplay.NAME);
