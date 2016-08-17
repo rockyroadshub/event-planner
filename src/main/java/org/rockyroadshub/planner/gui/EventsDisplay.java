@@ -69,7 +69,7 @@ public class EventsDisplay extends JPanel {
     private static final JPanel      PNL_MU = new JPanel();
     private static final JButton     BTN_AD = new JButton();
     private static final JButton     BTN_HM = new JButton();
-    private static final JButton     BTN_ED = new JButton();
+    private static final JButton     BTN_VW = new JButton();
     private static final JButton     BTN_DE = new JButton();
    
     private static final int    FONT_SIZE  = 40;
@@ -80,7 +80,7 @@ public class EventsDisplay extends JPanel {
     
     private static final String TOOLTIP_HOME = "Home";
     private static final String TOOLTIP_ADD  = "Add";
-    private static final String TOOLTIP_EDIT = "Edit";
+    private static final String TOOLTIP_EDIT = "View";
     private static final String TOOLTIP_DELETE = "Delete";
     
     private int year;
@@ -127,7 +127,7 @@ public class EventsDisplay extends JPanel {
         PNL_MU.add(LBL_TL, GAP_RIGHT);
         PNL_MU.add(BTN_HM, BUTTON_DIMENSIONS);
         PNL_MU.add(BTN_AD, BUTTON_DIMENSIONS);
-        PNL_MU.add(BTN_ED, BUTTON_DIMENSIONS);
+        PNL_MU.add(BTN_VW, BUTTON_DIMENSIONS);
         PNL_MU.add(BTN_DE, BUTTON_DIMENSIONS);
     }
     
@@ -135,7 +135,7 @@ public class EventsDisplay extends JPanel {
         try {
             initIcon(BTN_HM, "src/Home.png");
             initIcon(BTN_AD, "src/Add.png");
-            initIcon(BTN_ED, "src/Edit.png");
+            initIcon(BTN_VW, "src/View.png");
             initIcon(BTN_DE, "src/Delete.png");
         }catch (IOException ex) {}
         
@@ -147,8 +147,9 @@ public class EventsDisplay extends JPanel {
         BTN_AD.setName(EventForm.NAME);
         BTN_AD.addActionListener(action);
         
-        BTN_ED.setToolTipText(TOOLTIP_EDIT);
-        BTN_ED.addActionListener(edit);
+        BTN_VW.setToolTipText(TOOLTIP_EDIT);
+        BTN_VW.addActionListener(view);
+        BTN_VW.setName(EventView.NAME);
         
         BTN_DE.setToolTipText(TOOLTIP_DELETE);
         BTN_DE.addActionListener(delete);
@@ -165,8 +166,9 @@ public class EventsDisplay extends JPanel {
         onTrigger(button);
     };
     
-    private final ActionListener edit = (ActionEvent ae) -> {    
-        onEdit();
+    private final ActionListener view = (ActionEvent ae) -> {    
+        Panel.getInstance().show(EventView.NAME);
+        onView();
     };
     
     private void onTrigger(JButton button) {
@@ -202,9 +204,12 @@ public class EventsDisplay extends JPanel {
     
     private int getID() {
         int row = table.getSelectedRow();
-        Object o = table.getValueAt(row, 0);
-        String n = String.valueOf(o);
-        return Integer.parseInt(n);
+        if(row != -1) {
+            Object o = table.getValueAt(row, 0);
+            String n = String.valueOf(o);
+            return Integer.parseInt(n);
+        }
+        return -1;
     }
     
     public final void refresh(int year, int month, int day) {
@@ -240,12 +245,14 @@ public class EventsDisplay extends JPanel {
                     table.getSelectedRow();
                 }
             }
-        } catch (SQLException ex) {
+        } 
+        catch (SQLException ex) {
             ex.printStackTrace(System.out);
         }
     }
 
-    private void onEdit() {
+    private void onView() {
+//        EventView.setDate();
     }
        
     public static EventsDisplay getInstance() {

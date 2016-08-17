@@ -54,8 +54,8 @@ import org.rockyroadshub.planner.lib.Globals;
  * @version 0.0.0
  * @since 2016-08-13
  */
-public class EventForm extends JPanel {
-    public static final String NAME = "eventform";
+public class EventView extends JPanel {
+    public static final String NAME = "eventview";
     
     private static final JLabel       DATE_LABEL        = new JLabel("Date");
    
@@ -87,12 +87,14 @@ public class EventForm extends JPanel {
     private static final JButton      HOME              = new JButton();
     private static final JButton      BACK              = new JButton();
     private static final JButton      SAVE              = new JButton();
+    private static final JButton      EDIT              = new JButton();
    
     private final Font font = new Font("MONOSPACED", 0, 12);    
     
     private static final String HOME0 = "Home";
     private static final String BACK0 = "Back";
     private static final String SAVE0 = "Save";
+    private static final String EDIT0 = "Edit";
     
     private String event;
     private String location;
@@ -116,7 +118,7 @@ public class EventForm extends JPanel {
     private String format_dsc; 
     private String format_loc;
  
-    private EventForm() {
+    private EventView() {
         initialize();
     }
    
@@ -174,6 +176,7 @@ public class EventForm extends JPanel {
         MENU.add(HOME, "h 32!, w 32!");
         MENU.add(BACK, "h 32!, w 32!");
         MENU.add(SAVE, "h 32!, w 32!");
+        MENU.add(EDIT, "h 32!, w 32!");
         
         HOME.setToolTipText(HOME0);
         HOME.setName(CalendarPane.NAME);
@@ -183,11 +186,14 @@ public class EventForm extends JPanel {
         BACK.addActionListener(action);
         SAVE.setToolTipText(SAVE0);
         SAVE.addActionListener(action);
+        EDIT.setToolTipText(EDIT0);
+        EDIT.addActionListener(action);
         
         try {
             initIcon(HOME, "src/Home.png");
             initIcon(BACK, "src/Back.png");
             initIcon(SAVE, "src/Save.png");
+            initIcon(EDIT, "src/Edit.png");
         } catch (IOException ex) {}
     }
    
@@ -257,13 +263,18 @@ public class EventForm extends JPanel {
     
     private void onTrigger(JButton button) {
         CalendarPane.getInstance().refresh();
-        if(button.getToolTipText().equals(SAVE0)) {
-            onSave();
-        }
-        else {
-            Panel panel = Panel.getInstance();
-            panel.show(button.getName());
-            refresh();
+        switch (button.getToolTipText()) {
+            case SAVE0:
+                onSave();
+                break;
+            case EDIT0:
+                onEdit();
+                break;
+            default:
+                Panel panel = Panel.getInstance();
+                panel.show(button.getName());
+                refresh();
+                break;
         }
     }
     
@@ -279,7 +290,7 @@ public class EventForm extends JPanel {
         
         try {
             Frame  f = Frame.getInstance();
-            String m = "Are you sure to save this event?";
+            String m = "Are you sure to save these changes?";
             String t = "Event Planner";
             int    q = JOptionPane.OK_CANCEL_OPTION;
             int    o = JOptionPane.OK_OPTION;
@@ -292,6 +303,11 @@ public class EventForm extends JPanel {
                 refresh();
             }
         } catch (SQLException ex) { ex.printStackTrace(System.out); }
+    }
+    
+    
+    private void onEdit() {
+        System.out.println("noob");
     }
     
     public void setDate(int year, int month, int day) {
@@ -330,11 +346,11 @@ public class EventForm extends JPanel {
         END_MINUTE.setValue(0);        
     }
     
-    public static EventForm getInstance() {
+    public static EventView getInstance() {
         return Holder.INSTANCE;
     }
    
     private static class Holder {
-        private static final EventForm INSTANCE = new EventForm();
+        private static final EventView INSTANCE = new EventView();
     }
 }

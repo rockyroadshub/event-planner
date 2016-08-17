@@ -1,6 +1,6 @@
 ----------------------------------------------------------------
-Wed Aug 17 16:06:35 SGT 2016:
-Booting Derby version The Apache Software Foundation - Apache Derby - 10.12.1.1 - (1704137): instance a816c00e-0156-9789-a38d-000003420318 
+Wed Aug 17 22:39:51 SGT 2016:
+Booting Derby version The Apache Software Foundation - Apache Derby - 10.12.1.1 - (1704137): instance a816c00e-0156-98f1-af03-00000341fc10 
 on database directory C:\Users\Nell\Documents\GitHub\applications\event-planner\database\memory with class loader sun.misc.Launcher$AppClassLoader@73d16e93 
 Loaded from file:/C:/Users/Nell/.m2/repository/org/apache/derby/derby/10.12.1.1/derby-10.12.1.1.jar
 java.vendor=Oracle Corporation
@@ -12,8 +12,8 @@ os.version=6.3
 derby.system.home=null
 Database Class Loader started - derby.database.classpath=''
 ----------------------------------------------------------------
-Wed Aug 17 16:06:52 SGT 2016: Shutting down Derby engine
+Wed Aug 17 22:40:20 SGT 2016: Shutting down Derby engine
 ----------------------------------------------------------------
-Wed Aug 17 16:06:52 SGT 2016:
-Shutting down instance a816c00e-0156-9789-a38d-000003420318 on database directory C:\Users\Nell\Documents\GitHub\applications\event-planner\database\memory with class loader sun.misc.Launcher$AppClassLoader@73d16e93 
+Wed Aug 17 22:40:20 SGT 2016:
+Shutting down instance a816c00e-0156-98f1-af03-00000341fc10 on database directory C:\Users\Nell\Documents\GitHub\applications\event-planner\database\memory with class loader sun.misc.Launcher$AppClassLoader@73d16e93 
 ----------------------------------------------------------------

@@ -51,10 +51,12 @@ public class Panel extends JPanel {
         CalendarPane  calendar = CalendarPane.getInstance();
         EventForm     form     = EventForm.getInstance();
         EventsDisplay display  = EventsDisplay.getInstance();
+        EventView     view     = EventView.getInstance();
         
         add(calendar, calendar.getName());
         add(form    , form.getName());
         add(display , display.getName());
+        add(view    , view.getName());
     }
 
     public static Panel getInstance() {
