@@ -292,11 +292,7 @@ public class CalendarPane extends JPanel {
         
         try {
             list = dtb.select(_m,_m0,_y,_y0,"AND","EVENT_DAY");
-        }catch (SQLException ex) {
-            for(String i : list) {
-                System.out.println(i);
-            }
-        }
+        }catch (SQLException ex) {}
         
         for(int i = start; i < end; i++) {
             int current = i - delta;
