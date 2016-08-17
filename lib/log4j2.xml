@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration status="OFF">
+  <appenders>
+    <RollingFile name="ERROR_ROLL" fileName="./logs/logs.txt"
+                 filePattern="logs/$${date:yyyy-MM}/mdb-%d{MM-dd-yyyy}-%i.log.gz">
+      <PatternLayout>
+        <pattern>[%d] [%p] [%C{1}] [%t] %m%n</pattern>
+      </PatternLayout>
+      <Policies>
+        <TimeBasedTriggeringPolicy />
+        <SizeBasedTriggeringPolicy size="10 MB"/>
+      </Policies>
+      <DefaultRolloverStrategy max="20"/>
+    </RollingFile>
+    <Console name="CONSOLE_MSG" target="SYSTEM_OUT">
+      <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n%n"/>
+    </Console>
+  </appenders>
+  <loggers>
+    <logger name="org.rockyroadshub" level="TRACE" additivity="false">
+      <appender-ref ref="ERROR_ROLL"/>
+    </logger>
+    <root level="ERROR">
+      <appender-ref ref="CONSOLE_MSG"/>
+    </root>
+  </loggers>
+</configuration>

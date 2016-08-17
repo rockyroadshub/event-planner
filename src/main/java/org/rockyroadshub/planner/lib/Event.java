@@ -1,0 +1,75 @@
+/*
+ * Copyright 2016 Arnell Christoper D. Dalid.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.rockyroadshub.planner.lib;
+
+import java.util.HashMap;
+import java.util.Map;
+
+/**
+ *
+ * @author Arnell Christoper D. Dalid
+ * @version 0.0.0
+ * @since 2016-08-13
+ */
+public class Event {
+    
+    private String title;
+    private String description;
+    private String location;
+    private String date;
+    private String year;
+    private String month;
+    private String day;
+    private String start;
+    private String end;
+        
+    private final Map<String, String> eventMap = new HashMap<>();
+    
+    private Event(){
+        initialize();
+    }
+    
+    private void initialize() {
+        
+    }
+    
+    public void setParameters(
+        String title, String description, String location, String date,
+        String year, String month, String day, String start, String end) 
+    {
+        this.title       = title;
+        this.description = description;
+        this.location    = location;
+        this.date        = date;
+        this.year        = year;
+        this.month       = month;
+        this.day         = day;
+        this.start       = start;
+        this.end         = end;
+    }
+    
+    public Map<String, String> getData() {
+        return eventMap;
+    }
+    
+    public static Event getInstance() {
+        return Holder.INSTANCE;
+    }
+    
+    private static final class Holder {
+        private static final Event INSTANCE = new Event();
+    }
+}
