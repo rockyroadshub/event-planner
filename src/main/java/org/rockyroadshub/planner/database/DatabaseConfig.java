@@ -44,9 +44,13 @@ import org.rockyroadshub.planner.main.PlannerSystem;
 public class DatabaseConfig implements Initializable {
     private final XMLConfiguration config = new XMLConfiguration();
     
-    private static final String NAME    = "name";
-    private static final String TYPE    = "type";
-    private static final String COLUMNS = "tables.table.columns.column(%d)[@%s]";
+    private static final String NAME  = "name";
+    private static final String TYPE  = "type";
+    private static final String ATTR  = "attr";
+    private static final String CLMN0 = "tables.table.columns.column";
+    private static final String CLMN1 = "tables.table.columns.column(%d)[@%s]";
+    private static final String DSPL0 = "tables.table.displays.display";
+    private static final String DSPL1 = "tables.table.displays.display(%d)[@%s]";
     
     public static final String TITLE       = "event";
     public static final String DESCRIPTION = "description";
@@ -73,7 +77,7 @@ public class DatabaseConfig implements Initializable {
         }
         catch (ConfigurationException ex) {}
         
-        totalColumns = config.configurationsAt("tables.table.columns.column").size();
+        totalColumns = config.configurationsAt(CLMN0).size();
         tableName    = config.configurationAt("tables.table").getString("name");
         columns      = initColumns();
         columnsN     = initColumnsN();
@@ -123,14 +127,13 @@ public class DatabaseConfig implements Initializable {
     }
     
     private void initTableColumns() {
-        int size = config.configurationsAt("columns.column").size();
+        int size = config.configurationsAt(DSPL0).size();
         for(int k = 0; k < size; k++) {
-            String name = config.getString(format("columns.column(%d)[@%s]",k,"name"));
-            String attr = config.getString(format("columns.column(%d)[@%s]",k,"attr"));
+            String name = config.getString(format(DSPL1,k,NAME));
+            String attr = config.getString(format(DSPL1,k,ATTR));
             columnMap.put(name, attr);
             tableColumns.add(name);
         }
-//        EventsDisplay.getInstance().setupColumn(size);
     }
     
     private String getAttribute(int index, String attribute) {
@@ -138,7 +141,7 @@ public class DatabaseConfig implements Initializable {
     }
     
     private String format(int index, String attribute) {
-        return String.format(COLUMNS, index, attribute);
+        return String.format(CLMN1, index, attribute);
     }   
        
     private String format(String exp, int index, String attribute) {
@@ -178,7 +181,7 @@ public class DatabaseConfig implements Initializable {
     }
     
     public int getLength(String s) {
-        return Integer.valueOf(config.configurationAt("properties.length").getString(s));
+        return Integer.valueOf(config.configurationAt("tables.table.properties.length").getString(s));
     }
     
     public static DatabaseConfig getInstance() {

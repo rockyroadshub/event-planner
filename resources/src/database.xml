@@ -31,23 +31,21 @@ limitations under the License.
                 <column name="EVENT_DAY"   type="VARCHAR(10)"/>
                 <column name="EVENT_START" type="TIME"/>
                 <column name="EVENT_END"   type="TIME"/>      
-            </columns>
+            </columns>          
+            <displays>
+                <display name="ID"         attr="EVENT_ID"/>
+                <display name="Title"      attr="EVENT"/>
+                <display name="Date"       attr="EVENT_DATE" />
+                <display name="Start Time" attr="EVENT_START"/>
+                <display name="End Time"   attr="EVENT_END" />
+            </displays>           
+            <properties>
+                <length>
+                    <event>50</event>
+                    <description>500</description>
+                    <location>250</location>
+                </length>
+            </properties>
         </table>
-    </tables>
-    
-    <columns>
-        <column name="ID"         attr="EVENT_ID"/>
-        <column name="Title"      attr="EVENT"/>
-        <column name="Date"       attr="EVENT_DATE" />
-        <column name="Start Time" attr="EVENT_START"/>
-        <column name="End Time"   attr="EVENT_END" />
-    </columns>
-    
-    <properties>
-        <length>
-            <event>50</event>
-            <description>500</description>
-            <location>250</location>
-        </length>
-    </properties>
+    </tables> 
 </database>
