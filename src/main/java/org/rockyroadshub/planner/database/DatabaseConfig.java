@@ -44,9 +44,13 @@ import org.rockyroadshub.planner.main.PlannerSystem;
 public class DatabaseConfig implements Initializable {
     private final XMLConfiguration config = new XMLConfiguration();
     
+    private static final String DATABASE_PROPERTIES = "src/database.xml";
+            
     private static final String NAME  = "name";
     private static final String TYPE  = "type";
     private static final String ATTR  = "attr";
+    private static final String MAIN  = "tables.table";
+    private static final String PROP  = "tables.table.properties.length";
     private static final String CLMN0 = "tables.table.columns.column";
     private static final String CLMN1 = "tables.table.columns.column(%d)[@%s]";
     private static final String DSPL0 = "tables.table.displays.display";
@@ -62,11 +66,11 @@ public class DatabaseConfig implements Initializable {
     private String columnsN;
     private String columnsN0;
     private String tableName;
-    private String databaseID;
+    private String keyName;
     
-    private final List<String> columnsNList = new ArrayList<>();
-    private final List<String> tableColumns = new ArrayList<>();
-    private final Map<String, String> columnMap = new HashMap<>();
+    private final List<String> columnsNList         = new ArrayList<>();
+    private final List<String> displayColumns       = new ArrayList<>();
+    private final Map<String, String> displayColMap = new HashMap<>();
     
     private DatabaseConfig() {}
     
@@ -78,78 +82,73 @@ public class DatabaseConfig implements Initializable {
         catch (ConfigurationException ex) {}
         
         totalColumns = config.configurationsAt(CLMN0).size();
-        tableName    = config.configurationAt("tables.table").getString("name");
-        columns      = initColumns();
-        columnsN     = initColumnsN();
-        columnsN0    = initColumnsN0();
+        tableName    = config.configurationAt(MAIN).getString(NAME);
         
-        initTableColumns();
+        initColumns();
+        initColumnsN();
+        initColumnsN0();     
+        initDisplayColumns();
     }
     
     @LogExceptions
     private void setup() throws ConfigurationException {
         File file = new File(getClass().getResource(String.
-                format(Globals.JAR_ROOT, "src/database.xml")).getFile());
+                format(Globals.JAR_ROOT, DATABASE_PROPERTIES)).getFile());
         config.setFile(file);
         config.setDelimiterParsingDisabled(true);
         config.load();
     }
     
-    private String initColumns() {
+    private void initColumns() {
         StringBuilder bld = new StringBuilder();
         for(int i = 0; i < totalColumns; i++) {
-            if(i == 0) databaseID = getAttribute(i, NAME);
-            bld.append(getAttribute(i, NAME)).append(" ")
-               .append(getAttribute(i, TYPE)).append(",");
+            String name = getAttribute(CLMN1,i,NAME);
+            String type = getAttribute(CLMN1,i,TYPE);
+            if(i == 0) { keyName = name; }
+            bld.append(name).append(" ")
+               .append(type).append(",");
         }
         bld.replace(bld.length()-1, bld.length(), "");
-        return bld.toString();
+        columns = bld.toString();
     }
     
-    private String initColumnsN() {
+    private void initColumnsN() {
         StringBuilder bld = new StringBuilder();
         for(int i = 1; i < totalColumns; i++) {
-            String name = getAttribute(i, NAME);
+            String name = getAttribute(CLMN1,i,NAME);
             bld.append(name).append(",");
             columnsNList.add(name);
         }
         bld.replace(bld.length()-1, bld.length(), "");
-        return bld.toString();
+        columnsN =  bld.toString();
     }
     
-    private String initColumnsN0() {
+    private void initColumnsN0() {
         StringBuilder bld = new StringBuilder();
         for(int i = 1; i < totalColumns; i++) {
             bld.append("'%s',");
         }
         bld.replace(bld.length()-1, bld.length(), "");
-        return bld.toString();
+        columnsN0 = bld.toString();
     }
     
-    private void initTableColumns() {
+    private void initDisplayColumns() {
         int size = config.configurationsAt(DSPL0).size();
-        for(int k = 0; k < size; k++) {
-            String name = config.getString(format(DSPL1,k,NAME));
-            String attr = config.getString(format(DSPL1,k,ATTR));
-            columnMap.put(name, attr);
-            tableColumns.add(name);
+        for(int i = 0; i < size; i++) {
+            String name = getAttribute(DSPL1,i,NAME);
+            String attr = getAttribute(DSPL1,i,ATTR);
+            displayColMap.put(name, attr);
+            displayColumns.add(name);
         }
     }
     
-    private String getAttribute(int index, String attribute) {
-        return config.getString(format(index, attribute));
+    private String getAttribute(String exp, int idx, String attr) {
+        String format = String.format(exp, idx, attr);
+        return config.getString(format);
     }
     
-    private String format(int index, String attribute) {
-        return String.format(CLMN1, index, attribute);
-    }   
-       
-    private String format(String exp, int index, String attribute) {
-        return String.format(exp, index, attribute);
-    }
-    
-    public String getDatabaseID() {
-        return databaseID;
+    public String getKeyName() {
+        return keyName;
     }
     
     public String getTableName() {
@@ -172,16 +171,17 @@ public class DatabaseConfig implements Initializable {
         return columnsNList;
     }
     
-    public List<String> getTableColumns() {
-        return tableColumns;
+    public List<String> getDisplayColumns() {
+        return displayColumns;
     }
     
-    public Map<String, String> getColumnMap() {
-        return columnMap;
+    public Map<String, String> getDisplayColMap() {
+        return displayColMap;
     }
     
-    public int getLength(String s) {
-        return Integer.valueOf(config.configurationAt("tables.table.properties.length").getString(s));
+    public int getSize(String size) {
+        return Integer.valueOf(
+                config.configurationAt(PROP).getString(size));
     }
     
     public static DatabaseConfig getInstance() {

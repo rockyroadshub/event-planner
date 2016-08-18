@@ -146,9 +146,9 @@ public class EventView extends JPanel {
    
     private void initComponents() {
         DatabaseConfig config = DatabaseConfig.getInstance();        
-        int t = config.getLength(DatabaseConfig.TITLE);
-        int d = config.getLength(DatabaseConfig.DESCRIPTION);
-        int l = config.getLength(DatabaseConfig.LOCATION);
+        int t = config.getSize(DatabaseConfig.TITLE);
+        int d = config.getSize(DatabaseConfig.DESCRIPTION);
+        int l = config.getSize(DatabaseConfig.LOCATION);
         
         document_ttl = new DefaultStyledDocument();
         document_ttl.setDocumentFilter(new DocumentSizeFilter(t));

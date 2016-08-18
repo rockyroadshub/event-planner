@@ -32,4 +32,5 @@ package org.rockyroadshub.planner.lib;
 public class Globals {
     public static final String JAR_ROOT = "/org/rockyroadshub/planner/%s";
     public static final String DATABASE_ROOT = "database/memory";
+    
 }

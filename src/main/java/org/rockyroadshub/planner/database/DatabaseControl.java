@@ -72,7 +72,7 @@ public class DatabaseControl implements Initializable {
         columnsN0     = config.getColumnsN0();
         columnsNList  = config.getColumnsNAsList();
         tableName     = config.getTableName();
-        databaseID    = config.getDatabaseID();
+        databaseID    = config.getKeyName();
         
         createFormat  = String.format(CREATE, tableName, columns);
         insertFormat  = String.format(INSERT, tableName, columnsN, columnsN0);

@@ -42,10 +42,6 @@ public class DatabaseConnection implements Initializable {
     private Connection connection;
 
     private DatabaseConnection() {}
-    
-    private String getProtocol(String path, String cmd) {
-        return String.format(PROTOCOL, path, cmd);
-    }
                  
     @Override
     public final void initialize() {
@@ -73,7 +69,11 @@ public class DatabaseConnection implements Initializable {
     @LogExceptions
     private void setupConnection() throws SQLException {
         connection = DriverManager.getConnection(
-                    getProtocol(Globals.DATABASE_ROOT, "create"));
+                    setProtocol(Globals.DATABASE_ROOT, "create"));
+    }   
+        
+    private String setProtocol(String path, String cmd) {
+        return String.format(PROTOCOL, path, cmd);
     }
     
     public Connection getConnection() {

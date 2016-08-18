@@ -110,7 +110,7 @@ public class EventsDisplay extends JPanel {
         initButtons();
         
         DatabaseConfig config = DatabaseConfig.getInstance();
-        List<String> columns = config.getTableColumns();
+        List<String> columns = config.getDisplayColumns();
         columns.stream().forEach((d) -> {
             tableModel.addColumn(d);
         });
@@ -238,8 +238,8 @@ public class EventsDisplay extends JPanel {
         try(Statement stmt = connection.createStatement()) {
             String statement = 
             String.format("SELECT * FROM EVENTS WHERE EVENT_DATE = '%s'", date);
-            List<String> list = DatabaseConfig.getInstance().getTableColumns();
-            Map<String, String> map = DatabaseConfig.getInstance().getColumnMap();
+            List<String> list = DatabaseConfig.getInstance().getDisplayColumns();
+            Map<String, String> map = DatabaseConfig.getInstance().getDisplayColMap();
             try(ResultSet rs = stmt.executeQuery(statement)) {
                 while(rs.next()) {
                     int j = 0;

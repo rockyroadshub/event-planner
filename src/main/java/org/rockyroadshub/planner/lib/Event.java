@@ -52,19 +52,16 @@ public class Event {
     
     private void initialize() {}
     
-    public void set(
-        String title, String description, String location, String date,
-        String year, String month, String day, String start, String end) 
-    {
-        this.event       = title;
-        this.description = description;
-        this.location    = location;
-        this.date        = date;
-        this.year        = year;
-        this.month       = month;
-        this.day         = day;
-        this.start       = start;
-        this.end         = end;
+    public void set(Object... args)  {
+//        this.event       = title;
+//        this.description = description;
+//        this.location    = location;
+//        this.date        = date;
+//        this.year        = year;
+//        this.month       = month;
+//        this.day         = day;
+//        this.start       = start;
+//        this.end         = end;
     }
     
     public Map<String, String> getData() {
