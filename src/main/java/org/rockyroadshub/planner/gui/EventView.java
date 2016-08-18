@@ -305,7 +305,6 @@ public class EventView extends JPanel {
         } catch (SQLException ex) { ex.printStackTrace(System.out); }
     }
     
-    
     private void onEdit() {
         enableGUI(true);
     }
@@ -347,13 +346,36 @@ public class EventView extends JPanel {
     }
     
     public void enableGUI(boolean bool) {
-        TITLE_INPUT.setEnabled(bool);
-        DESCRIPTION_INPUT.setEnabled(bool);
-        LOCATION_INPUT.setEnabled(bool);
+        TITLE_INPUT.setEditable(bool);
+        DESCRIPTION_INPUT.setEditable(bool);
+        LOCATION_INPUT.setEditable(bool);
         START_HOUR.setEnabled(bool);
         START_MINUTE.setEnabled(bool);      
         END_HOUR.setEnabled(bool);          
         END_MINUTE.setEnabled(bool);   
+    }
+    
+    public void set(Object... args) 
+    {
+        this.event       = String.valueOf(args[0]);
+        this.description = String.valueOf(args[1]);
+        this.location    = String.valueOf(args[2]);
+        this.date        = String.valueOf(args[3]);
+        this.year        = String.valueOf(args[4]);
+        this.month       = String.valueOf(args[5]);
+        this.day         = String.valueOf(args[6]);
+        this.start       = String.valueOf(args[7]);
+        this.end         = String.valueOf(args[8]);
+        
+        TITLE_INPUT.setText(event);
+        DESCRIPTION_INPUT.setText(description);
+        LOCATION_INPUT.setText(location);
+        String[] s = this.start.split(":");
+        String[] e = this.end.split(":");
+        START_HOUR.setValue(Integer.parseInt(s[0]));
+        START_MINUTE.setValue(Integer.parseInt(s[1]));      
+        END_HOUR.setValue(Integer.parseInt(e[0]));          
+        END_MINUTE.setValue(Integer.parseInt(e[1]));  
     }
     
     public void setID(int id) {

@@ -270,16 +270,19 @@ public class EventsDisplay extends JPanel {
 
             try(Statement stmt = connection.createStatement()) {
                 String statement = 
-                String.format("SELECT * FROM EVENTS WHERE EVENT_DATE = '%s'", date);
-                List<String> list = DatabaseConfig.getInstance().getTableColumns();
+                String.format("SELECT * FROM EVENTS WHERE %s = %s", "EVENT_ID", i);
                 Map<String, String> map = DatabaseConfig.getInstance().getColumnMap();
+                Object[] o = new Object[9];
                 try(ResultSet rs = stmt.executeQuery(statement)) {
-                    while(rs.next()) {
-                        for(String k : list) {
-                            String data = rs.getString(map.get(k));
-                            System.out.print(data + " ");
+                    while(rs.next()) {       
+                        int j = 0;
+                        for(String k : DatabaseConfig.getInstance().getColumnsNAsList()) {
+                            String data = rs.getString(k);
+                            o[j] = data;
+                            System.out.println(data);
+                            j++;
                         }
-                        System.out.println();
+                        EventView.getInstance().set(o);
                     }
                 }
             } 
