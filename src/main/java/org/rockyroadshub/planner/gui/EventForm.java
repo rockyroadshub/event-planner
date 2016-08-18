@@ -31,7 +31,6 @@ import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import javax.imageio.ImageIO;
@@ -55,6 +54,7 @@ import net.miginfocom.swing.MigLayout;
 import org.rockyroadshub.planner.database.DatabaseConfig;
 import org.rockyroadshub.planner.database.DatabaseControl;
 import org.rockyroadshub.planner.core.DocumentSizeFilter;
+import org.rockyroadshub.planner.core.Event;
 import org.rockyroadshub.planner.core.Globals;
 
 /**
@@ -277,9 +277,16 @@ public class EventForm extends JPanel {
     }
     
     private void onSave() {
+        Event evt = Event.getInstance();
+        
         event       = eventInput.getText();
         description = descriptionInput.getText();
         location    = locationInput.getText();
+        
+        date  = evt.getDate();       
+        year  = evt.getYear();
+        month = evt.getMonth();
+        day   = evt.getDay();
         
         int sH = (int)startModelH.getValue();
         int sM = (int)startModelM.getValue();
@@ -321,9 +328,9 @@ public class EventForm extends JPanel {
     }
 
     private void setParameters(int y, int m, int d) {
-        this.y_ = y;
-        this.m_ = m;
-        this.d_ = d;
+        y_ = y;
+        m_ = m;
+        d_ = d;
     }
     
     @LogExceptions

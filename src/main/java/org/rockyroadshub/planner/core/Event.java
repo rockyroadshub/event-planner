@@ -23,8 +23,12 @@
  */
 package org.rockyroadshub.planner.core;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import org.rockyroadshub.planner.gui.CalendarPane;
 
 /**
  *
@@ -34,15 +38,12 @@ import java.util.Map;
  */
 public class Event {
     
-    private String event;
-    private String description;
-    private String location;
     private String date;
     private String year;
     private String month;
     private String day;
-    private String start;
-    private String end;
+    
+    private final Integer[] param = new Integer[3];
         
     private final Map<String, String> eventData = new HashMap<>();
     
@@ -52,16 +53,37 @@ public class Event {
     
     private void initialize() {}
     
-    public void set(Object... args)  {
-//        this.event       = title;
-//        this.description = description;
-//        this.location    = location;
-//        this.date        = date;
-//        this.year        = year;
-//        this.month       = month;
-//        this.day         = day;
-//        this.start       = start;
-//        this.end         = end;
+    public void refresh(int year, int month, int day) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(year, month, day);
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Date date0 = calendar.getTime();
+        
+        param[0] = year;
+        param[1] = month;
+        param[2] = day;
+
+        int j = calendar.get(Calendar.MONTH);
+        this.date  = dateFormat.format(date0);       
+        this.year  = String.valueOf(calendar.get(Calendar.YEAR));
+        this.month = CalendarPane.MONTHS[j];
+        this.day   = String.valueOf(calendar.get(Calendar.DAY_OF_MONTH));
+    }
+    
+    public String getDate() {
+        return date;
+    }
+    
+    public String getYear() {
+        return year;
+    }
+    
+    public String getMonth() {
+        return month;
+    }
+    
+    public String getDay() {
+        return day;
     }
     
     public Map<String, String> getData() {

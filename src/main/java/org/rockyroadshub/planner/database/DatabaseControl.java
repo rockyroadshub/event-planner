@@ -191,13 +191,13 @@ public class DatabaseControl implements Initializable {
      * @param c1 Column 2
      * @param v1 Value 2
      * @param o Operator
-     * @param k Key
+     * @param d Data (column label of the data)
      * @return List of Data
      * @throws SQLException 
      */
     @LogExceptions
     public List<String> select(String c0, String v0, String c1, 
-                               String v1, String o , String k) 
+                               String v1, String o , String d) 
             throws SQLException 
     {
         dayList.clear();
@@ -205,7 +205,7 @@ public class DatabaseControl implements Initializable {
             String statement = String.format(selectFormat2,c0,v0,o,c1,v1);
             try(ResultSet rs = stmt.executeQuery(statement)) {
                 while(rs.next()) {
-                    dayList.add(rs.getString(k));
+                    dayList.add(rs.getString(d));
                 }
             }
         }
