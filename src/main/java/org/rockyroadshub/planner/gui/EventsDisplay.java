@@ -286,9 +286,7 @@ public class EventsDisplay extends JPanel {
                     }
                 }
             } 
-            catch (SQLException ex) {
-                ex.printStackTrace(System.out);
-            }
+            catch (SQLException ex) {}
         }
     }
        
