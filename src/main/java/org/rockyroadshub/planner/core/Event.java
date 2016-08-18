@@ -42,6 +42,7 @@ public class Event {
     private String year;
     private String month;
     private String day;
+    private String dateLabel;
     
     private final Integer[] param = new Integer[3];
         
@@ -51,10 +52,15 @@ public class Event {
         initialize();
     }
     
-    private void initialize() {}
+    private void initialize() {} 
+   
+    private String formatDate(String m, String d, String y) {
+         return String.format("%s %s, %s", m, d, y);
+    }
     
     public void refresh(int year, int month, int day) {
         Calendar calendar = Calendar.getInstance();
+        calendar.clear();
         calendar.set(year, month, day);
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         Date date0 = calendar.getTime();
@@ -63,11 +69,12 @@ public class Event {
         param[1] = month;
         param[2] = day;
 
-        int j = calendar.get(Calendar.MONTH);
         this.date  = dateFormat.format(date0);       
         this.year  = String.valueOf(calendar.get(Calendar.YEAR));
-        this.month = CalendarPane.MONTHS[j];
+        this.month = CalendarPane.MONTHS[month];
         this.day   = String.valueOf(calendar.get(Calendar.DAY_OF_MONTH));
+        
+        dateLabel = formatDate(this.month, this.day, this.year);
     }
     
     public String getDate() {
@@ -84,6 +91,14 @@ public class Event {
     
     public String getDay() {
         return day;
+    }
+    
+    public int getParam(int i) {
+        return param[i];
+    }
+    
+    public String getDateLabel() {
+        return dateLabel;
     }
     
     public Map<String, String> getData() {

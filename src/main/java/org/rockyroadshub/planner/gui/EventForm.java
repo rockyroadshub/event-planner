@@ -30,9 +30,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.GregorianCalendar;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -288,14 +285,18 @@ public class EventForm extends JPanel {
         month = evt.getMonth();
         day   = evt.getDay();
         
+        y_ = evt.getParam(0);
+        m_ = evt.getParam(1);
+        d_ = evt.getParam(2);
+        
         int sH = (int)startModelH.getValue();
         int sM = (int)startModelM.getValue();
         int eH = (int)endModelH.getValue();
         int eM = (int)endModelM.getValue();
         
         start = String.format("%d.%02d.00", sH, sM);
-        end   = String.format("%d.%02d.00", eH, eM);
-        
+        end   = String.format("%d.%02d.00", eH, eM);   
+                
         DatabaseControl dtb = DatabaseControl.getInstance();
         
         try {
@@ -307,30 +308,10 @@ public class EventForm extends JPanel {
             if(JOptionPane.showConfirmDialog(f, m, t, q) == o) {
                 dtb.insert(event, description, location, date, year, month, day, start, end);
                 Panel.getInstance().show(EventsDisplay.NAME);
-                EventsDisplay.getInstance().refresh(y_, m_, d_);
+                EventsDisplay.getInstance().refresh();
                 refresh();
             }
         } catch (SQLException ex) { ex.printStackTrace(System.out); }
-    }
-    
-    public void setDate(int year, int month, int day) {
-        setParameters(year, month, day);
-        this.year  = String.valueOf(year);
-        this.month = CalendarPane.MONTHS[month];
-        this.day   = String.valueOf(day);
-        dateLabel.setText(formatDate(this.month, this.day ,this.year));
-        
-        GregorianCalendar cal = new GregorianCalendar(year, month, day);            
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        Date date0 = cal.getTime();
-            
-        date = dateFormat.format(date0);  
-    }
-
-    private void setParameters(int y, int m, int d) {
-        y_ = y;
-        m_ = m;
-        d_ = d;
     }
     
     @LogExceptions
@@ -347,6 +328,10 @@ public class EventForm extends JPanel {
         startMinute.setValue(0);      
         endHour.setValue(0);          
         endMinute.setValue(0);        
+    }
+    
+    public void setTitleLabel(String text) {
+        dateLabel.setText(text);
     }
     
     public static EventForm getInstance() {

@@ -198,9 +198,11 @@ public class CalendarPane extends JPanel {
         String _m0 = MONTHS[m];
         String _y  = "EVENT_YEAR";
         String _y0 = String.valueOf(y);
+        String _o  = "AND";
+        String _d  = "EVENT_DAY";
         
         try {
-            list = dtb.select(_m,_m0,_y,_y0,"AND","EVENT_DAY");
+            list = dtb.select(_m,_m0,_y,_y0,_o,_d);
         }catch (SQLException ex) {}
         
         for(int i = start; i < end; i++) {
@@ -236,18 +238,15 @@ public class CalendarPane extends JPanel {
         int m = getSelectedMonth();
         int d = Integer.valueOf(button.getText());
             
-        Panel         panel   = Panel.getInstance();
         EventsDisplay display = EventsDisplay.getInstance();
-        EventForm     form    = EventForm.getInstance();
-        EventView     view    = EventView.getInstance();
         Event event = Event.getInstance();
-        
         event.refresh(y, m, d);
-//        form.setDate(y, m, d);
-        view.setDate(y, m, d);
-        display.refresh(y, m, d);
-        display.setTitleLabel(String.format(FORMAT, MONTHS[m], d, y));
-        panel.show(EventsDisplay.NAME);
+        String label = event.getDateLabel();
+        EventForm.getInstance().setTitleLabel(label);
+        EventView.getInstance().setTitleLabel(label);
+        display.setTitleLabel(label);
+        display.refresh();
+        Panel.getInstance().show(EventsDisplay.NAME);
     }
     
     private int getSelectedMonth() {

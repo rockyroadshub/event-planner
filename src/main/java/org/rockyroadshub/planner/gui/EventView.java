@@ -30,9 +30,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.GregorianCalendar;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -54,6 +51,7 @@ import net.miginfocom.swing.MigLayout;
 import org.rockyroadshub.planner.database.DatabaseConfig;
 import org.rockyroadshub.planner.database.DatabaseControl;
 import org.rockyroadshub.planner.core.DocumentSizeFilter;
+import org.rockyroadshub.planner.core.Event;
 import org.rockyroadshub.planner.core.Globals;
 
 /**
@@ -65,37 +63,37 @@ import org.rockyroadshub.planner.core.Globals;
 public class EventView extends JPanel {
     public static final String NAME = "eventview";
     
-    private static final JLabel       DATE_LABEL        = new JLabel("Date");
+    private final JLabel       dateLabel        = new JLabel("Date");
    
-    private static final JLabel       EVENT_LIMIT       = new JLabel();
-    private static final JLabel       EVENT_LABEL       = new JLabel("Event Title");
-    private static final JTextField   EVENT_INPUT       = new JTextField();
+    private final JLabel       eventLimit       = new JLabel();
+    private final JLabel       eventLabel       = new JLabel("Event Title");
+    private final JTextField   eventInput       = new JTextField();
     
-    private static final JLabel       DESCRIPTION_LIMIT = new JLabel();
-    private static final JLabel       DESCRIPTION_LABEL = new JLabel("Description");
-    private static final JTextArea    DESCRIPTION_INPUT = new JTextArea();
+    private final JLabel       descriptionLimit = new JLabel();
+    private final JLabel       descriptionLabel = new JLabel("Description");
+    private final JTextArea    descriptionInput = new JTextArea();
     
-    private static final JLabel       LOCATION_LIMIT    = new JLabel();
-    private static final JLabel       LOCATION_LABEL    = new JLabel("Location");
-    private static final JTextArea    LOCATION_INPUT    = new JTextArea();
+    private final JLabel       locationLimit    = new JLabel();
+    private final JLabel       locationLabel    = new JLabel("Location");
+    private final JTextArea    locationInput    = new JTextArea();
     
-    private static final JLabel       START_LABEL       = new JLabel("Start");
-    private static final SpinnerModel START_MODEL_H     = new SpinnerNumberModel(0,0,23,1);
-    private static final SpinnerModel START_MODEL_M     = new SpinnerNumberModel(0,0,59,1);    
-    private static final JSpinner     START_HOUR        = new JSpinner(START_MODEL_H);
-    private static final JSpinner     START_MINUTE      = new JSpinner(START_MODEL_M); 
+    private final JLabel       startLabel       = new JLabel("Start (HH:MM)");
+    private final SpinnerModel startModelH      = new SpinnerNumberModel(0,0,23,1);
+    private final SpinnerModel startModelM      = new SpinnerNumberModel(0,0,59,1);    
+    private final JSpinner     startHour        = new JSpinner(startModelH);
+    private final JSpinner     startMinute      = new JSpinner(startModelM); 
     
-    private static final JLabel       END_LABEL         = new JLabel("End");    
-    private static final SpinnerModel END_MODEL_H       = new SpinnerNumberModel(0,0,23,1);
-    private static final SpinnerModel END_MODEL_M       = new SpinnerNumberModel(0,0,59,1);
-    private static final JSpinner     END_HOUR          = new JSpinner(END_MODEL_H);
-    private static final JSpinner     END_MINUTE        = new JSpinner(END_MODEL_M);
+    private final JLabel       endLabel         = new JLabel("End (HH:MM)");    
+    private final SpinnerModel endModelH        = new SpinnerNumberModel(0,0,23,1);
+    private final SpinnerModel endModelM        = new SpinnerNumberModel(0,0,59,1);
+    private final JSpinner     endHour          = new JSpinner(endModelH);
+    private final JSpinner     endMinute        = new JSpinner(endModelM);
     
-    private static final JPanel       MENU              = new JPanel();
-    private static final JButton      HOME              = new JButton();
-    private static final JButton      BACK              = new JButton();
-    private static final JButton      SAVE              = new JButton();
-    private static final JButton      EDIT              = new JButton();
+    private final JPanel       menu             = new JPanel();
+    private final JButton      home             = new JButton();
+    private final JButton      back             = new JButton();
+    private final JButton      save             = new JButton();
+    private final JButton      edit             = new JButton();
    
     private final Font font = new Font("MONOSPACED", 0, 12);    
     
@@ -119,13 +117,13 @@ public class EventView extends JPanel {
     private int m_;
     private int d_;
 
-    private DefaultStyledDocument document_evt;
-    private DefaultStyledDocument document_loc;
-    private DefaultStyledDocument document_dsc;
+    private DefaultStyledDocument documentEvt;
+    private DefaultStyledDocument documentLoc;
+    private DefaultStyledDocument documentDsc;
     
-    private String format_evt;
-    private String format_dsc; 
-    private String format_loc;
+    private String formatEvt;
+    private String formatDsc; 
+    private String formatLoc;
  
     private EventView() {
         initialize();
@@ -150,84 +148,80 @@ public class EventView extends JPanel {
         int d = config.getSize(DatabaseConfig.DESCRIPTION);
         int l = config.getSize(DatabaseConfig.LOCATION);
         
-        document_evt = new DefaultStyledDocument();
-        document_evt.setDocumentFilter(new DocumentSizeFilter(e));
-        document_evt.addDocumentListener(document);
-        format_evt = timeStamp(e);
-        EVENT_INPUT.setFont(font);
-        EVENT_INPUT.setDocument(document_evt);
-        EVENT_LIMIT.setText(String.format(format_evt, 0));
+        documentEvt = new DefaultStyledDocument();
+        documentEvt.setDocumentFilter(new DocumentSizeFilter(e));
+        documentEvt.addDocumentListener(document);
+        formatEvt = timeStamp(e);
+        eventInput.setFont(font);
+        eventInput.setDocument(documentEvt);
+        eventLimit.setText(String.format(formatEvt, 0));
         
-        document_dsc = new DefaultStyledDocument();
-        document_dsc.setDocumentFilter(new DocumentSizeFilter(d));
-        document_dsc.addDocumentListener(document);
-        format_dsc = timeStamp(d);
-        DESCRIPTION_INPUT.setFont(font);
-        DESCRIPTION_INPUT.setDocument(document_dsc);
-        DESCRIPTION_LIMIT.setText(String.format(format_dsc, 0));
-        DESCRIPTION_INPUT.setLineWrap(true);
+        documentDsc = new DefaultStyledDocument();
+        documentDsc.setDocumentFilter(new DocumentSizeFilter(d));
+        documentDsc.addDocumentListener(document);
+        formatDsc = timeStamp(d);
+        descriptionInput.setFont(font);
+        descriptionInput.setDocument(documentDsc);
+        descriptionLimit.setText(String.format(formatDsc, 0));
+        descriptionInput.setLineWrap(true);
        
-        document_loc = new DefaultStyledDocument();
-        document_loc.setDocumentFilter(new DocumentSizeFilter(l));
-        document_loc.addDocumentListener(document);
-        format_loc = timeStamp(l);
-        LOCATION_INPUT.setFont(font);
-        LOCATION_INPUT.setDocument(document_loc);
-        LOCATION_LIMIT.setText(String.format(format_loc, 0));
-        LOCATION_INPUT.setLineWrap(true);
+        documentLoc = new DefaultStyledDocument();
+        documentLoc.setDocumentFilter(new DocumentSizeFilter(l));
+        documentLoc.addDocumentListener(document);
+        formatLoc = timeStamp(l);
+        locationInput.setFont(font);
+        locationInput.setDocument(documentLoc);
+        locationLimit.setText(String.format(formatLoc, 0));
+        locationInput.setLineWrap(true);
 
-        setAllowsInvalid(START_HOUR);
-        setAllowsInvalid(START_MINUTE);
-        setAllowsInvalid(END_HOUR);
-        setAllowsInvalid(END_MINUTE);
+        setAllowsInvalid(startHour);
+        setAllowsInvalid(startMinute);
+        setAllowsInvalid(endHour);
+        setAllowsInvalid(endMinute);
         
-        MENU.setLayout(new MigLayout());
-        MENU.add(HOME, "h 32!, w 32!");
-        MENU.add(BACK, "h 32!, w 32!");
-        MENU.add(SAVE, "h 32!, w 32!");
-        MENU.add(EDIT, "h 32!, w 32!");
+        menu.setLayout(new MigLayout());
+        menu.add(home, "h 32!, w 32!");
+        menu.add(back, "h 32!, w 32!");
+        menu.add(save, "h 32!, w 32!");
+        menu.add(edit, "h 32!, w 32!");
         
-        HOME.setToolTipText(HOME0);
-        HOME.setName(CalendarPane.NAME);
-        HOME.addActionListener(action);
-        BACK.setToolTipText(BACK0);
-        BACK.setName(EventsDisplay.NAME);
-        BACK.addActionListener(action);
-        SAVE.setToolTipText(SAVE0);
-        SAVE.addActionListener(action);
-        EDIT.setToolTipText(EDIT0);
-        EDIT.addActionListener(action);
+        home.setToolTipText(HOME0);
+        home.setName(CalendarPane.NAME);
+        home.addActionListener(action);
+        back.setToolTipText(BACK0);
+        back.setName(EventsDisplay.NAME);
+        back.addActionListener(action);
+        save.setToolTipText(SAVE0);
+        save.addActionListener(action);
+        edit.setToolTipText(EDIT0);
+        edit.addActionListener(action);
         
         try {
-            initIcon(HOME, "src/Home.png");
-            initIcon(BACK, "src/Back.png");
-            initIcon(SAVE, "src/Save.png");
-            initIcon(EDIT, "src/Edit.png");
+            initIcon(home, "src/Home.png");
+            initIcon(back, "src/Back.png");
+            initIcon(save, "src/Save.png");
+            initIcon(edit, "src/Edit.png");
         } catch (IOException ex) {}
     }
    
     private void addComponents() {
-        add(DATE_LABEL, "h 32!");
-        add(MENU, "growx, wrap");
-        add(EVENT_LABEL, "h 32!");
-        add(EVENT_LIMIT, "h 32!, align right, wrap");
-        add(EVENT_INPUT, "growx, h 32!, span 3, wrap");
-        add(LOCATION_LABEL, "h 32!");
-        add(LOCATION_LIMIT, "h 32!, align right, wrap");
-        add(LOCATION_INPUT, "growx, h 150!, span 3, wrap"); 
-        add(DESCRIPTION_LABEL, "h 32!");
-        add(DESCRIPTION_LIMIT, "h 32!, align right, wrap");
-        add(DESCRIPTION_INPUT, "growx, h 150!, span 3, wrap");
-        add(START_LABEL, "h 32!, growx");
-        add(START_HOUR, "h 32!, w 64!");
-        add(START_MINUTE, "h 32!, w 64!, wrap");
-        add(END_LABEL, "h 32!, growx");
-        add(END_HOUR, "h 32!, w 64!");
-        add(END_MINUTE, "h 32!, w 64!, wrap");
-    }
-   
-    private String formatDate(String m, String d, String y) {
-         return String.format("%s %s, %s", m, d, y);
+        add(dateLabel, "h 32!");
+        add(menu, "growx, wrap");
+        add(eventLabel, "h 32!");
+        add(eventLimit, "h 32!, align right, wrap");
+        add(eventInput, "growx, h 32!, span 3, wrap");
+        add(locationLabel, "h 32!");
+        add(locationLimit, "h 32!, align right, wrap");
+        add(locationInput, "growx, h 150!, span 3, wrap"); 
+        add(descriptionLabel, "h 32!");
+        add(descriptionLimit, "h 32!, align right, wrap");
+        add(descriptionInput, "growx, h 150!, span 3, wrap");
+        add(startLabel, "h 32!, growx");
+        add(startHour, "h 32!, w 64!");
+        add(startMinute, "h 32!, w 64!, wrap");
+        add(endLabel, "h 32!, growx");
+        add(endHour, "h 32!, w 64!");
+        add(endMinute, "h 32!, w 64!, wrap");
     }
     
     private final DocumentListener document = new DocumentListener() {
@@ -238,14 +232,14 @@ public class EventView extends JPanel {
     
     private void update(DocumentEvent e) {
         DefaultStyledDocument doc = (DefaultStyledDocument)e.getDocument();
-        if(doc.equals(document_evt)) {
-            update0(EVENT_LIMIT, format_evt, doc);
+        if(doc.equals(documentEvt)) {
+            update0(eventLimit, formatEvt, doc);
         }
-        else if(doc.equals(document_loc)) {
-            update0(LOCATION_LIMIT, format_loc, doc);
+        else if(doc.equals(documentLoc)) {
+            update0(locationLimit, formatLoc, doc);
         }
-        else if(doc.equals(document_dsc)) {
-            update0(DESCRIPTION_LIMIT, format_dsc, doc);
+        else if(doc.equals(documentDsc)) {
+            update0(descriptionLimit, formatDsc, doc);
         }
     }
       
@@ -272,7 +266,7 @@ public class EventView extends JPanel {
     
     private void onTrigger(JButton button) {
         CalendarPane.getInstance().refresh();
-        EventsDisplay.getInstance().refresh(y_, m_, d_);
+        EventsDisplay.getInstance().refresh();
         switch (button.getToolTipText()) {
             case SAVE0:
                 onSave();
@@ -289,12 +283,28 @@ public class EventView extends JPanel {
     }
     
     private void onSave() {
-        event       = EVENT_INPUT.getText();
-        description = DESCRIPTION_INPUT.getText();
-        location    = LOCATION_INPUT.getText();
+        Event evt = Event.getInstance();
         
-        start = String.format("%d.%02d.00", START_MODEL_H.getValue(), START_MODEL_M.getValue());
-        end   = String.format("%d.%02d.00", END_MODEL_H.getValue(), END_MODEL_M.getValue());
+        event       = eventInput.getText();
+        description = descriptionInput.getText();
+        location    = locationInput.getText();
+        
+        date  = evt.getDate();       
+        year  = evt.getYear();
+        month = evt.getMonth();
+        day   = evt.getDay();
+        
+        y_ = evt.getParam(0);
+        m_ = evt.getParam(1);
+        d_ = evt.getParam(2);
+        
+        int sH = (int)startModelH.getValue();
+        int sM = (int)startModelM.getValue();
+        int eH = (int)endModelH.getValue();
+        int eM = (int)endModelM.getValue();
+        
+        start = String.format("%d.%02d.00", sH, sM);
+        end   = String.format("%d.%02d.00", eH, eM);  
         
         DatabaseControl dtb = DatabaseControl.getInstance();
         
@@ -307,7 +317,7 @@ public class EventView extends JPanel {
             if(JOptionPane.showConfirmDialog(f, m, t, q) == o) {
                 dtb.update(id, event, description, location, date, year, month, day, start, end);
                 Panel.getInstance().show(EventsDisplay.NAME);
-                EventsDisplay.getInstance().refresh(y_, m_, d_);
+                EventsDisplay.getInstance().refresh();
                 refresh();
             }
         } catch (SQLException ex) { ex.printStackTrace(System.out); }
@@ -317,26 +327,6 @@ public class EventView extends JPanel {
         enableGUI(true);
     }
     
-    public void setDate(int year, int month, int day) {
-        setParameters(year, month, day);
-        this.year  = String.valueOf(year);
-        this.month = CalendarPane.MONTHS[month];
-        this.day   = String.valueOf(day);
-        DATE_LABEL.setText(formatDate(this.month, this.day ,this.year));
-        
-        GregorianCalendar cal = new GregorianCalendar(year, month, day);            
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        Date date0 = cal.getTime();
-            
-        date = dateFormat.format(date0);  
-    }
-
-    private void setParameters(int y, int m, int d) {
-        this.y_ = y;
-        this.m_ = m;
-        this.d_ = d;
-    }
-    
     @LogExceptions
     private void initIcon(JButton b, String n) throws IOException {
         Image img = ImageIO.read(getClass().getResource(String.format(Globals.JAR_ROOT, n)));
@@ -344,23 +334,23 @@ public class EventView extends JPanel {
     }
     
     private void refresh() {
-        EVENT_INPUT.setText("");
-        DESCRIPTION_INPUT.setText("");
-        LOCATION_INPUT.setText("");
-        START_HOUR.setValue(0);
-        START_MINUTE.setValue(0);      
-        END_HOUR.setValue(0);          
-        END_MINUTE.setValue(0);        
+        eventInput.setText("");
+        descriptionInput.setText("");
+        locationInput.setText("");
+        startHour.setValue(0);
+        startMinute.setValue(0);      
+        endHour.setValue(0);          
+        endMinute.setValue(0);        
     }
     
     public void enableGUI(boolean bool) {
-        EVENT_INPUT.setEditable(bool);
-        DESCRIPTION_INPUT.setEditable(bool);
-        LOCATION_INPUT.setEditable(bool);
-        START_HOUR.setEnabled(bool);
-        START_MINUTE.setEnabled(bool);      
-        END_HOUR.setEnabled(bool);          
-        END_MINUTE.setEnabled(bool);   
+        eventInput.setEditable(bool);
+        descriptionInput.setEditable(bool);
+        locationInput.setEditable(bool);
+        startHour.setEnabled(bool);
+        startMinute.setEnabled(bool);      
+        endHour.setEnabled(bool);          
+        endMinute.setEnabled(bool);   
     }
     
     public void set(Object... args) 
@@ -375,19 +365,23 @@ public class EventView extends JPanel {
         this.start       = String.valueOf(args[7]);
         this.end         = String.valueOf(args[8]);
         
-        EVENT_INPUT.setText(event);
-        DESCRIPTION_INPUT.setText(description);
-        LOCATION_INPUT.setText(location);
+        eventInput.setText(event);
+        descriptionInput.setText(description);
+        locationInput.setText(location);
         String[] s = this.start.split(":");
         String[] e = this.end.split(":");
-        START_HOUR.setValue(Integer.parseInt(s[0]));
-        START_MINUTE.setValue(Integer.parseInt(s[1]));      
-        END_HOUR.setValue(Integer.parseInt(e[0]));          
-        END_MINUTE.setValue(Integer.parseInt(e[1]));  
+        startHour.setValue(Integer.parseInt(s[0]));
+        startMinute.setValue(Integer.parseInt(s[1]));      
+        endHour.setValue(Integer.parseInt(e[0]));          
+        endMinute.setValue(Integer.parseInt(e[1]));  
     }
     
     public void setID(int id) {
         this.id = id;
+    }
+    
+    public void setTitleLabel(String text) {
+        dateLabel.setText(text);
     }
     
     public static EventView getInstance() {

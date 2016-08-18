@@ -34,9 +34,6 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Map;
 import javax.imageio.ImageIO;
@@ -49,6 +46,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import net.miginfocom.swing.MigLayout;
+import org.rockyroadshub.planner.core.Event;
 import org.rockyroadshub.planner.database.DatabaseConfig;
 import org.rockyroadshub.planner.database.DatabaseConnection;
 import org.rockyroadshub.planner.database.DatabaseControl;
@@ -202,7 +200,7 @@ public class EventsDisplay extends JPanel {
                 int    o = JOptionPane.OK_OPTION;
                 if(JOptionPane.showConfirmDialog(f, m, t, q) == o) {
                     dtb.delete(getID());
-                    refresh(year, month, day);
+                    refresh();
                 }
             }
         } catch (SQLException ex) {
@@ -219,18 +217,11 @@ public class EventsDisplay extends JPanel {
         return -1;
     }
     
-    public final void refresh(int year, int month, int day) {
-        this.year = year;
-        this.month = month;
-        this.day = day;
-        
+    public void refresh() {
         DatabaseConnection dtb = DatabaseConnection.getInstance();
         Connection connection = dtb.getConnection();
-
-        GregorianCalendar cal = new GregorianCalendar(year, month, day);            
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        Date date0 = cal.getTime();      
-        String date = dateFormat.format(date0); 
+        Event event = Event.getInstance();
+        String date = event.getDate();
         
         tableModel.getDataVector().removeAllElements();
         tableModel.fireTableDataChanged();
