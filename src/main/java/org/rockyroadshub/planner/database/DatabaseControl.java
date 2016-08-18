@@ -31,7 +31,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
-import org.rockyroadshub.planner.lib.Initializable;
+import org.rockyroadshub.planner.core.Initializable;
 import org.rockyroadshub.planner.main.PlannerSystem;
 
 /**
@@ -49,9 +49,10 @@ public class DatabaseControl implements Initializable {
     private String columnsN;
     private String columnsN0;
     private String tableName;
-    private String databaseID;
+    private String keyName;
     private List<String> columnsNList = new ArrayList<>();
     private final List<String> dayList = new ArrayList<>();
+    private String[] dataList;
     
     private String insertFormat;
     private String createFormat;
@@ -72,7 +73,8 @@ public class DatabaseControl implements Initializable {
         columnsN0     = config.getColumnsN0();
         columnsNList  = config.getColumnsNAsList();
         tableName     = config.getTableName();
-        databaseID    = config.getKeyName();
+        keyName       = config.getKeyName();
+        dataList      = new String[columnsNList.size()];
         
         createFormat  = String.format(CREATE, tableName, columns);
         insertFormat  = String.format(INSERT, tableName, columnsN, columnsN0);
@@ -135,23 +137,6 @@ public class DatabaseControl implements Initializable {
         }
     }
     
-    /**
-     * 
-     * @param c column
-     * @param v value
-     * @param id primary key
-     * @throws SQLException 
-     */
-    @LogExceptions
-    public void update(String c, String v, int id) 
-            throws SQLException
-    {
-        try(Statement stmt = connection.createStatement()) {
-            String statement = String.format(updateFormat,c,v,id);
-            stmt.executeUpdate(statement);
-        }
-    }
-    
     @LogExceptions
     public void update(int id, Object... args) throws SQLException {
         int k = 0;
@@ -181,94 +166,24 @@ public class DatabaseControl implements Initializable {
     /**
      * 
      * @param id EVENT_ID
+     * @return 
      * @throws SQLException 
      */
     @LogExceptions
-    public void select(int id) throws SQLException {
+    public Object[] select(int id) throws SQLException {
         try(Statement stmt = connection.createStatement()) {
             String statement = String.format(selectFormat0,id);
             try(ResultSet rs = stmt.executeQuery(statement)) {
                 while(rs.next()) {
-                    for(String i : columnsNList) {
+                    for(int i = 0; i < columnsNList.size(); i++) {
+                        dataList[i] = rs.getString(columnsNList.get(i));
                     }
                 }
             }
         }
+        return dataList;
     }
-    
-    /**
-     * 
-     * @param c Column
-     * @param v Value
-     * @throws SQLException 
-     */
-    @LogExceptions
-    public void select(String c, String v) throws SQLException {
-        try(Statement stmt = connection.createStatement()) {
-            String statement = String.format(selectFormat1,c,v);
-            try(ResultSet rs = stmt.executeQuery(statement)) {
-                while(rs.next()) {
-                    System.out.print(rs.getString("EVENT_ID") + " ");
-                    for(String i : columnsNList) {
-                        System.out.print(rs.getString(i) + " ");
-                    }
-                    System.out.println();
-                }
-            }
-        }
-    }
-    
-    /**
-     * 
-     * @param c Column
-     * @param v Value
-     * @param k Key 
-     * @return List of Data
-     * @throws SQLException 
-     */
-    @LogExceptions
-    public List<String> select(String c, String v, String k) throws SQLException {
-        dayList.clear();
-        try(Statement stmt = connection.createStatement()) {
-            String statement = String.format(selectFormat1,c,v);
-            try(ResultSet rs = stmt.executeQuery(statement)) {
-                while(rs.next()) {
-                    dayList.add(rs.getString(k));
-                }
-            }
-        }
-        finally {
-            return dayList;
-        }
-    }
-    
-    
-    /**
-     * 
-     * @param c0 Column 1
-     * @param v0 Value 1
-     * @param c1 Column 2
-     * @param v1 Value 2
-     * @param o Operator
-     * @throws SQLException 
-     */
-    @LogExceptions
-    public void select(String c0, String v0, 
-                       String c1, String v1, 
-                       String o) 
-            throws SQLException 
-    {
-        try(Statement stmt = connection.createStatement()) {
-            String statement = String.format(selectFormat2,c0,v0,o,c1,v1);
-            try(ResultSet rs = stmt.executeQuery(statement)) {
-                while(rs.next()) {
-                    for(String i : columnsNList) {
-                    }
-                }
-            }
-        }
-    }
-    
+
     /**
      * 
      * @param c0 Column 1
@@ -300,7 +215,7 @@ public class DatabaseControl implements Initializable {
     }
     
     private String prepare(String a, String b, String d) {
-        return prepare(a,b,databaseID,d);
+        return prepare(a,b,keyName,d);
     }
     
     private String prepare(String a, String b, String c, String d) {

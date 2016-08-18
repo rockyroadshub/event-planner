@@ -27,8 +27,8 @@ import com.jcabi.aspects.LogExceptions;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import org.rockyroadshub.planner.lib.Globals;
-import org.rockyroadshub.planner.lib.Initializable;
+import org.rockyroadshub.planner.core.Globals;
+import org.rockyroadshub.planner.core.Initializable;
 import org.rockyroadshub.planner.main.PlannerSystem;
 
 /**

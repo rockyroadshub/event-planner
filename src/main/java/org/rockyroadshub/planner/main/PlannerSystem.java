@@ -16,7 +16,7 @@
 package org.rockyroadshub.planner.main;
 
 import java.util.Map;
-import org.rockyroadshub.planner.lib.Initializable;
+import org.rockyroadshub.planner.core.Initializable;
 
 /**
  *

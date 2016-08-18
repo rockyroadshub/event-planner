@@ -53,8 +53,8 @@ import net.miginfocom.layout.LC;
 import net.miginfocom.swing.MigLayout;
 import org.rockyroadshub.planner.database.DatabaseConfig;
 import org.rockyroadshub.planner.database.DatabaseControl;
-import org.rockyroadshub.planner.lib.DocumentSizeFilter;
-import org.rockyroadshub.planner.lib.Globals;
+import org.rockyroadshub.planner.core.DocumentSizeFilter;
+import org.rockyroadshub.planner.core.Globals;
 
 /**
  *
@@ -67,9 +67,9 @@ public class EventView extends JPanel {
     
     private static final JLabel       DATE_LABEL        = new JLabel("Date");
    
-    private static final JLabel       TITLE_LIMIT       = new JLabel();
-    private static final JLabel       TITLE_LABEL       = new JLabel("Event Title");
-    private static final JTextField   TITLE_INPUT       = new JTextField();
+    private static final JLabel       EVENT_LIMIT       = new JLabel();
+    private static final JLabel       EVENT_LABEL       = new JLabel("Event Title");
+    private static final JTextField   EVENT_INPUT       = new JTextField();
     
     private static final JLabel       DESCRIPTION_LIMIT = new JLabel();
     private static final JLabel       DESCRIPTION_LABEL = new JLabel("Description");
@@ -119,11 +119,11 @@ public class EventView extends JPanel {
     private int m_;
     private int d_;
 
-    private DefaultStyledDocument document_ttl;
+    private DefaultStyledDocument document_evt;
     private DefaultStyledDocument document_loc;
     private DefaultStyledDocument document_dsc;
     
-    private String format_ttl;
+    private String format_evt;
     private String format_dsc; 
     private String format_loc;
  
@@ -146,22 +146,22 @@ public class EventView extends JPanel {
    
     private void initComponents() {
         DatabaseConfig config = DatabaseConfig.getInstance();        
-        int t = config.getSize(DatabaseConfig.TITLE);
+        int e = config.getSize(DatabaseConfig.EVENT);
         int d = config.getSize(DatabaseConfig.DESCRIPTION);
         int l = config.getSize(DatabaseConfig.LOCATION);
         
-        document_ttl = new DefaultStyledDocument();
-        document_ttl.setDocumentFilter(new DocumentSizeFilter(t));
-        document_ttl.addDocumentListener(document);
-        format_ttl = getFormat(t);
-        TITLE_INPUT.setFont(font);
-        TITLE_INPUT.setDocument(document_ttl);
-        TITLE_LIMIT.setText(String.format(format_ttl, 0));
+        document_evt = new DefaultStyledDocument();
+        document_evt.setDocumentFilter(new DocumentSizeFilter(e));
+        document_evt.addDocumentListener(document);
+        format_evt = timeStamp(e);
+        EVENT_INPUT.setFont(font);
+        EVENT_INPUT.setDocument(document_evt);
+        EVENT_LIMIT.setText(String.format(format_evt, 0));
         
         document_dsc = new DefaultStyledDocument();
         document_dsc.setDocumentFilter(new DocumentSizeFilter(d));
         document_dsc.addDocumentListener(document);
-        format_dsc = getFormat(d);
+        format_dsc = timeStamp(d);
         DESCRIPTION_INPUT.setFont(font);
         DESCRIPTION_INPUT.setDocument(document_dsc);
         DESCRIPTION_LIMIT.setText(String.format(format_dsc, 0));
@@ -170,7 +170,7 @@ public class EventView extends JPanel {
         document_loc = new DefaultStyledDocument();
         document_loc.setDocumentFilter(new DocumentSizeFilter(l));
         document_loc.addDocumentListener(document);
-        format_loc = getFormat(l);
+        format_loc = timeStamp(l);
         LOCATION_INPUT.setFont(font);
         LOCATION_INPUT.setDocument(document_loc);
         LOCATION_LIMIT.setText(String.format(format_loc, 0));
@@ -209,9 +209,9 @@ public class EventView extends JPanel {
     private void addComponents() {
         add(DATE_LABEL, "h 32!");
         add(MENU, "growx, wrap");
-        add(TITLE_LABEL, "h 32!");
-        add(TITLE_LIMIT, "h 32!, align right, wrap");
-        add(TITLE_INPUT, "growx, h 32!, span 3, wrap");
+        add(EVENT_LABEL, "h 32!");
+        add(EVENT_LIMIT, "h 32!, align right, wrap");
+        add(EVENT_INPUT, "growx, h 32!, span 3, wrap");
         add(LOCATION_LABEL, "h 32!");
         add(LOCATION_LIMIT, "h 32!, align right, wrap");
         add(LOCATION_INPUT, "growx, h 150!, span 3, wrap"); 
@@ -238,8 +238,8 @@ public class EventView extends JPanel {
     
     private void update(DocumentEvent e) {
         DefaultStyledDocument doc = (DefaultStyledDocument)e.getDocument();
-        if(doc.equals(document_ttl)) {
-            update0(TITLE_LIMIT, format_ttl, doc);
+        if(doc.equals(document_evt)) {
+            update0(EVENT_LIMIT, format_evt, doc);
         }
         else if(doc.equals(document_loc)) {
             update0(LOCATION_LIMIT, format_loc, doc);
@@ -253,7 +253,7 @@ public class EventView extends JPanel {
         limit.setText(String.format(format, doc.getLength()));
     }
     
-    private String getFormat(int limit) {
+    private String timeStamp(int limit) {
         StringBuilder bld = new StringBuilder("(%0");
         int digits = (int)(Math.log10(limit)+1);
         bld.append(digits).append("d/").append(limit).append(")");
@@ -289,7 +289,7 @@ public class EventView extends JPanel {
     }
     
     private void onSave() {
-        event       = TITLE_INPUT.getText();
+        event       = EVENT_INPUT.getText();
         description = DESCRIPTION_INPUT.getText();
         location    = LOCATION_INPUT.getText();
         
@@ -344,7 +344,7 @@ public class EventView extends JPanel {
     }
     
     private void refresh() {
-        TITLE_INPUT.setText("");
+        EVENT_INPUT.setText("");
         DESCRIPTION_INPUT.setText("");
         LOCATION_INPUT.setText("");
         START_HOUR.setValue(0);
@@ -354,7 +354,7 @@ public class EventView extends JPanel {
     }
     
     public void enableGUI(boolean bool) {
-        TITLE_INPUT.setEditable(bool);
+        EVENT_INPUT.setEditable(bool);
         DESCRIPTION_INPUT.setEditable(bool);
         LOCATION_INPUT.setEditable(bool);
         START_HOUR.setEnabled(bool);
@@ -375,7 +375,7 @@ public class EventView extends JPanel {
         this.start       = String.valueOf(args[7]);
         this.end         = String.valueOf(args[8]);
         
-        TITLE_INPUT.setText(event);
+        EVENT_INPUT.setText(event);
         DESCRIPTION_INPUT.setText(description);
         LOCATION_INPUT.setText(location);
         String[] s = this.start.split(":");

@@ -35,7 +35,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import javax.imageio.ImageIO;
 import javax.swing.JFrame;
-import org.rockyroadshub.planner.lib.Globals;
+import org.rockyroadshub.planner.core.Globals;
 
 /**
  *

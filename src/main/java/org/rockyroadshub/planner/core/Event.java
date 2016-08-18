@@ -21,7 +21,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.rockyroadshub.planner.lib;
+package org.rockyroadshub.planner.core;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  *
@@ -29,6 +32,47 @@ package org.rockyroadshub.planner.lib;
  * @version 0.0.0
  * @since 2016-08-13
  */
-public class GUI {
+public class Event {
     
+    private String event;
+    private String description;
+    private String location;
+    private String date;
+    private String year;
+    private String month;
+    private String day;
+    private String start;
+    private String end;
+        
+    private final Map<String, String> eventData = new HashMap<>();
+    
+    private Event(){
+        initialize();
+    }
+    
+    private void initialize() {}
+    
+    public void set(Object... args)  {
+//        this.event       = title;
+//        this.description = description;
+//        this.location    = location;
+//        this.date        = date;
+//        this.year        = year;
+//        this.month       = month;
+//        this.day         = day;
+//        this.start       = start;
+//        this.end         = end;
+    }
+    
+    public Map<String, String> getData() {
+        return eventData;
+    }
+    
+    public static Event getInstance() {
+        return Holder.INSTANCE;
+    }
+    
+    private static final class Holder {
+        private static final Event INSTANCE = new Event();
+    }
 }

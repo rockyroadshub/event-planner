@@ -21,15 +21,14 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.rockyroadshub.planner.lib;
-
-import java.util.HashMap;
+package org.rockyroadshub.planner.core;
 
 /**
  *
- * @author Nell
+ * @author Arnell Christoper D. Dalid
+ * @version 0.0.0
+ * @since 2016-08-13
  */
-public interface Initializable {
-    public static final HashMap<Integer, Initializable> QUEUE = new HashMap<>();
-    public void initialize();
+public class GUI {
+    
 }

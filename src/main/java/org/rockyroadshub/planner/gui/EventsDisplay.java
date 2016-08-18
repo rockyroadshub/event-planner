@@ -52,7 +52,7 @@ import net.miginfocom.swing.MigLayout;
 import org.rockyroadshub.planner.database.DatabaseConfig;
 import org.rockyroadshub.planner.database.DatabaseConnection;
 import org.rockyroadshub.planner.database.DatabaseControl;
-import org.rockyroadshub.planner.lib.Globals;
+import org.rockyroadshub.planner.core.Globals;
 
 /**
  *
@@ -265,28 +265,11 @@ public class EventsDisplay extends JPanel {
             EventView view_ = EventView.getInstance();
             view_.setID(i);
             view_.enableGUI(false);
-            DatabaseConnection dtb = DatabaseConnection.getInstance();
-            Connection connection = dtb.getConnection();   
 
             tableModel.getDataVector().removeAllElements();
             tableModel.fireTableDataChanged();
-
-            try(Statement stmt = connection.createStatement()) {
-                String statement = 
-                String.format("SELECT * FROM EVENTS WHERE %s = %s", "EVENT_ID", i);
-                Object[] o = new Object[9];
-                try(ResultSet rs = stmt.executeQuery(statement)) {
-                    while(rs.next()) {       
-                        int j = 0;
-                        for(String k : DatabaseConfig.getInstance().getColumnsNAsList()) {
-                            String data = rs.getString(k);
-                            o[j] = data;
-                            System.out.println(data);
-                            j++;
-                        }
-                        EventView.getInstance().set(o);
-                    }
-                }
+            try {
+                view_.set(DatabaseControl.getInstance().select(i));
             } 
             catch (SQLException ex) {}
         }

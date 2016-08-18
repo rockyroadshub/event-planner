@@ -31,8 +31,8 @@ import java.util.List;
 import java.util.Map;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.XMLConfiguration;
-import org.rockyroadshub.planner.lib.Globals;
-import org.rockyroadshub.planner.lib.Initializable;
+import org.rockyroadshub.planner.core.Globals;
+import org.rockyroadshub.planner.core.Initializable;
 import org.rockyroadshub.planner.main.PlannerSystem;
 
 /**
@@ -56,7 +56,7 @@ public class DatabaseConfig implements Initializable {
     private static final String DSPL0 = "tables.table.displays.display";
     private static final String DSPL1 = "tables.table.displays.display(%d)[@%s]";
     
-    public static final String TITLE       = "event";
+    public static final String EVENT       = "event";
     public static final String DESCRIPTION = "description";
     public static final String LOCATION    = "location";
     
@@ -179,9 +179,9 @@ public class DatabaseConfig implements Initializable {
         return displayColMap;
     }
     
-    public int getSize(String size) {
+    public int getSize(String key) {
         return Integer.valueOf(
-                config.configurationAt(PROP).getString(size));
+                config.configurationAt(PROP).getString(key));
     }
     
     public static DatabaseConfig getInstance() {

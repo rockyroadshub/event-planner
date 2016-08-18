@@ -31,6 +31,7 @@ import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import javax.imageio.ImageIO;
@@ -53,8 +54,8 @@ import net.miginfocom.layout.LC;
 import net.miginfocom.swing.MigLayout;
 import org.rockyroadshub.planner.database.DatabaseConfig;
 import org.rockyroadshub.planner.database.DatabaseControl;
-import org.rockyroadshub.planner.lib.DocumentSizeFilter;
-import org.rockyroadshub.planner.lib.Globals;
+import org.rockyroadshub.planner.core.DocumentSizeFilter;
+import org.rockyroadshub.planner.core.Globals;
 
 /**
  *
@@ -65,36 +66,36 @@ import org.rockyroadshub.planner.lib.Globals;
 public class EventForm extends JPanel {
     public static final String NAME = "eventform";
     
-    private static final JLabel       DATE_LABEL        = new JLabel("Date");
+    private final JLabel       dateLabel        = new JLabel("Date");
    
-    private static final JLabel       TITLE_LIMIT       = new JLabel();
-    private static final JLabel       TITLE_LABEL       = new JLabel("Event Title");
-    private static final JTextField   TITLE_INPUT       = new JTextField();
+    private final JLabel       eventLimit       = new JLabel();
+    private final JLabel       eventLabel       = new JLabel("Event Title");
+    private final JTextField   eventInput       = new JTextField();
     
-    private static final JLabel       DESCRIPTION_LIMIT = new JLabel();
-    private static final JLabel       DESCRIPTION_LABEL = new JLabel("Description");
-    private static final JTextArea    DESCRIPTION_INPUT = new JTextArea();
+    private final JLabel       descriptionLimit = new JLabel();
+    private final JLabel       descriptionLabel = new JLabel("Description");
+    private final JTextArea    descriptionInput = new JTextArea();
     
-    private static final JLabel       LOCATION_LIMIT    = new JLabel();
-    private static final JLabel       LOCATION_LABEL    = new JLabel("Location");
-    private static final JTextArea    LOCATION_INPUT    = new JTextArea();
+    private final JLabel       locationLimit    = new JLabel();
+    private final JLabel       locationLabel    = new JLabel("Location");
+    private final JTextArea    locationInput    = new JTextArea();
     
-    private static final JLabel       START_LABEL       = new JLabel("Start");
-    private static final SpinnerModel START_MODEL_H     = new SpinnerNumberModel(0,0,23,1);
-    private static final SpinnerModel START_MODEL_M     = new SpinnerNumberModel(0,0,59,1);    
-    private static final JSpinner     START_HOUR        = new JSpinner(START_MODEL_H);
-    private static final JSpinner     START_MINUTE      = new JSpinner(START_MODEL_M); 
+    private final JLabel       startLabel       = new JLabel("Start (HH:MM)");
+    private final SpinnerModel startModelH      = new SpinnerNumberModel(0,0,23,1);
+    private final SpinnerModel startModelM      = new SpinnerNumberModel(0,0,59,1);    
+    private final JSpinner     startHour        = new JSpinner(startModelH);
+    private final JSpinner     startMinute      = new JSpinner(startModelM); 
     
-    private static final JLabel       END_LABEL         = new JLabel("End");    
-    private static final SpinnerModel END_MODEL_H       = new SpinnerNumberModel(0,0,23,1);
-    private static final SpinnerModel END_MODEL_M       = new SpinnerNumberModel(0,0,59,1);
-    private static final JSpinner     END_HOUR          = new JSpinner(END_MODEL_H);
-    private static final JSpinner     END_MINUTE        = new JSpinner(END_MODEL_M);
+    private final JLabel       endLabel         = new JLabel("End (HH:MM)");    
+    private final SpinnerModel endModelH        = new SpinnerNumberModel(0,0,23,1);
+    private final SpinnerModel endModelM        = new SpinnerNumberModel(0,0,59,1);
+    private final JSpinner     endHour          = new JSpinner(endModelH);
+    private final JSpinner     endMinute        = new JSpinner(endModelM);
     
-    private static final JPanel       MENU              = new JPanel();
-    private static final JButton      HOME              = new JButton();
-    private static final JButton      BACK              = new JButton();
-    private static final JButton      SAVE              = new JButton();
+    private final JPanel       menu             = new JPanel();
+    private final JButton      home             = new JButton();
+    private final JButton      back             = new JButton();
+    private final JButton      save             = new JButton();
    
     private final Font font = new Font("MONOSPACED", 0, 12);    
     
@@ -116,13 +117,13 @@ public class EventForm extends JPanel {
     private int m_;
     private int d_;
 
-    private DefaultStyledDocument document_ttl;
-    private DefaultStyledDocument document_loc;
-    private DefaultStyledDocument document_dsc;
+    private DefaultStyledDocument documentEvt;
+    private DefaultStyledDocument documentLoc;
+    private DefaultStyledDocument documentDsc;
     
-    private String format_ttl;
-    private String format_dsc; 
-    private String format_loc;
+    private String formatEvt;
+    private String formatDsc; 
+    private String formatLoc;
  
     private EventForm() {
         initialize();
@@ -143,80 +144,80 @@ public class EventForm extends JPanel {
    
     private void initComponents() {
         DatabaseConfig config = DatabaseConfig.getInstance();        
-        int t = config.getSize(DatabaseConfig.TITLE);
+        int t = config.getSize(DatabaseConfig.EVENT);
         int d = config.getSize(DatabaseConfig.DESCRIPTION);
         int l = config.getSize(DatabaseConfig.LOCATION);
         
-        document_ttl = new DefaultStyledDocument();
-        document_ttl.setDocumentFilter(new DocumentSizeFilter(t));
-        document_ttl.addDocumentListener(document);
-        format_ttl = getFormat(t);
-        TITLE_INPUT.setFont(font);
-        TITLE_INPUT.setDocument(document_ttl);
-        TITLE_LIMIT.setText(String.format(format_ttl, 0));
+        documentEvt = new DefaultStyledDocument();
+        documentEvt.setDocumentFilter(new DocumentSizeFilter(t));
+        documentEvt.addDocumentListener(document);
+        formatEvt = timeStamp(t);
+        eventInput.setFont(font);
+        eventInput.setDocument(documentEvt);
+        eventLimit.setText(String.format(formatEvt, 0));
         
-        document_dsc = new DefaultStyledDocument();
-        document_dsc.setDocumentFilter(new DocumentSizeFilter(d));
-        document_dsc.addDocumentListener(document);
-        format_dsc = getFormat(d);
-        DESCRIPTION_INPUT.setFont(font);
-        DESCRIPTION_INPUT.setDocument(document_dsc);
-        DESCRIPTION_LIMIT.setText(String.format(format_dsc, 0));
-        DESCRIPTION_INPUT.setLineWrap(true);
+        documentDsc = new DefaultStyledDocument();
+        documentDsc.setDocumentFilter(new DocumentSizeFilter(d));
+        documentDsc.addDocumentListener(document);
+        formatDsc = timeStamp(d);
+        descriptionInput.setFont(font);
+        descriptionInput.setDocument(documentDsc);
+        descriptionLimit.setText(String.format(formatDsc, 0));
+        descriptionInput.setLineWrap(true);
        
-        document_loc = new DefaultStyledDocument();
-        document_loc.setDocumentFilter(new DocumentSizeFilter(l));
-        document_loc.addDocumentListener(document);
-        format_loc = getFormat(l);
-        LOCATION_INPUT.setFont(font);
-        LOCATION_INPUT.setDocument(document_loc);
-        LOCATION_LIMIT.setText(String.format(format_loc, 0));
-        LOCATION_INPUT.setLineWrap(true);
+        documentLoc = new DefaultStyledDocument();
+        documentLoc.setDocumentFilter(new DocumentSizeFilter(l));
+        documentLoc.addDocumentListener(document);
+        formatLoc = timeStamp(l);
+        locationInput.setFont(font);
+        locationInput.setDocument(documentLoc);
+        locationLimit.setText(String.format(formatLoc, 0));
+        locationInput.setLineWrap(true);
 
-        setAllowsInvalid(START_HOUR);
-        setAllowsInvalid(START_MINUTE);
-        setAllowsInvalid(END_HOUR);
-        setAllowsInvalid(END_MINUTE);
+        setAllowsInvalid(startHour);
+        setAllowsInvalid(startMinute);
+        setAllowsInvalid(endHour);
+        setAllowsInvalid(endMinute);
         
-        MENU.setLayout(new MigLayout());
-        MENU.add(HOME, "h 32!, w 32!");
-        MENU.add(BACK, "h 32!, w 32!");
-        MENU.add(SAVE, "h 32!, w 32!");
+        menu.setLayout(new MigLayout());
+        menu.add(home, "h 32!, w 32!");
+        menu.add(back, "h 32!, w 32!");
+        menu.add(save, "h 32!, w 32!");
         
-        HOME.setToolTipText(HOME0);
-        HOME.setName(CalendarPane.NAME);
-        HOME.addActionListener(action);
-        BACK.setToolTipText(BACK0);
-        BACK.setName(EventsDisplay.NAME);
-        BACK.addActionListener(action);
-        SAVE.setToolTipText(SAVE0);
-        SAVE.addActionListener(action);
+        home.setToolTipText(HOME0);
+        home.setName(CalendarPane.NAME);
+        home.addActionListener(action);
+        back.setToolTipText(BACK0);
+        back.setName(EventsDisplay.NAME);
+        back.addActionListener(action);
+        save.setToolTipText(SAVE0);
+        save.addActionListener(action);
         
         try {
-            initIcon(HOME, "src/Home.png");
-            initIcon(BACK, "src/Back.png");
-            initIcon(SAVE, "src/Save.png");
+            initIcon(home, "src/Home.png");
+            initIcon(back, "src/Back.png");
+            initIcon(save, "src/Save.png");
         } catch (IOException ex) {}
     }
    
     private void addComponents() {
-        add(DATE_LABEL, "h 32!");
-        add(MENU, "growx, wrap");
-        add(TITLE_LABEL, "h 32!");
-        add(TITLE_LIMIT, "h 32!, align right, wrap");
-        add(TITLE_INPUT, "growx, h 32!, span 3, wrap");
-        add(LOCATION_LABEL, "h 32!");
-        add(LOCATION_LIMIT, "h 32!, align right, wrap");
-        add(LOCATION_INPUT, "growx, h 150!, span 3, wrap"); 
-        add(DESCRIPTION_LABEL, "h 32!");
-        add(DESCRIPTION_LIMIT, "h 32!, align right, wrap");
-        add(DESCRIPTION_INPUT, "growx, h 150!, span 3, wrap");
-        add(START_LABEL, "h 32!, growx");
-        add(START_HOUR, "h 32!, w 64!");
-        add(START_MINUTE, "h 32!, w 64!, wrap");
-        add(END_LABEL, "h 32!, growx");
-        add(END_HOUR, "h 32!, w 64!");
-        add(END_MINUTE, "h 32!, w 64!, wrap");
+        add(dateLabel, "h 32!");
+        add(menu, "growx, wrap");
+        add(eventLabel, "h 32!");
+        add(eventLimit, "h 32!, align right, wrap");
+        add(eventInput, "growx, h 32!, span 3, wrap");
+        add(locationLabel, "h 32!");
+        add(locationLimit, "h 32!, align right, wrap");
+        add(locationInput, "growx, h 150!, span 3, wrap"); 
+        add(descriptionLabel, "h 32!");
+        add(descriptionLimit, "h 32!, align right, wrap");
+        add(descriptionInput, "growx, h 150!, span 3, wrap");
+        add(startLabel, "h 32!, growx");
+        add(startHour, "h 32!, w 64!");
+        add(startMinute, "h 32!, w 64!, wrap");
+        add(endLabel, "h 32!, growx");
+        add(endHour, "h 32!, w 64!");
+        add(endMinute, "h 32!, w 64!, wrap");
     }
    
     private String formatDate(String m, String d, String y) {
@@ -231,14 +232,14 @@ public class EventForm extends JPanel {
     
     private void update(DocumentEvent e) {
         DefaultStyledDocument doc = (DefaultStyledDocument)e.getDocument();
-        if(doc.equals(document_ttl)) {
-            update0(TITLE_LIMIT, format_ttl, doc);
+        if(doc.equals(documentEvt)) {
+            update0(eventLimit, formatEvt, doc);
         }
-        else if(doc.equals(document_loc)) {
-            update0(LOCATION_LIMIT, format_loc, doc);
+        else if(doc.equals(documentLoc)) {
+            update0(locationLimit, formatLoc, doc);
         }
-        else if(doc.equals(document_dsc)) {
-            update0(DESCRIPTION_LIMIT, format_dsc, doc);
+        else if(doc.equals(documentDsc)) {
+            update0(descriptionLimit, formatDsc, doc);
         }
     }
       
@@ -246,7 +247,7 @@ public class EventForm extends JPanel {
         limit.setText(String.format(format, doc.getLength()));
     }
     
-    private String getFormat(int limit) {
+    private String timeStamp(int limit) {
         StringBuilder bld = new StringBuilder("(%0");
         int digits = (int)(Math.log10(limit)+1);
         bld.append(digits).append("d/").append(limit).append(")");
@@ -276,12 +277,17 @@ public class EventForm extends JPanel {
     }
     
     private void onSave() {
-        event       = TITLE_INPUT.getText();
-        description = DESCRIPTION_INPUT.getText();
-        location    = LOCATION_INPUT.getText();
+        event       = eventInput.getText();
+        description = descriptionInput.getText();
+        location    = locationInput.getText();
         
-        start = String.format("%d.%02d.00", START_MODEL_H.getValue(), START_MODEL_M.getValue());
-        end   = String.format("%d.%02d.00", END_MODEL_H.getValue(), END_MODEL_M.getValue());
+        int sH = (int)startModelH.getValue();
+        int sM = (int)startModelM.getValue();
+        int eH = (int)endModelH.getValue();
+        int eM = (int)endModelM.getValue();
+        
+        start = String.format("%d.%02d.00", sH, sM);
+        end   = String.format("%d.%02d.00", eH, eM);
         
         DatabaseControl dtb = DatabaseControl.getInstance();
         
@@ -292,9 +298,7 @@ public class EventForm extends JPanel {
             int    q = JOptionPane.OK_CANCEL_OPTION;
             int    o = JOptionPane.OK_OPTION;
             if(JOptionPane.showConfirmDialog(f, m, t, q) == o) {
-//                Event evt = Event.getInstance();
                 dtb.insert(event, description, location, date, year, month, day, start, end);
-//                evt.set(event, description, location, date, year, month, day, start, end);
                 Panel.getInstance().show(EventsDisplay.NAME);
                 EventsDisplay.getInstance().refresh(y_, m_, d_);
                 refresh();
@@ -307,7 +311,7 @@ public class EventForm extends JPanel {
         this.year  = String.valueOf(year);
         this.month = CalendarPane.MONTHS[month];
         this.day   = String.valueOf(day);
-        DATE_LABEL.setText(formatDate(this.month, this.day ,this.year));
+        dateLabel.setText(formatDate(this.month, this.day ,this.year));
         
         GregorianCalendar cal = new GregorianCalendar(year, month, day);            
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
@@ -329,13 +333,13 @@ public class EventForm extends JPanel {
     }
     
     private void refresh() {
-        TITLE_INPUT.setText("");
-        DESCRIPTION_INPUT.setText("");
-        LOCATION_INPUT.setText("");
-        START_HOUR.setValue(0);
-        START_MINUTE.setValue(0);      
-        END_HOUR.setValue(0);          
-        END_MINUTE.setValue(0);        
+        eventInput.setText("");
+        descriptionInput.setText("");
+        locationInput.setText("");
+        startHour.setValue(0);
+        startMinute.setValue(0);      
+        endHour.setValue(0);          
+        endMinute.setValue(0);        
     }
     
     public static EventForm getInstance() {

@@ -1,4 +1,4 @@
-package org.rockyroadshub.planner.lib;
+package org.rockyroadshub.planner.core;
 
 /*
  * Copyright (c) 1995, 2008, Oracle and/or its affiliates. All rights reserved.
