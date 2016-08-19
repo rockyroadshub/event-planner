@@ -26,8 +26,6 @@ package org.rockyroadshub.planner.core;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 import org.rockyroadshub.planner.gui.CalendarPane;
 
 /**
@@ -43,9 +41,7 @@ public class Event {
     private String month;
     private String day;
     private String dateLabel;
-            
-    private final Map<String, String> eventData = new HashMap<>();
-    
+                
     private Event(){
         initialize();
     }
@@ -64,9 +60,9 @@ public class Event {
         Date date0 = calendar.getTime();
 
         this.date  = dateFormat.format(date0);       
-        this.year  = String.valueOf(calendar.get(Calendar.YEAR));
+        this.year  = String.valueOf(year);
         this.month = CalendarPane.MONTHS[month];
-        this.day   = String.valueOf(calendar.get(Calendar.DAY_OF_MONTH));
+        this.day   = String.valueOf(day);
         
         dateLabel = formatDate(this.month, this.day, this.year);
     }
@@ -89,10 +85,6 @@ public class Event {
     
     public String getDateLabel() {
         return dateLabel;
-    }
-    
-    public Map<String, String> getData() {
-        return eventData;
     }
     
     public static Event getInstance() {

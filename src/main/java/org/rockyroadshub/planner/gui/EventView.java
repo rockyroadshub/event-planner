@@ -50,7 +50,7 @@ import net.miginfocom.layout.LC;
 import net.miginfocom.swing.MigLayout;
 import org.rockyroadshub.planner.database.DatabaseConfig;
 import org.rockyroadshub.planner.database.DatabaseControl;
-import org.rockyroadshub.planner.core.DocumentSizeFilter;
+import org.rockyroadshub.planner.core.TextLimiter;
 import org.rockyroadshub.planner.core.Event;
 import org.rockyroadshub.planner.core.Globals;
 
@@ -145,7 +145,7 @@ public class EventView extends JPanel {
         int l = config.getSize(DatabaseConfig.LOCATION);
         
         documentEvt = new DefaultStyledDocument();
-        documentEvt.setDocumentFilter(new DocumentSizeFilter(e));
+        documentEvt.setDocumentFilter(new TextLimiter(e));
         documentEvt.addDocumentListener(document);
         formatEvt = stamp(e);
         eventInput.setFont(font);
@@ -153,7 +153,7 @@ public class EventView extends JPanel {
         eventLimit.setText(String.format(formatEvt, 0));
         
         documentDsc = new DefaultStyledDocument();
-        documentDsc.setDocumentFilter(new DocumentSizeFilter(d));
+        documentDsc.setDocumentFilter(new TextLimiter(d));
         documentDsc.addDocumentListener(document);
         formatDsc = stamp(d);
         descriptionInput.setFont(font);
@@ -162,7 +162,7 @@ public class EventView extends JPanel {
         descriptionInput.setLineWrap(true);
        
         documentLoc = new DefaultStyledDocument();
-        documentLoc.setDocumentFilter(new DocumentSizeFilter(l));
+        documentLoc.setDocumentFilter(new TextLimiter(l));
         documentLoc.addDocumentListener(document);
         formatLoc = stamp(l);
         locationInput.setFont(font);
