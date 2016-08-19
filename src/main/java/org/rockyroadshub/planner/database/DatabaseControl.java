@@ -24,7 +24,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import org.rockyroadshub.planner.core.Initializable;
-import org.rockyroadshub.planner.main.PlannerSystem;
+import org.rockyroadshub.planner.core.InitializableControl;
 
 /**
  *
@@ -33,6 +33,8 @@ import org.rockyroadshub.planner.main.PlannerSystem;
  * @since 2016-08-13
  */
 public class DatabaseControl implements Initializable {
+    private static final int PRIORITY = 2;
+    
     private static final String CREATE = "CREATE TABLE %s (%s)";
     private static final String INSERT = "INSERT INTO %s (%s) VALUES (%s)";
         
@@ -80,6 +82,11 @@ public class DatabaseControl implements Initializable {
         try {
             build();
         }catch (SQLException ex) {}
+    }
+    
+    @Override
+    public final int getPriority() {
+        return PRIORITY;
     }
     
     @LogExceptions
@@ -275,7 +282,7 @@ public class DatabaseControl implements Initializable {
         private static final DatabaseControl INSTANCE = new DatabaseControl();
         
         static {
-            PlannerSystem.addToQueue(2, INSTANCE);
+            InitializableControl.addToQueue(INSTANCE);
         }
     }
 }

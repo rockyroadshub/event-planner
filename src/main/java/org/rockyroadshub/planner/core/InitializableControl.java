@@ -13,10 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.rockyroadshub.planner.main;
+package org.rockyroadshub.planner.core;
 
 import java.util.Map;
-import org.rockyroadshub.planner.core.Initializable;
 
 /**
  *
@@ -24,13 +23,13 @@ import org.rockyroadshub.planner.core.Initializable;
  * @version 0.0.0
  * @since 2016-08-13
  */
-public class PlannerSystem {
+public class InitializableControl {
     
-    private PlannerSystem() {}
+    private InitializableControl() {}
     
-    public static void addToQueue(int priority, Initializable mem) {
+    public static void addToQueue(Initializable mem) {
         Map<Integer, Initializable> queue = Initializable.QUEUE;
-        queue.put(priority, mem);
+        queue.put(mem.getPriority(), mem);
     }
     
     public static void initialize() {

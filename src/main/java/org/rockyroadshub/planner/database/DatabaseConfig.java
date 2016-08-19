@@ -25,7 +25,7 @@ import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.XMLConfiguration;
 import org.rockyroadshub.planner.core.Globals;
 import org.rockyroadshub.planner.core.Initializable;
-import org.rockyroadshub.planner.main.PlannerSystem;
+import org.rockyroadshub.planner.core.InitializableControl;
 
 /**
  *
@@ -34,6 +34,8 @@ import org.rockyroadshub.planner.main.PlannerSystem;
  * @since 2016-08-13
  */
 public class DatabaseConfig implements Initializable {
+    private static final int PRIORITY = 1;
+    
     private final XMLConfiguration config = new XMLConfiguration();
     
     private static final String DATABASE_PROPERTIES = "src/database.xml";
@@ -80,6 +82,11 @@ public class DatabaseConfig implements Initializable {
         initColumnsN();
         initColumnsN0();     
         initDisplayColumns();
+    }
+    
+    @Override
+    public final int getPriority() {
+        return PRIORITY;
     }
     
     @LogExceptions
@@ -184,7 +191,7 @@ public class DatabaseConfig implements Initializable {
         private static final DatabaseConfig INSTANCE = new DatabaseConfig();
         
         static {
-            PlannerSystem.addToQueue(1, INSTANCE);
+            InitializableControl.addToQueue(INSTANCE);
         }
     }
 }

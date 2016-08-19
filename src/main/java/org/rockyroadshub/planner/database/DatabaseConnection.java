@@ -21,7 +21,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import org.rockyroadshub.planner.core.Globals;
 import org.rockyroadshub.planner.core.Initializable;
-import org.rockyroadshub.planner.main.PlannerSystem;
+import org.rockyroadshub.planner.core.InitializableControl;
 
 /**
  *
@@ -30,6 +30,8 @@ import org.rockyroadshub.planner.main.PlannerSystem;
  * @since 2016-08-13
  */
 public class DatabaseConnection implements Initializable {
+    private static final int PRIORITY = 0;
+    
     private static final String PROTOCOL = "jdbc:derby:%s;%s=true";
     private Connection connection;
 
@@ -48,6 +50,11 @@ public class DatabaseConnection implements Initializable {
         {
             throw new RuntimeException(ex);
         }
+    }
+    
+    @Override
+    public final int getPriority() {
+        return PRIORITY;
     }
     
     @LogExceptions
@@ -80,7 +87,7 @@ public class DatabaseConnection implements Initializable {
         private static final DatabaseConnection INSTANCE = new DatabaseConnection();
         
         static {
-            PlannerSystem.addToQueue(0, INSTANCE);
+            InitializableControl.addToQueue(INSTANCE);
         }
     }
 }
