@@ -16,5 +16,6 @@ To do's
 - Overview panel
 - System tray (Windows)
 - Error handling
+- Java Docs
 
 [Please visit Rocky Roads Hub!](https://rockyroadshub.wordpress.com)
