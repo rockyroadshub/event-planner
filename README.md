@@ -2,7 +2,7 @@ Event Planner
 --------------------------------------
 Copyright 2016 Arnell Christoper D. Dalid  
 
-Event Planner is a simple application that saves data into a database.
+Event Planner is a simple application that saves data into a database.  
 This software is licensed under the Apache License,  
 Version 2.0 (the "License"). See LICENSE.txt
 
