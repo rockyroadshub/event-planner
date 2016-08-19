@@ -43,9 +43,7 @@ public class Event {
     private String month;
     private String day;
     private String dateLabel;
-    
-    private final Integer[] param = new Integer[3];
-        
+            
     private final Map<String, String> eventData = new HashMap<>();
     
     private Event(){
@@ -64,10 +62,6 @@ public class Event {
         calendar.set(year, month, day);
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         Date date0 = calendar.getTime();
-        
-        param[0] = year;
-        param[1] = month;
-        param[2] = day;
 
         this.date  = dateFormat.format(date0);       
         this.year  = String.valueOf(calendar.get(Calendar.YEAR));
@@ -91,10 +85,6 @@ public class Event {
     
     public String getDay() {
         return day;
-    }
-    
-    public int getParam(int i) {
-        return param[i];
     }
     
     public String getDateLabel() {

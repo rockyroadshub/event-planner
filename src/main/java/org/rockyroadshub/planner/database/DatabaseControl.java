@@ -52,6 +52,7 @@ public class DatabaseControl implements Initializable {
     private String keyName;
     private List<String> columnsNList = new ArrayList<>();
     private final List<String> dayList = new ArrayList<>();
+    private final List<String> evtList = new ArrayList<>();
     private String[] dataList;
     
     private String insertFormat;
@@ -184,6 +185,55 @@ public class DatabaseControl implements Initializable {
         return dataList;
     }
 
+    /**
+     * 
+     * @param c Column
+     * @param v Value
+     * @param d Data to get
+     * @return
+     * @throws SQLException 
+     */
+    @LogExceptions
+    public List<String> select(String c, String v, String d) 
+            throws SQLException 
+    {
+        evtList.clear();
+        try(Statement stmt = connection.createStatement()) {
+            String statement = String.format(selectFormat1,c,v);
+            try(ResultSet rs = stmt.executeQuery(statement)) {
+                while(rs.next()) {
+                    evtList.add(rs.getString(d));
+                }
+            }
+        }
+        finally {
+            return evtList;
+        }
+    }
+    
+    /**
+     * 
+     * @param c Column
+     * @param v Value
+     * @return
+     * @throws SQLException 
+     */
+    @LogExceptions
+    public int getRowCount(String c, String v) 
+            throws SQLException 
+    {
+        int i = 0;
+        try(Statement stmt = connection.createStatement()) {
+            String statement = String.format(selectFormat1,c,v);
+            try(ResultSet rs = stmt.executeQuery(statement)) {
+                while(rs.next()) {
+                    i++;
+                }
+            }
+        }
+        return i;
+    }
+    
     /**
      * 
      * @param c0 Column 1

@@ -30,7 +30,6 @@ import org.rockyroadshub.planner.gui.Frame;
 public class SystemInit {    
     static {
         System.setProperty("log4j.configurationFile", "lib/log4j2.xml");
-        
         DatabaseConnection.getInstance().initialize();
         DatabaseConfig.getInstance().initialize();
         DatabaseControl.getInstance().initialize();

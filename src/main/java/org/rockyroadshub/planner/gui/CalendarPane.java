@@ -88,7 +88,6 @@ public class CalendarPane extends JPanel {
     private static final String DAYS_DIMENSION = "h 60!, w 72!";
     private static final String COMBO_DIMENSION = "h 35!, w 200!";
     private static final String SPACING = "gapright 35!";
-    private static final String FORMAT = "%s %d, %d";
         
     private CalendarPane() {
         initialize();
@@ -193,7 +192,7 @@ public class CalendarPane extends JPanel {
         int delta = start - 1;
         
         DatabaseControl dtb = DatabaseControl.getInstance();
-        List<String> list = null;
+        List<String> dayList = null;
         String _m  = "EVENT_MONTH";
         String _m0 = MONTHS[m];
         String _y  = "EVENT_YEAR";
@@ -202,7 +201,7 @@ public class CalendarPane extends JPanel {
         String _d  = "EVENT_DAY";
         
         try {
-            list = dtb.select(_m,_m0,_y,_y0,_o,_d);
+            dayList = dtb.select(_m,_m0,_y,_y0,_o,_d);            
         }catch (SQLException ex) {}
         
         for(int i = start; i < end; i++) {
@@ -216,8 +215,19 @@ public class CalendarPane extends JPanel {
                 button.setForeground(CURRENT_DAY_COLOR);
             }
             
-            if(list != null && list.contains(String.valueOf(current))) {
+            if(dayList != null && dayList.contains(String.valueOf(current))) {
                 button.setBackground(SCHEDULE_COLOR);
+                int rows = 0;
+                try {
+                    rows = dtb.getRowCount("EVENT_DATE", 
+                    String.format("%d-%02d-%02d", y, m+1, i));
+                } catch (SQLException ex) {}
+                finally {
+                    if(rows != 0) {
+                        button.setToolTipText(String.format(
+                        "You have %d event(s) registered on this date.", rows));
+                    }
+                }
             }
         }
     }
@@ -257,7 +267,7 @@ public class CalendarPane extends JPanel {
         return (int)yearCombo.getSelectedItem();
     }
     
-    public final void refresh() {
+    public void refresh() {
         clear();
         int y = getSelectedYear();
         int m = getSelectedMonth();

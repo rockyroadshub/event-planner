@@ -48,9 +48,9 @@ import javax.swing.table.DefaultTableModel;
 import net.miginfocom.swing.MigLayout;
 import org.rockyroadshub.planner.core.Event;
 import org.rockyroadshub.planner.database.DatabaseConfig;
-import org.rockyroadshub.planner.database.DatabaseConnection;
 import org.rockyroadshub.planner.database.DatabaseControl;
 import org.rockyroadshub.planner.core.Globals;
+import org.rockyroadshub.planner.database.DatabaseConnection;
 
 /**
  *
@@ -60,38 +60,34 @@ import org.rockyroadshub.planner.core.Globals;
  */
 public class EventsDisplay extends JPanel {
     public static final String NAME = "eventsdisplay";
+    
+    private final JLabel             eventLabel = new JLabel();
+    private final JPanel             menu       = new JPanel();
+    private final JButton            add        = new JButton();
+    private final JButton            home       = new JButton();
+    private final JButton            view       = new JButton();
+    private final JButton            delete     = new JButton();
    
-    private static final JLabel LBL_TL = new JLabel();
-
-    private final JTable table = new JTable();
-    private final JScrollPane scroll = new JScrollPane(table);
-    DefaultTableModel tableModel = new DefaultTableModel() {
+    private final JTable            table      = new JTable();
+    private final JScrollPane       scroll     = new JScrollPane(table);
+    private final DefaultTableModel tableModel = new DefaultTableModel() {
         @Override
         public boolean isCellEditable(int row, int column){
             return false;
         }
     };
     
-    private static final JPanel      PNL_MU = new JPanel();
-    private static final JButton     BTN_AD = new JButton();
-    private static final JButton     BTN_HM = new JButton();
-    private static final JButton     BTN_VW = new JButton();
-    private static final JButton     BTN_DE = new JButton();
-   
     private static final int    FONT_SIZE  = 40;
     private static final int    FONT_STYLE = Font.BOLD;
     private static final String FONT_NAME  = "Calibri";
     private static final String BUTTON_DIMENSIONS = "h 32!, w 32!";
     private static final String GAP_RIGHT = "gapright 20!";
     
-    private static final String TOOLTIP_HOME = "Home";
-    private static final String TOOLTIP_ADD  = "Add";
-    private static final String TOOLTIP_EDIT = "View";
-    private static final String TOOLTIP_DELETE = "Delete";
-    
-    private int year;
-    private int month;
-    private int day;
+    private static final String HOME0   = "Home";
+    private static final String ADD0    = "Add";
+    private static final String VIEW0   = "View";
+    private static final String DELETE0 = "Delete";
+
     private Object[] rowData;
    
     private EventsDisplay() { 
@@ -115,50 +111,51 @@ public class EventsDisplay extends JPanel {
         rowData = new Object[columns.size()];
         table.setModel(tableModel);
 
-        add(PNL_MU, BorderLayout.NORTH);
+        add(menu, BorderLayout.NORTH);
         add(scroll, BorderLayout.CENTER);
     }
    
     public void setTitleLabel(String l) {
-        LBL_TL.setText(l);
+        eventLabel.setText(l);
     }
    
     private void initTitle() {
-        LBL_TL.setFont(new Font(FONT_NAME, FONT_STYLE, FONT_SIZE));
+        eventLabel.setFont(new Font(FONT_NAME, FONT_STYLE, FONT_SIZE));
     }
    
     private void initMenu() {
-        PNL_MU.setOpaque(false);
-        PNL_MU.setLayout(new MigLayout());
-        PNL_MU.add(LBL_TL, GAP_RIGHT);
-        PNL_MU.add(BTN_HM, BUTTON_DIMENSIONS);
-        PNL_MU.add(BTN_AD, BUTTON_DIMENSIONS);
-        PNL_MU.add(BTN_VW, BUTTON_DIMENSIONS);
-        PNL_MU.add(BTN_DE, BUTTON_DIMENSIONS);
+        menu.setOpaque(false);
+        menu.setLayout(new MigLayout());
+        menu.add(eventLabel, GAP_RIGHT);
+        menu.add(home, BUTTON_DIMENSIONS);
+        menu.add(add, BUTTON_DIMENSIONS);
+        menu.add(view, BUTTON_DIMENSIONS);
+        menu.add(delete, BUTTON_DIMENSIONS);
     }
     
     private void initButtons() {
         try {
-            initIcon(BTN_HM, "src/Home.png");
-            initIcon(BTN_AD, "src/Add.png");
-            initIcon(BTN_VW, "src/View.png");
-            initIcon(BTN_DE, "src/Delete.png");
+            initIcon(home,  "src/Home.png");
+            initIcon(add,   "src/Add.png");
+            initIcon(view,  "src/View.png");
+            initIcon(delete,"src/Delete.png");
         }catch (IOException ex) {}
         
-        BTN_HM.setToolTipText(TOOLTIP_HOME);
-        BTN_HM.setName(CalendarPane.NAME);
-        BTN_HM.addActionListener(action);
+        home.setToolTipText(HOME0);
+        home.setName(CalendarPane.NAME);
+        home.addActionListener(action);
                 
-        BTN_AD.setToolTipText(TOOLTIP_ADD);
-        BTN_AD.setName(EventForm.NAME);
-        BTN_AD.addActionListener(action);
+        add.setToolTipText(ADD0);
+        add.setName(EventForm.NAME);
+        add.addActionListener(action);
         
-        BTN_VW.setToolTipText(TOOLTIP_EDIT);
-        BTN_VW.addActionListener(view);
-        BTN_VW.setName(EventView.NAME);
+        view.setToolTipText(VIEW0);
+        view.setName(EventView.NAME);
+        view.addActionListener(action);
         
-        BTN_DE.setToolTipText(TOOLTIP_DELETE);
-        BTN_DE.addActionListener(delete);
+        delete.setToolTipText(DELETE0);
+        delete.setName(DELETE0);
+        delete.addActionListener(action);
     }
    
     @LogExceptions
@@ -172,21 +169,36 @@ public class EventsDisplay extends JPanel {
         onTrigger(button);
     };
     
-    private final ActionListener view = (ActionEvent ae) -> {    
-        onView();
-    };
-    
     private void onTrigger(JButton button) {
-        String name  = button.getName();
-        Panel.getInstance().show(name);
-        if(name.equals(CalendarPane.NAME)) {
-            CalendarPane.getInstance().refresh();
+        String name  = button.getName(); 
+        switch (name) {
+            case EventView.NAME:
+                onView();
+                break;
+            case DELETE0:
+                onDelete();
+                break;
+            default:
+                CalendarPane.getInstance().refresh();
+                Panel.getInstance().show(name);
+                break;
         }
     }
-    
-    private final ActionListener delete = (ActionEvent ae) -> {
-        onDelete();
-    };
+
+    private void onView() {
+        int i = getID();
+        if(i != -1) {
+            Panel.getInstance().show(EventView.NAME);
+            EventView v = EventView.getInstance();
+            v.setID(i);
+            v.enableGUI(false);
+            
+            try {
+                v.set(DatabaseControl.getInstance().select(i));
+            } 
+            catch (SQLException ex) {}
+        }
+    }
     
     private void onDelete() {
         DatabaseControl dtb = DatabaseControl.getInstance();
@@ -203,8 +215,7 @@ public class EventsDisplay extends JPanel {
                     refresh();
                 }
             }
-        } catch (SQLException ex) {
-        }
+        } catch (SQLException ex) {}
     }
     
     private int getID() {
@@ -218,52 +229,34 @@ public class EventsDisplay extends JPanel {
     }
     
     public void refresh() {
-        DatabaseConnection dtb = DatabaseConnection.getInstance();
-        Connection connection = dtb.getConnection();
         Event event = Event.getInstance();
         String date = event.getDate();
         
         tableModel.getDataVector().removeAllElements();
         tableModel.fireTableDataChanged();
         
+        DatabaseConnection  dtb         = DatabaseConnection.getInstance();
+        DatabaseConfig      config      = DatabaseConfig.getInstance();
+        List<String>        displayList = config.getDisplayColumns();
+        Map<String, String> displayMap  = config.getDisplayColMap();
+        String              tableName   = config.getTableName();
+        Connection          connection  = dtb.getConnection();
+        
         try(Statement stmt = connection.createStatement()) {
-            String statement = 
-            String.format("SELECT * FROM EVENTS WHERE EVENT_DATE = '%s'", date);
-            List<String> list = DatabaseConfig.getInstance().getDisplayColumns();
-            Map<String, String> map = DatabaseConfig.getInstance().getDisplayColMap();
+            String statement = String.format(
+                    "SELECT * FROM %s WHERE EVENT_DATE = '%s'", tableName, date);
             try(ResultSet rs = stmt.executeQuery(statement)) {
                 while(rs.next()) {
-                    int j = 0;
-                    for(String i : list) {
-                        String data = rs.getString(map.get(i));
-                        rowData[j] = data;
-                        j++;
+                    int i = 0;
+                    for(String c : displayList) {
+                        String data = rs.getString(displayMap.get(c));
+                        rowData[i] = data;
+                        i++;
                     }
                     tableModel.addRow(rowData);
-                    table.getSelectedRow();
                 }
             }
-        } 
-        catch (SQLException ex) {
-            ex.printStackTrace(System.out);
-        }
-    }
-
-    private void onView() {
-        int i = getID();
-        if(i != -1) {
-            Panel.getInstance().show(EventView.NAME);
-            EventView view_ = EventView.getInstance();
-            view_.setID(i);
-            view_.enableGUI(false);
-
-            tableModel.getDataVector().removeAllElements();
-            tableModel.fireTableDataChanged();
-            try {
-                view_.set(DatabaseControl.getInstance().select(i));
-            } 
-            catch (SQLException ex) {}
-        }
+        } catch (SQLException ex) {}
     }
        
     public static EventsDisplay getInstance() {

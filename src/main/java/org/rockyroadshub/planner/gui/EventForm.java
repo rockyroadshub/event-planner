@@ -109,10 +109,6 @@ public class EventForm extends JPanel {
     private String day;
     private String start;
     private String end;
-    
-    private int y_;
-    private int m_;
-    private int d_;
 
     private DefaultStyledDocument documentEvt;
     private DefaultStyledDocument documentLoc;
@@ -148,7 +144,7 @@ public class EventForm extends JPanel {
         documentEvt = new DefaultStyledDocument();
         documentEvt.setDocumentFilter(new DocumentSizeFilter(t));
         documentEvt.addDocumentListener(document);
-        formatEvt = timeStamp(t);
+        formatEvt = stamp(t);
         eventInput.setFont(font);
         eventInput.setDocument(documentEvt);
         eventLimit.setText(String.format(formatEvt, 0));
@@ -156,7 +152,7 @@ public class EventForm extends JPanel {
         documentDsc = new DefaultStyledDocument();
         documentDsc.setDocumentFilter(new DocumentSizeFilter(d));
         documentDsc.addDocumentListener(document);
-        formatDsc = timeStamp(d);
+        formatDsc = stamp(d);
         descriptionInput.setFont(font);
         descriptionInput.setDocument(documentDsc);
         descriptionLimit.setText(String.format(formatDsc, 0));
@@ -165,16 +161,16 @@ public class EventForm extends JPanel {
         documentLoc = new DefaultStyledDocument();
         documentLoc.setDocumentFilter(new DocumentSizeFilter(l));
         documentLoc.addDocumentListener(document);
-        formatLoc = timeStamp(l);
+        formatLoc = stamp(l);
         locationInput.setFont(font);
         locationInput.setDocument(documentLoc);
         locationLimit.setText(String.format(formatLoc, 0));
         locationInput.setLineWrap(true);
 
-        setAllowsInvalid(startHour);
-        setAllowsInvalid(startMinute);
-        setAllowsInvalid(endHour);
-        setAllowsInvalid(endMinute);
+        setupSpinner(startHour);
+        setupSpinner(startMinute);
+        setupSpinner(endHour);
+        setupSpinner(endMinute);
         
         menu.setLayout(new MigLayout());
         menu.add(home, "h 32!, w 32!");
@@ -216,10 +212,6 @@ public class EventForm extends JPanel {
         add(endHour, "h 32!, w 64!");
         add(endMinute, "h 32!, w 64!, wrap");
     }
-   
-    private String formatDate(String m, String d, String y) {
-         return String.format("%s %s, %s", m, d, y);
-    }
     
     private final DocumentListener document = new DocumentListener() {
         @Override public void insertUpdate(DocumentEvent e) {update(e);}
@@ -244,14 +236,14 @@ public class EventForm extends JPanel {
         limit.setText(String.format(format, doc.getLength()));
     }
     
-    private String timeStamp(int limit) {
+    private String stamp(int limit) {
         StringBuilder bld = new StringBuilder("(%0");
         int digits = (int)(Math.log10(limit)+1);
         bld.append(digits).append("d/").append(limit).append(")");
         return bld.toString();
     }
     
-    private void setAllowsInvalid(JSpinner s) {
+    private void setupSpinner(JSpinner s) {
         JFormattedTextField txt = ((JSpinner.NumberEditor)s.getEditor()).getTextField();
         ((NumberFormatter)txt.getFormatter()).setAllowsInvalid(false);
     }
@@ -284,10 +276,6 @@ public class EventForm extends JPanel {
         year  = evt.getYear();
         month = evt.getMonth();
         day   = evt.getDay();
-        
-        y_ = evt.getParam(0);
-        m_ = evt.getParam(1);
-        d_ = evt.getParam(2);
         
         int sH = (int)startModelH.getValue();
         int sM = (int)startModelM.getValue();

@@ -112,10 +112,6 @@ public class EventView extends JPanel {
     private String day;
     private String start;
     private String end;
-    
-    private int y_;
-    private int m_;
-    private int d_;
 
     private DefaultStyledDocument documentEvt;
     private DefaultStyledDocument documentLoc;
@@ -151,7 +147,7 @@ public class EventView extends JPanel {
         documentEvt = new DefaultStyledDocument();
         documentEvt.setDocumentFilter(new DocumentSizeFilter(e));
         documentEvt.addDocumentListener(document);
-        formatEvt = timeStamp(e);
+        formatEvt = stamp(e);
         eventInput.setFont(font);
         eventInput.setDocument(documentEvt);
         eventLimit.setText(String.format(formatEvt, 0));
@@ -159,7 +155,7 @@ public class EventView extends JPanel {
         documentDsc = new DefaultStyledDocument();
         documentDsc.setDocumentFilter(new DocumentSizeFilter(d));
         documentDsc.addDocumentListener(document);
-        formatDsc = timeStamp(d);
+        formatDsc = stamp(d);
         descriptionInput.setFont(font);
         descriptionInput.setDocument(documentDsc);
         descriptionLimit.setText(String.format(formatDsc, 0));
@@ -168,7 +164,7 @@ public class EventView extends JPanel {
         documentLoc = new DefaultStyledDocument();
         documentLoc.setDocumentFilter(new DocumentSizeFilter(l));
         documentLoc.addDocumentListener(document);
-        formatLoc = timeStamp(l);
+        formatLoc = stamp(l);
         locationInput.setFont(font);
         locationInput.setDocument(documentLoc);
         locationLimit.setText(String.format(formatLoc, 0));
@@ -247,7 +243,7 @@ public class EventView extends JPanel {
         limit.setText(String.format(format, doc.getLength()));
     }
     
-    private String timeStamp(int limit) {
+    private String stamp(int limit) {
         StringBuilder bld = new StringBuilder("(%0");
         int digits = (int)(Math.log10(limit)+1);
         bld.append(digits).append("d/").append(limit).append(")");
@@ -293,10 +289,6 @@ public class EventView extends JPanel {
         year  = evt.getYear();
         month = evt.getMonth();
         day   = evt.getDay();
-        
-        y_ = evt.getParam(0);
-        m_ = evt.getParam(1);
-        d_ = evt.getParam(2);
         
         int sH = (int)startModelH.getValue();
         int sM = (int)startModelM.getValue();
