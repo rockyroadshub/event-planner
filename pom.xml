@@ -201,7 +201,7 @@
        <resources>
            <resource>
                <directory>${project.basedir}/resources/src</directory>
-               <targetPath>org/rockyroadshub/planner/src</targetPath>
+               <targetPath>org/rockyroadshub/planner/src/icons</targetPath>
            </resource>
        </resources>
     </build>

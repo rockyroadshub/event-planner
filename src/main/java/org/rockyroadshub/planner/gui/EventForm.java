@@ -42,7 +42,7 @@ import net.miginfocom.layout.LC;
 import net.miginfocom.swing.MigLayout;
 import org.rockyroadshub.planner.database.DatabaseConfig;
 import org.rockyroadshub.planner.database.DatabaseControl;
-import org.rockyroadshub.planner.core.TextLimiter;
+import org.rockyroadshub.planner.utils.TextLimiter;
 import org.rockyroadshub.planner.core.Event;
 import org.rockyroadshub.planner.core.Globals;
 

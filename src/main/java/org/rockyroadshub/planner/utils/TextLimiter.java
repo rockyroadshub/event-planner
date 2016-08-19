@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.rockyroadshub.planner.core;
+package org.rockyroadshub.planner.utils;
 
 import java.awt.Toolkit;
 import javax.swing.text.AttributeSet;
@@ -28,26 +28,33 @@ public class TextLimiter extends DocumentFilter {
     }
  
     @Override
-    public void insertString(FilterBypass fb, int offs,
-                             String str, AttributeSet a)
-        throws BadLocationException {
+    public void insertString(
+            FilterBypass fb, int offs,
+            String str, AttributeSet a)
+        throws BadLocationException 
+    {
 
-        if ((fb.getDocument().getLength() + str.length()) <= max)
+        if ((fb.getDocument().getLength() + str.length()) <= max) {
             super.insertString(fb, offs, str, a);
-        else
+        }
+        else {
             Toolkit.getDefaultToolkit().beep();
+        }
     }
      
     @Override
-    public void replace(FilterBypass fb, int offs,
-                        int length, 
-                        String str, AttributeSet a)
-        throws BadLocationException {
+    public void replace(
+            FilterBypass fb, int offs,
+            int length, String str, AttributeSet a)
+        throws BadLocationException 
+    {
 
         if ((fb.getDocument().getLength() + str.length()
-             - length) <= max)
+             - length) <= max) {
             super.replace(fb, offs, length, str, a);
-        else
+        }
+        else {
             Toolkit.getDefaultToolkit().beep();
+        }
     }
 }
