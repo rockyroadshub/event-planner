@@ -42,37 +42,11 @@ public final class DatabaseControl {
         return Holder.INSTANCE;
     }  
     
-    
     @LogExceptions
-    public void create(
-            String tableNamePattern, 
-            String SQLCommand) 
-            
-                throws SQLException 
-    {
-        create(null, null, tableNamePattern, SQLCommand);
-    }
-    
-    @LogExceptions
-    public void create(
-            String schemaPattern,
-            String tableNamePattern,
-            String SQLCommand)
-            
-                throws SQLException 
-    {
-        create(null, schemaPattern, tableNamePattern, SQLCommand);
-    }
-    
-    @LogExceptions
-    public void create(
-            String catalog, 
-            String schemaPattern, 
-            String tableNamePattern, 
-            String SQLCommand) 
-            
-                throws SQLException
-    {
+    public void create(Data data, String SQLCommand) throws SQLException {
+        String catalog = data.getCatalog();
+        String schemaPattern = data.getSchemaPattern();
+        String tableNamePattern = data.getTableNamePattern();
         DatabaseConnection connection = DatabaseConnection.getInstance();
         Connection connection0 = connection.getConnection();
         
@@ -109,9 +83,10 @@ public final class DatabaseControl {
     }
     
     @LogExceptions
-    public String find(String SQLCommand, int totalColumns) 
+    public String find(String SQLCommand, Data data) 
             throws SQLException 
     {
+        int totalColumns = data.getTotalColumns();
         DatabaseConnection connection = DatabaseConnection.getInstance();
         Connection connection0 = connection.getConnection();
         StringBuilder builder = new StringBuilder();
@@ -127,5 +102,20 @@ public final class DatabaseControl {
             }
         }
         return builder.toString();
+    }
+    
+    @LogExceptions
+    public int getRowCount(String SQLCommand) throws SQLException {
+        int i = 0;
+        DatabaseConnection connection = DatabaseConnection.getInstance();
+        Connection connection0 = connection.getConnection();
+        try(Statement stmt = connection0.createStatement()) {
+            try(ResultSet rs = stmt.executeQuery(SQLCommand)) {
+                while(rs.next()) {
+                    i++;
+                }
+            }
+        }
+        return i;
     }
 }

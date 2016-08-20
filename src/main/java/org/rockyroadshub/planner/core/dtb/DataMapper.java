@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.rockyroadshub.planner.core.data;
+package org.rockyroadshub.planner.core.dtb;
 
 /**
  *
@@ -24,9 +24,11 @@ package org.rockyroadshub.planner.core.data;
  */
 public interface DataMapper {
     
-    void create() throws DataMapperException;
+    void create(Data data) throws DataMapperException;
     
     void insert(Data data) throws DataMapperException;
+    
+    void update(int id, Data data) throws DataMapperException;
 
     void update(int id, String column, String value) throws DataMapperException;
 

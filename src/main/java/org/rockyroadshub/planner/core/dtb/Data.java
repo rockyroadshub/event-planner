@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.rockyroadshub.planner.core.data;
+package org.rockyroadshub.planner.core.dtb;
 
 /**
  *
@@ -23,6 +23,8 @@ package org.rockyroadshub.planner.core.data;
  * @since 2016-08-13
  */
 public abstract class Data {
-    
     public abstract int getTotalColumns();
+    public abstract String getCatalog();
+    public abstract String getSchemaPattern();
+    public abstract String getTableNamePattern();
 }

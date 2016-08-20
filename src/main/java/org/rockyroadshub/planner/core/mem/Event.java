@@ -16,7 +16,7 @@
 
 package org.rockyroadshub.planner.core.mem;
 
-import org.rockyroadshub.planner.core.data.Data;
+import org.rockyroadshub.planner.core.dtb.Data;
 import java.io.Serializable;
 import org.rockyroadshub.planner.gui.CalendarPane;
 
@@ -28,8 +28,10 @@ import org.rockyroadshub.planner.gui.CalendarPane;
  */
 public final class Event extends Data implements Serializable {
     private static final long serialVersionUID = -8923485092487L;
-    
-    private static final int TOTAL_COLUMNS = 9;
+           
+    private transient static final int TOTAL_COLUMNS = 9;
+    protected transient static final String SCHEMA_NAME = "PLANNER";
+    protected transient static final String TABLE_NAME = "EVENTS";
     
     private String event;
     private String description;
@@ -133,5 +135,20 @@ public final class Event extends Data implements Serializable {
     @Override
     public int getTotalColumns() {
         return TOTAL_COLUMNS;
+    }
+
+    @Override
+    public String getCatalog() {
+        return null;
+    }
+
+    @Override
+    public String getSchemaPattern() {
+        return SCHEMA_NAME;
+    }
+
+    @Override
+    public String getTableNamePattern() {
+        return TABLE_NAME;
     }
 }

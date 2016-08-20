@@ -16,9 +16,9 @@
 
 package org.rockyroadshub.planner.core.mem;
 
-import org.rockyroadshub.planner.core.data.Data;
-import org.rockyroadshub.planner.core.data.DataMapperException;
-import org.rockyroadshub.planner.core.data.DataMapper;
+import org.rockyroadshub.planner.core.dtb.Data;
+import org.rockyroadshub.planner.core.dtb.DataMapperException;
+import org.rockyroadshub.planner.core.dtb.DataMapper;
 import java.sql.SQLException;
 import org.rockyroadshub.planner.core.dtb.DatabaseControl;
 
@@ -29,11 +29,18 @@ import org.rockyroadshub.planner.core.dtb.DatabaseControl;
  * @since 2016-08-13
  */
 public final class EventMapper implements DataMapper {
-    private static final String SCHEMA_NAME = "PLANNER";
-    private static final String TABLE_NAME = "EVENTS";
+    private EventMapper(){}
+    
+    private static class Holder {
+        private static final EventMapper INSTANCE = new EventMapper();
+    }
+    
+    public static EventMapper getInstance() {
+        return Holder.INSTANCE;
+    }
     
     private static final String CREATE =
-        "CREATE TABLE " + SCHEMA_NAME + "." + TABLE_NAME + " ("
+        "CREATE TABLE " + Event.SCHEMA_NAME + "." + Event.TABLE_NAME + " ("
             + "EVENT_ID INT NOT NULL PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),"
             + "EVENT VARCHAR(50),"
             + "DESCRIPTION VARCHAR(200),"
@@ -46,7 +53,7 @@ public final class EventMapper implements DataMapper {
             + "EVENT_END TIME)";
     
     private static final String INSERT =
-        "INSERT INTO " + SCHEMA_NAME + "." + TABLE_NAME + " ("
+        "INSERT INTO " + Event.SCHEMA_NAME + "." + Event.TABLE_NAME + " ("
             + "EVENT,"
             + "DESCRIPTION,"
             + "LOCATION,"
@@ -58,31 +65,44 @@ public final class EventMapper implements DataMapper {
             + "EVENT_END) "
             + "VALUES ('%s','%s','%s','%s','%s','%s','%s','%s','%s')";
     
-    private static final String UPDATE = 
-        "UPDATE " + SCHEMA_NAME + "." + TABLE_NAME 
+    private static final String UPDATE_ONE = 
+        "UPDATE " + Event.SCHEMA_NAME + "." + Event.TABLE_NAME 
             + " SET %s = '%s' WHERE EVENT_ID = %d";
     
+    private static final String UPDATE_ALL = 
+        "UPDATE " + Event.SCHEMA_NAME + "." + Event.TABLE_NAME 
+            + " SET EVENT = '%s',"
+            + " SET DESCRIPTION = '%s',"
+            + " SET LOCATION = '%s',"
+            + " SET EVENT_DATE = '%s',"
+            + " SET EVENT_YEAR = '%s',"
+            + " SET EVENT_MONTH = '%s',"
+            + " SET EVENT_DAY = '%s',"
+            + " SET EVENT_START = '%s',"
+            + " SET EVENT_END = '%s'"
+            + " WHERE EVENT_ID = %d";
+    
     private static final String DELETE =
-        "DELETE FROM " + SCHEMA_NAME + "." + TABLE_NAME
+        "DELETE FROM " + Event.SCHEMA_NAME + "." + Event.TABLE_NAME
             + " WHERE EVENT_ID = %d";
     
     private static final String FIND =
-        "SELECT * FROM " + SCHEMA_NAME + "." + TABLE_NAME
+        "SELECT * FROM " + Event.SCHEMA_NAME + "." + Event.TABLE_NAME
             + " WHERE EVENT_ID = %d";
     
     private static final String SELECT0 =
-        "SELECT * FROM " + SCHEMA_NAME + "." + TABLE_NAME
+        "SELECT * FROM " + Event.SCHEMA_NAME + "." + Event.TABLE_NAME
             + " WHERE %s = '%s'";
     
     private static final String SELECT1 =
-        "SELECT * FROM " + SCHEMA_NAME + "." + TABLE_NAME
+        "SELECT * FROM " + Event.SCHEMA_NAME + "." + Event.TABLE_NAME
             + " WHERE %s = '%s' %s %s = '%s'";
     
     @Override
-    public void create() throws DataMapperException {
+    public void create(Data data) throws DataMapperException {
         try {
             DatabaseControl control = DatabaseControl.getInstance();
-            control.create(SCHEMA_NAME, TABLE_NAME, CREATE);
+            control.create(data, CREATE);
         } 
         catch (SQLException ex) {
             throw new DataMapperException(ex);
@@ -117,7 +137,7 @@ public final class EventMapper implements DataMapper {
             throws DataMapperException 
     {
         DatabaseControl control = DatabaseControl.getInstance();
-        String command = String.format(UPDATE,
+        String command = String.format(UPDATE_ONE,
                 column, value, id);
         
         try {
@@ -128,6 +148,30 @@ public final class EventMapper implements DataMapper {
         }
     }
 
+    @Override
+    public void update(int id, Data data) {
+        Event event = (Event)data;
+        DatabaseControl control = DatabaseControl.getInstance();
+        String command = String.format(UPDATE_ALL,
+                event.getEvent(),
+                event.getDescription(),
+                event.getLocation(),
+                event.getDate(),
+                event.getYear(),
+                event.getMonth(),
+                event.getDay(),
+                event.getStart(),
+                event.getEnd(),
+                id);
+        
+        try {
+            control.execute(command);
+        } 
+        catch (SQLException ex) {
+            throw new DataMapperException(ex);
+        }
+    }
+    
     @Override
     public void delete(int id) throws DataMapperException {
         DatabaseControl control = DatabaseControl.getInstance();
@@ -148,7 +192,7 @@ public final class EventMapper implements DataMapper {
         
         try {
             Event event = new Event();
-            String[] data = control.find(command, event.getTotalColumns())
+            String[] data = control.find(command, event)
                     .split(DatabaseControl.SEPARATOR);
             
             event.setEvent(data[0]);
