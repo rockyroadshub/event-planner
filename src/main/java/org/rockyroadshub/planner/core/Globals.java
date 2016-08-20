@@ -21,8 +21,11 @@ package org.rockyroadshub.planner.core;
  * @version 0.0.0
  * @since 2016-08-13
  */
-public class Globals {
-    public static final String JAR_ROOT = "/org/rockyroadshub/planner/%s";
-    public static final String DATABASE_ROOT = "database/memory";
+public class Globals {    
+    public static final String IMAGES_ROOT     = "/org/rockyroadshub/planner/src/img/%s";
+    public static final String CONFIGS_ROOT    = "/org/rockyroadshub/planner/src/cfg/%s";    
+    public static final String MEMORY_ROOT     = "bin/mem"; 
+    
+    public static final String DATABASE_CONFIG = "prop/database.xml";
     
 }

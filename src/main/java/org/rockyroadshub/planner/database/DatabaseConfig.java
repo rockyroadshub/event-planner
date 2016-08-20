@@ -37,9 +37,7 @@ public class DatabaseConfig implements Initializable {
     private static final int PRIORITY = 1;
     
     private final XMLConfiguration config = new XMLConfiguration();
-    
-    private static final String DATABASE_PROPERTIES = "src/database.xml";
-            
+                
     private static final String NAME  = "name";
     private static final String TYPE  = "type";
     private static final String ATTR  = "attr";
@@ -90,9 +88,8 @@ public class DatabaseConfig implements Initializable {
     }
     
     @LogExceptions
-    private void setup() throws ConfigurationException {
-        File file = new File(getClass().getResource(String.
-                format(Globals.JAR_ROOT, DATABASE_PROPERTIES)).getFile());
+    private void setup() throws ConfigurationException  {
+        File file = new File(Globals.DATABASE_CONFIG);
         config.setFile(file);
         config.setDelimiterParsingDisabled(true);
         config.load();

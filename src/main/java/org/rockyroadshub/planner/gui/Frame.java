@@ -48,7 +48,7 @@ public class Frame extends JFrame {
         setResizable(false);
         setVisible(true);
         try {
-            initIcon("src/calendar-icon.png");
+            initIcon("calendar-icon.png");
         }catch (IOException ex) {}
         add(panel, BorderLayout.CENTER);
         pack();
@@ -57,7 +57,7 @@ public class Frame extends JFrame {
     
     @LogExceptions
     private void initIcon(String n) throws IOException {
-        Image img = ImageIO.read(getClass().getResource(String.format(Globals.JAR_ROOT, n)));
+        Image img = ImageIO.read(getClass().getResource(String.format(Globals.IMAGES_ROOT, n)));
         setIconImage(img);
     }
     

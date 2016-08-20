@@ -127,10 +127,10 @@ public class EventsDisplay extends JPanel {
     
     private void initButtons() {
         try {
-            initIcon(home,  "src/Home.png");
-            initIcon(add,   "src/Add.png");
-            initIcon(view,  "src/View.png");
-            initIcon(delete,"src/Delete.png");
+            initIcon(home,  "Home.png");
+            initIcon(add,   "Add.png");
+            initIcon(view,  "View.png");
+            initIcon(delete,"Delete.png");
         }catch (IOException ex) {}
         
         home.setToolTipText(HOME0);
@@ -152,7 +152,7 @@ public class EventsDisplay extends JPanel {
    
     @LogExceptions
     private void initIcon(JButton b, String n) throws IOException {
-        Image img = ImageIO.read(getClass().getResource(String.format(Globals.JAR_ROOT, n)));
+        Image img = ImageIO.read(getClass().getResource(String.format(Globals.IMAGES_ROOT, n)));
         b.setIcon(new ImageIcon(img));
     }
     

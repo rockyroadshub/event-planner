@@ -68,7 +68,7 @@ public class DatabaseConnection implements Initializable {
     @LogExceptions
     private void setupConnection() throws SQLException {
         connection = DriverManager.getConnection(
-                    setProtocol(Globals.DATABASE_ROOT, "create"));
+                    setProtocol(Globals.MEMORY_ROOT, "create"));
     }   
         
     private String setProtocol(String path, String cmd) {

@@ -68,8 +68,8 @@
             
             <plugin>
                 <artifactId>maven-resources-plugin</artifactId>
-                <version>3.0.1</version>
-                <executions>
+                <version>3.0.1</version>    
+                <executions>               
                     <execution>
                         <id>copy-config</id>
                         <phase>validate</phase>
@@ -77,33 +77,13 @@
                             <goal>copy-resources</goal>
                         </goals>
                         <configuration>
-                            <outputDirectory>${project.build.directory}</outputDirectory>
+                            <outputDirectory>${project.build.directory}/prop</outputDirectory>
                             <resources>          
                                 <resource>
-                                <directory>${project.basedir}</directory>
+                                <directory>${project.basedir}/prop</directory>
                                      <filtering>true</filtering>
                                      <includes>
-                                        <include>**/*.ini</include>
-                                     </includes>
-                                </resource>
-                            </resources>              
-                        </configuration>            
-                    </execution>
-                    
-                    <execution>
-                        <id>copy-log4j2</id>
-                        <phase>validate</phase>
-                        <goals>
-                            <goal>copy-resources</goal>
-                        </goals>
-                        <configuration>
-                            <outputDirectory>${project.build.directory}/lib</outputDirectory>
-                            <resources>          
-                                <resource>
-                                <directory>${project.basedir}/lib</directory>
-                                     <filtering>true</filtering>
-                                     <includes>
-                                        <include>**/*.xml</include>
+                                        <include>**/*.*</include>
                                      </includes>
                                 </resource>
                             </resources>              
@@ -175,7 +155,7 @@
                                  <mainClass>${project.main.class}</mainClass>
                                  <preCp>anything</preCp>
                              </classPath>
-                             <icon>resources/src/calendar-icon.ico</icon>
+                             <icon>resources/src/img/calendar-icon.ico</icon>
                              <jre>
                                  <minVersion>1.8.0</minVersion>
                                  <jdkPreference>preferJre</jdkPreference>
@@ -200,8 +180,12 @@
 
        <resources>
            <resource>
-               <directory>${project.basedir}/resources/src</directory>
-               <targetPath>org/rockyroadshub/planner/src/icons</targetPath>
+               <directory>${project.basedir}/resources/src/img</directory>
+               <targetPath>org/rockyroadshub/planner/src/img</targetPath>
+           </resource>
+           <resource>
+               <directory>${project.basedir}/resources/src/cfg</directory>
+               <targetPath>org/rockyroadshub/planner/src/cfg</targetPath>
            </resource>
        </resources>
     </build>

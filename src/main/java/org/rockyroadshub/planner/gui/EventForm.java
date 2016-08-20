@@ -179,9 +179,9 @@ public class EventForm extends JPanel {
         save.addActionListener(action);
         
         try {
-            initIcon(home, "src/Home.png");
-            initIcon(back, "src/Back.png");
-            initIcon(save, "src/Save.png");
+            initIcon(home, "Home.png");
+            initIcon(back, "Back.png");
+            initIcon(save, "Save.png");
         } catch (IOException ex) {}
     }
    
@@ -296,7 +296,7 @@ public class EventForm extends JPanel {
     
     @LogExceptions
     private void initIcon(JButton b, String n) throws IOException {
-        Image img = ImageIO.read(getClass().getResource(String.format(Globals.JAR_ROOT, n)));
+        Image img = ImageIO.read(getClass().getResource(String.format(Globals.IMAGES_ROOT, n)));
         b.setIcon(new ImageIcon(img));
     }
     

@@ -22,9 +22,9 @@ limitations under the License.s
             <columns>
                 <column name="EVENT_ID" 
                 type="INT NOT NULL PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1)"/>
-                <column name="EVENT"       type="VARCHAR(${properties.length.event})"/>
-                <column name="DESCRIPTION" type="VARCHAR(${properties.length.description})"/>   
-                <column name="LOCATION"    type="VARCHAR(${properties.length.location})"/>  
+                <column name="EVENT"       type="VARCHAR(50)"/>
+                <column name="DESCRIPTION" type="VARCHAR(500)"/>   
+                <column name="LOCATION"    type="VARCHAR(250)"/>  
                 <column name="EVENT_DATE"  type="DATE"/>        
                 <column name="EVENT_YEAR"  type="VARCHAR(10)"/>
                 <column name="EVENT_MONTH" type="VARCHAR(20)"/>

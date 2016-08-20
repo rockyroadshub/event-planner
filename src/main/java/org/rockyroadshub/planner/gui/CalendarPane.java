@@ -169,6 +169,7 @@ public class CalendarPane extends JPanel {
             button.setText("");
             button.setBackground(DEFAULT);
             button.setForeground(DEFAULT_FG);
+            button.setToolTipText("");
             button.setEnabled(false);
         }
     }
