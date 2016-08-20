@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.rockyroadshub.planner.core.mem;
+package org.rockyroadshub.planner.core.data;
 
 /**
  *
@@ -22,7 +22,8 @@ package org.rockyroadshub.planner.core.mem;
  * @version 0.0.0
  * @since 2016-08-13
  */
-public abstract class Data {
-    
-    public abstract Data getData();
+public class DataMapperException extends RuntimeException {
+    public DataMapperException(final Throwable cause) {
+        super(cause);
+    }
 }

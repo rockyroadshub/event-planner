@@ -16,9 +16,10 @@
 
 package org.rockyroadshub.planner.core.mem;
 
+import org.rockyroadshub.planner.core.data.Data;
+import org.rockyroadshub.planner.core.data.DataMapperException;
+import org.rockyroadshub.planner.core.data.DataMapper;
 import java.sql.SQLException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.rockyroadshub.planner.core.dtb.DatabaseControl;
 
 /**
@@ -57,6 +58,25 @@ public final class EventMapper implements DataMapper {
             + "EVENT_END) "
             + "VALUES ('%s','%s','%s','%s','%s','%s','%s','%s','%s')";
     
+    private static final String UPDATE = 
+        "UPDATE " + SCHEMA_NAME + "." + TABLE_NAME 
+            + " SET %s = '%s' WHERE EVENT_ID = %d";
+    
+    private static final String DELETE =
+        "DELETE FROM " + SCHEMA_NAME + "." + TABLE_NAME
+            + " WHERE EVENT_ID = %d";
+    
+    private static final String FIND =
+        "SELECT * FROM " + SCHEMA_NAME + "." + TABLE_NAME
+            + " WHERE EVENT_ID = %d";
+    
+    private static final String SELECT0 =
+        "SELECT * FROM " + SCHEMA_NAME + "." + TABLE_NAME
+            + " WHERE %s = '%s'";
+    
+    private static final String SELECT1 =
+        "SELECT * FROM " + SCHEMA_NAME + "." + TABLE_NAME
+            + " WHERE %s = '%s' %s %s = '%s'";
     
     @Override
     public void create() throws DataMapperException {
@@ -85,7 +105,7 @@ public final class EventMapper implements DataMapper {
                 event.getEnd());
         
         try {
-            control.insert(command);
+            control.execute(command);
         } 
         catch (SQLException ex) {
             throw new DataMapperException(ex);
@@ -93,12 +113,73 @@ public final class EventMapper implements DataMapper {
     }
 
     @Override
-    public void update(Data data) throws DataMapperException {
-        Event event = (Event)data;
+    public void update(int id, String column, String value) 
+            throws DataMapperException 
+    {
+        DatabaseControl control = DatabaseControl.getInstance();
+        String command = String.format(UPDATE,
+                column, value, id);
+        
+        try {
+            control.execute(command);
+        } 
+        catch (SQLException ex) {
+            throw new DataMapperException(ex);
+        }
     }
 
     @Override
-    public void delete(Data data) throws DataMapperException {
-        Event event = (Event)data;
+    public void delete(int id) throws DataMapperException {
+        DatabaseControl control = DatabaseControl.getInstance();
+        String command = String.format(DELETE, id);
+        
+        try {
+            control.execute(command);
+        } 
+        catch (SQLException ex) {
+            throw new DataMapperException(ex);
+        }
+    }
+    
+    @Override
+    public Event find(int id) throws DataMapperException {
+        DatabaseControl control = DatabaseControl.getInstance();
+        String command = String.format(FIND, id);
+        
+        try {
+            Event event = new Event();
+            String[] data = control.find(command, event.getTotalColumns())
+                    .split(DatabaseControl.SEPARATOR);
+            
+            event.setEvent(data[0]);
+            event.setDescription(data[1]);
+            event.setLocation(data[2]);
+            event.setDate(data[3]);
+            event.setStart(data[7]);
+            event.setEnd(data[8]);
+            
+            return event;
+        } 
+        catch (SQLException ex) {
+            throw new DataMapperException(ex);
+        }
+    }
+
+    @Override
+    public void select(String c, String v) 
+            throws DataMapperException 
+    {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void select(
+            String c1, String v1, 
+            String c2, String v2, 
+            String o) 
+            
+                throws DataMapperException 
+    {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

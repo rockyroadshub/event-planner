@@ -30,6 +30,8 @@ import java.sql.Statement;
  * @since 2016-08-13
  */
 public final class DatabaseControl {
+    public static final String SEPARATOR = ";";
+    
     private DatabaseControl() {}
     
     private static final class Holder {
@@ -98,11 +100,32 @@ public final class DatabaseControl {
     }
     
     @LogExceptions
-    public void insert(String SQLCommand) throws SQLException {
+    public void execute(String SQLCommand) throws SQLException {
         DatabaseConnection connection = DatabaseConnection.getInstance();
         Connection connection0 = connection.getConnection();
         try(Statement stmt = connection0.createStatement()) {
             stmt.executeUpdate(SQLCommand);
         }
+    }
+    
+    @LogExceptions
+    public String find(String SQLCommand, int totalColumns) 
+            throws SQLException 
+    {
+        DatabaseConnection connection = DatabaseConnection.getInstance();
+        Connection connection0 = connection.getConnection();
+        StringBuilder builder = new StringBuilder();
+        
+        try(Statement stmt = connection0.createStatement()) {
+            try(ResultSet rs = stmt.executeQuery(SQLCommand)) {
+                if(rs.next()) {
+                    for(int i = 1; i < totalColumns + 1; i++) {
+                        builder.append(rs.getString(i)).append(SEPARATOR);
+                    }
+                    builder.replace(builder.length()-1, builder.length(), "");
+                }           
+            }
+        }
+        return builder.toString();
     }
 }

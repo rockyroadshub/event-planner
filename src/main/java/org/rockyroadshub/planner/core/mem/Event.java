@@ -16,7 +16,9 @@
 
 package org.rockyroadshub.planner.core.mem;
 
+import org.rockyroadshub.planner.core.data.Data;
 import java.io.Serializable;
+import org.rockyroadshub.planner.gui.CalendarPane;
 
 /**
  *
@@ -25,6 +27,9 @@ import java.io.Serializable;
  * @since 2016-08-13
  */
 public final class Event extends Data implements Serializable {
+    private static final long serialVersionUID = -8923485092487L;
+    
+    private static final int TOTAL_COLUMNS = 9;
     
     private String event;
     private String description;
@@ -35,6 +40,8 @@ public final class Event extends Data implements Serializable {
     private String day;
     private String start;
     private String end;
+    
+    public Event() {}
     
     public Event(final String event, 
                  final String description, 
@@ -50,24 +57,58 @@ public final class Event extends Data implements Serializable {
         this.start = start;
         this.end = end;
         
+        breakDate(date);
     }
     
     public String getEvent() {
         return event;
     }
     
+    public void setEvent(String event) {
+        this.event = event;
+    }
+    
     public String getDescription() {
         return description;
+    }
+    
+    public void setDescription(String description) {
+        this.description = description;
     }
     
     public String getLocation() {
         return location;
     }
     
+    public void setLocation(String location) {
+        this.location = location;
+    }
+    
     public String getDate() {
         return date;
     }
     
+    public void setDate(String date) {
+        this.date = date;
+        breakDate(date);
+    }   
+    
+    public String getStart() {
+        return start;
+    }
+    
+    public void setStart(String start) {
+        this.start = start;
+    }
+    
+    public String getEnd() {
+        return end;
+    }
+    
+    public void setEnd(String end) {
+        this.end = end;
+    }  
+        
     public String getYear() {
         return year;
     }
@@ -80,16 +121,17 @@ public final class Event extends Data implements Serializable {
         return day;
     }
     
-    public String getStart() {
-        return start;
-    }
-
-    public String getEnd() {
-        return end;
+    private void breakDate(String date) {
+        String[] dates = date.split("-");
+        int i = Integer.parseInt(dates[1]);
+        
+        this.year = dates[0];
+        this.month = CalendarPane.MONTHS[i-1];
+        this.day = dates[2];
     }
     
     @Override
-    public Data getData() {
-        return this;
+    public int getTotalColumns() {
+        return TOTAL_COLUMNS;
     }
 }
