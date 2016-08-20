@@ -1,0 +1,108 @@
+/*
+ * Copyright 2016 Arnell Christoper D. Dalid.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.rockyroadshub.planner.core.dtb;
+
+import com.jcabi.aspects.LogExceptions;
+import java.sql.Connection;
+import java.sql.DatabaseMetaData;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+
+/**
+ *
+ * @author Arnell Christoper D. Dalid
+ * @version 0.0.0
+ * @since 2016-08-13
+ */
+public final class DatabaseControl {
+    private DatabaseControl() {}
+    
+    private static final class Holder {
+        private static final DatabaseControl INSTANCE = new DatabaseControl();
+    }
+
+    public static DatabaseControl getInstance() {  
+        return Holder.INSTANCE;
+    }  
+    
+    
+    @LogExceptions
+    public void create(
+            String tableNamePattern, 
+            String SQLCommand) 
+            
+                throws SQLException 
+    {
+        create(null, null, tableNamePattern, SQLCommand);
+    }
+    
+    @LogExceptions
+    public void create(
+            String schemaPattern,
+            String tableNamePattern,
+            String SQLCommand)
+            
+                throws SQLException 
+    {
+        create(null, schemaPattern, tableNamePattern, SQLCommand);
+    }
+    
+    @LogExceptions
+    public void create(
+            String catalog, 
+            String schemaPattern, 
+            String tableNamePattern, 
+            String SQLCommand) 
+            
+                throws SQLException
+    {
+        DatabaseConnection connection = DatabaseConnection.getInstance();
+        Connection connection0 = connection.getConnection();
+        
+        if(!exists(connection0, catalog, schemaPattern, tableNamePattern)) {
+            try(Statement command = connection0.createStatement()) {
+                command.executeUpdate(SQLCommand);
+            }
+        }
+    }
+    
+    @LogExceptions
+    private boolean exists(Connection connection, 
+            String catalog,
+            String schemaPattern,
+            String tableNamePattern) 
+            
+                throws SQLException 
+    {
+        DatabaseMetaData dbmd = connection.getMetaData();
+        try(ResultSet rs = dbmd.getTables(
+                catalog, schemaPattern, tableNamePattern, null)) 
+        {
+            return rs.next();
+        }
+    }
+    
+    @LogExceptions
+    public void insert(String SQLCommand) throws SQLException {
+        DatabaseConnection connection = DatabaseConnection.getInstance();
+        Connection connection0 = connection.getConnection();
+        try(Statement stmt = connection0.createStatement()) {
+            stmt.executeUpdate(SQLCommand);
+        }
+    }
+}
