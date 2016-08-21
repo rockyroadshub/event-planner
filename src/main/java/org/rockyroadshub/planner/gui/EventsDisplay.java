@@ -42,6 +42,7 @@ import org.rockyroadshub.planner.core.Event;
 import org.rockyroadshub.planner.database.DatabaseConfig;
 import org.rockyroadshub.planner.database.DatabaseControl;
 import org.rockyroadshub.planner.core.Globals;
+import org.rockyroadshub.planner.core.data.EventMapper;
 import org.rockyroadshub.planner.database.DatabaseConnection;
 
 /**
@@ -193,21 +194,19 @@ public class EventsDisplay extends JPanel {
     }
     
     private void onDelete() {
-        DatabaseControl dtb = DatabaseControl.getInstance();
-        try {
-            int i = getID();
-            if(i != -1) {
-                Frame  f = Frame.getInstance();
-                String m = "Are you sure to delete this event?";
-                String t = "Event Planner";
-                int    q = JOptionPane.OK_CANCEL_OPTION;
-                int    o = JOptionPane.OK_OPTION;
-                if(JOptionPane.showConfirmDialog(f, m, t, q) == o) {
-                    dtb.delete(getID());
-                    refresh();
-                }
+        int i = getID();
+        if(i != -1) {
+            Frame  f = Frame.getInstance();
+            String m = "Are you sure to delete this event?";
+            String t = "Event Planner";
+            int    q = JOptionPane.OK_CANCEL_OPTION;
+            int    o = JOptionPane.OK_OPTION;
+            if(JOptionPane.showConfirmDialog(f, m, t, q) == o) {
+                EventMapper map = EventMapper.getInstance();
+                map.delete(getID());
+                refresh();
             }
-        } catch (SQLException ex) {}
+        }
     }
     
     private int getID() {

@@ -22,6 +22,7 @@ import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import org.rockyroadshub.planner.database.DatabaseConnection;
 
 /**
  *
@@ -43,23 +44,21 @@ public final class DatabaseControl {
     }  
     
     @LogExceptions
-    public void create(Data data, String SQLCommand) throws SQLException {
-        String catalog = data.getCatalog();
-        String schemaPattern = data.getSchemaPattern();
-        String tableNamePattern = data.getTableNamePattern();
+    public void create(Memory memory) throws SQLException {
+        String schemaPattern = memory.getSchemaPattern();
+        String tableNamePattern = memory.getTableNamePattern();
         DatabaseConnection connection = DatabaseConnection.getInstance();
         Connection connection0 = connection.getConnection();
         
-        if(!exists(connection0, catalog, schemaPattern, tableNamePattern)) {
+        if(!exists(connection0, schemaPattern, tableNamePattern)) {
             try(Statement command = connection0.createStatement()) {
-                command.executeUpdate(SQLCommand);
+                command.executeUpdate(memory.getMembers().getCreateFormat());
             }
         }
     }
     
     @LogExceptions
     private boolean exists(Connection connection, 
-            String catalog,
             String schemaPattern,
             String tableNamePattern) 
             
@@ -67,7 +66,7 @@ public final class DatabaseControl {
     {
         DatabaseMetaData dbmd = connection.getMetaData();
         try(ResultSet rs = dbmd.getTables(
-                catalog, schemaPattern, tableNamePattern, null)) 
+                null, schemaPattern, tableNamePattern, null)) 
         {
             return rs.next();
         }
@@ -83,10 +82,9 @@ public final class DatabaseControl {
     }
     
     @LogExceptions
-    public String find(String SQLCommand, Data data) 
+    public String find(String SQLCommand, int totalColumns) 
             throws SQLException 
     {
-        int totalColumns = data.getTotalColumns();
         DatabaseConnection connection = DatabaseConnection.getInstance();
         Connection connection0 = connection.getConnection();
         StringBuilder builder = new StringBuilder();

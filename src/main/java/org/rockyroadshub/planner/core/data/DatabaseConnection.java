@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.rockyroadshub.planner.core.dtb;
+package org.rockyroadshub.planner.core.data;
 
 import com.jcabi.aspects.LogExceptions;
 import java.sql.Connection;

@@ -20,23 +20,16 @@ package org.rockyroadshub.planner.core.dtb;
  *
  * @author Arnell Christoper D. Dalid
  * @version 0.0.0
- * @since 2016-08-13
+ * @since 1.8
  */
-public interface DataMapper {    
-    void create(Data data) throws DataMapperException;
+public abstract class DataMapper implements Mapper {
+    protected Memory memory;
+        
+    public void setMemory(Memory memory) {
+        this.memory = memory;
+    }
     
-    void insert(Data data) throws DataMapperException;
-    
-    void update(int id, Data data) throws DataMapperException;
-
-    void update(int id, String column, String value) throws DataMapperException;
-
-    void delete(int id) throws DataMapperException;
-    
-    Data find(int id) throws DataMapperException;
-    
-    void select(String c, String v) throws DataMapperException;
-    
-    void select(String c1, String v1, String c2, String v2, String o) 
-                throws DataMapperException;
+    public Memory getMemory() {
+        return memory;
+    }
 }

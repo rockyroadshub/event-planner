@@ -16,22 +16,20 @@
 
 package org.rockyroadshub.planner.core.dtb;
 
+import java.util.Optional;
+
 /**
  *
  * @author Arnell Christoper D. Dalid
  * @version 0.0.0
  * @since 1.8
  */
-public class Data {
-    public int id;
-    
-    public Data() {}
+public interface Mapper {
+    Optional<Data> find(int id);
 
-    public int getID() {
-        return id;
-    }
-    
-    public void setID(int id) {
-        this.id = id;
-    }
+    void insert(Data data) throws DataMapperException;
+
+    void update(Data data) throws DataMapperException;
+
+    void delete(int id) throws DataMapperException;
 }

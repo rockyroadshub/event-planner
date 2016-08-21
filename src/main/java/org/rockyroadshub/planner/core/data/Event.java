@@ -14,25 +14,19 @@
  * limitations under the License.
  */
 
-package org.rockyroadshub.planner.core.mem;
+package org.rockyroadshub.planner.core.data;
 
 import org.rockyroadshub.planner.core.dtb.Data;
-import java.io.Serializable;
+import org.rockyroadshub.planner.core.dtb.Memory;
 import org.rockyroadshub.planner.gui.CalendarPane;
 
 /**
  *
  * @author Arnell Christoper D. Dalid
  * @version 0.0.0
- * @since 2016-08-13
+ * @since 1.8
  */
-public final class Event extends Data implements Serializable {
-    private static final long serialVersionUID = -8923485092487L;
-           
-    private transient static final int TOTAL_COLUMNS = 9;
-    protected transient static final String SCHEMA_NAME = "PLANNER";
-    protected transient static final String TABLE_NAME = "EVENTS";
-    
+public class Event extends Data {
     private String event;
     private String description;
     private String location;
@@ -48,8 +42,19 @@ public final class Event extends Data implements Serializable {
     private int endHour;
     private int endMinute;
     
-    public Event() {}
+    public Event() {
+        super();
+    }
     
+    /**
+     * Event Constructor
+     * @param event title/name of the event
+     * @param description brief description of the event
+     * @param location where the event is going to take place
+     * @param date date of the event
+     * @param start time of start
+     * @param end time of end
+     */
     public Event(final String event, 
                  final String description, 
                  final String location,
@@ -69,10 +74,18 @@ public final class Event extends Data implements Serializable {
         breakEndTime(end);
     }
     
+    /**
+     * Gets the event parameter
+     * @return event parameter
+     */
     public String getEvent() {
         return event;
     }
     
+    /**
+     * Sets the event parameter
+     * @param event title/name
+     */
     public void setEvent(String event) {
         this.event = event;
     }
@@ -148,6 +161,10 @@ public final class Event extends Data implements Serializable {
         return endMinute;
     }
     
+    /**
+     * Splits the "String" date into year, month and day
+     * @param date date of the event
+     */
     private void breakDate(String date) {
         String[] dates = date.split("-");
         int i = Integer.parseInt(dates[1]);
@@ -157,35 +174,23 @@ public final class Event extends Data implements Serializable {
         this.day = dates[2];
     }
     
+    /**
+     * Splits the "String" start time into hours and minutes
+     * @param start start of the event
+     */
     private void breakStartTime(String start) {
         String[] times = start.split(":");
         this.startHour = Integer.parseInt(times[0]);
         this.startMinute = Integer.parseInt(times[1]);
     }
     
+    /**
+     * Splits the "String" end time into hours and minutes
+     * @param end end of the event
+     */
     private void breakEndTime(String end) {
         String[] times = end.split(":");
         this.endHour = Integer.parseInt(times[0]);
         this.endMinute = Integer.parseInt(times[1]);
-    }
-    
-    @Override
-    public int getTotalColumns() {
-        return TOTAL_COLUMNS;
-    }
-
-    @Override
-    public String getCatalog() {
-        return null;
-    }
-
-    @Override
-    public String getSchemaPattern() {
-        return SCHEMA_NAME;
-    }
-
-    @Override
-    public String getTableNamePattern() {
-        return TABLE_NAME;
     }
 }
