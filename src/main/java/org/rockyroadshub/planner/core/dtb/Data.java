@@ -23,7 +23,7 @@ package org.rockyroadshub.planner.core.dtb;
  * @since 2016-08-13
  */
 public abstract class Data {
-    public abstract int getTotalColumns();
+    public abstract int getTotalColumns();    
     public abstract String getCatalog();
     public abstract String getSchemaPattern();
     public abstract String getTableNamePattern();

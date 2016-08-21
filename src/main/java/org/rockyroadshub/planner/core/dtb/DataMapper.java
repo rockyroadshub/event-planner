@@ -22,8 +22,7 @@ package org.rockyroadshub.planner.core.dtb;
  * @version 0.0.0
  * @since 2016-08-13
  */
-public interface DataMapper {
-    
+public interface DataMapper {    
     void create(Data data) throws DataMapperException;
     
     void insert(Data data) throws DataMapperException;

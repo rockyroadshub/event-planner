@@ -43,6 +43,11 @@ public final class Event extends Data implements Serializable {
     private String start;
     private String end;
     
+    private int startHour;
+    private int startMinute;
+    private int endHour;
+    private int endMinute;
+    
     public Event() {}
     
     public Event(final String event, 
@@ -60,6 +65,8 @@ public final class Event extends Data implements Serializable {
         this.end = end;
         
         breakDate(date);
+        breakStartTime(start);
+        breakEndTime(end);
     }
     
     public String getEvent() {
@@ -101,6 +108,7 @@ public final class Event extends Data implements Serializable {
     
     public void setStart(String start) {
         this.start = start;
+        breakStartTime(start);
     }
     
     public String getEnd() {
@@ -109,6 +117,7 @@ public final class Event extends Data implements Serializable {
     
     public void setEnd(String end) {
         this.end = end;
+        breakEndTime(end);
     }  
         
     public String getYear() {
@@ -123,6 +132,22 @@ public final class Event extends Data implements Serializable {
         return day;
     }
     
+    public int getStartHour() {
+        return startHour;
+    }
+    
+    public int getStartMinute() {
+        return startMinute;
+    }
+    
+    public int getEndHour() {
+        return endHour;
+    }
+    
+    public int getEndMinute() {
+        return endMinute;
+    }
+    
     private void breakDate(String date) {
         String[] dates = date.split("-");
         int i = Integer.parseInt(dates[1]);
@@ -130,6 +155,18 @@ public final class Event extends Data implements Serializable {
         this.year = dates[0];
         this.month = CalendarPane.MONTHS[i-1];
         this.day = dates[2];
+    }
+    
+    private void breakStartTime(String start) {
+        String[] times = start.split(":");
+        this.startHour = Integer.parseInt(times[0]);
+        this.startMinute = Integer.parseInt(times[1]);
+    }
+    
+    private void breakEndTime(String end) {
+        String[] times = end.split(":");
+        this.endHour = Integer.parseInt(times[0]);
+        this.endMinute = Integer.parseInt(times[1]);
     }
     
     @Override
