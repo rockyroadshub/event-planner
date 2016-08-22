@@ -25,7 +25,7 @@ package org.rockyroadshub.planner.core.dtb;
 public abstract class DataMapper implements Mapper {
     protected Memory memory;
         
-    protected void setMemory(Memory memory) {
+    protected final void setMemory(Memory memory) {
         this.memory = memory;
     }
 }

@@ -17,6 +17,8 @@
 package org.rockyroadshub.planner.core.data;
 
 import java.sql.SQLException;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import org.rockyroadshub.planner.core.dtb.DatabaseControl;
 import org.rockyroadshub.planner.core.dtb.Data;
@@ -44,13 +46,18 @@ public final class EventMapper extends DataMapper {
             .add("EVENT_DAY"  ,"VARCHAR(10)" ,false)
             .add("EVENT_START","TIME"        ,false)
             .add("EVENT_END"  ,"TIME"        ,false)
-            .setDisplayColumns(1,2,5,8,9)
+            .setDisplayColumns(0,1,4,8,9)
             .pack();
     
     private static final Memory MEMORY = new Memory(MEMBERS, "EVENTS");
     
     private EventMapper() {
-        this.memory = MEMORY;
+        setMemory(MEMORY);
+        memory.getMembers().setColumnAltText(0, "ID");
+        memory.getMembers().setColumnAltText(1, "Title");
+        memory.getMembers().setColumnAltText(4, "Date");
+        memory.getMembers().setColumnAltText(8, "Start");
+        memory.getMembers().setColumnAltText(9, "End");
     }
     
     private static final class Holder {
@@ -166,5 +173,37 @@ public final class EventMapper extends DataMapper {
         catch (SQLException ex) {
             throw new DataMapperException(ex);
         }
+    }
+    
+    /**
+     * 
+     * @return listed columns
+     */
+    public List<String> getColumns() {
+        return memory.getMembers().getColumns();
+    }
+    
+    /**
+     * 
+     * @return active columns(listed columns without the main/primary key)
+     */
+    public List<String> getActiveColumns() {
+        return memory.getMembers().getActiveColumns();
+    }    
+    
+    /**
+     * 
+     * @return columns to be displayed in the display panel
+     */
+    public List<Integer> getDisplayColumns() {
+        return memory.getMembers().getDisplayColumns();
+    }
+    
+    /**
+     * 
+     * @return alternative names of displayed columns
+     */
+    public Map<String, String> getColumnAltTexts() {
+        return memory.getMembers().getColumnAltTexts();
     }
 }

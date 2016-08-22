@@ -275,9 +275,7 @@ public class EventView extends JPanel {
         event       = eventInput.getText();
         description = descriptionInput.getText();
         location    = locationInput.getText();
-        
-        date  = "2016-08-23";
-        
+                
         int sH = (int)startModelH.getValue();
         int sM = (int)startModelM.getValue();
         int eH = (int)endModelH.getValue();
@@ -364,6 +362,10 @@ public class EventView extends JPanel {
     
     public void setID(int id) {
         this.id = id;
+    }
+    
+    public void setDate(String date) {
+        this.date = date;
     }
     
     public void setTitleLabel(String text) {

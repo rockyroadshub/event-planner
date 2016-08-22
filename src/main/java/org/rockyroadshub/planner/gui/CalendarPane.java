@@ -247,6 +247,8 @@ public class CalendarPane extends JPanel {
         String label = event.getDateLabel();
         EventForm.getInstance().setTitleLabel(label);
         EventView.getInstance().setTitleLabel(label);
+        display.setDate(String.format("%d-%02d-%02d", y,m+1,d));
+        EventForm.getInstance().setDate(String.format("%d-%02d-%02d", y,m+1,d));
         display.setTitleLabel(label);
         display.refresh();
         Panel.getInstance().show(EventsDisplay.NAME);

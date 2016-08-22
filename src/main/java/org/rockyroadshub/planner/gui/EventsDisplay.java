@@ -82,7 +82,8 @@ public class EventsDisplay extends JPanel {
     private static final String DELETE0 = "Delete";
 
     private Object[] rowData;
-   
+    private String date;
+    
     private EventsDisplay() { 
        initialize();
     }
@@ -97,11 +98,17 @@ public class EventsDisplay extends JPanel {
         initButtons();
         
         DatabaseConfig config = DatabaseConfig.getInstance();
-        List<String> columns = config.getDisplayColumns();
-        columns.stream().forEach((d) -> {
-            tableModel.addColumn(d);
+//        List<String> columns = config.getDisplayColumns();
+        EventMapper map = EventMapper.getInstance();
+        List<String> c = map.getColumns();
+        List<Integer> display = map.getDisplayColumns();
+        Map<String, String> alt = map.getColumnAltTexts();
+        
+        display.stream().forEach((i) -> {
+            tableModel.addColumn(alt.get(c.get(i)));
         });
-        rowData = new Object[columns.size()];
+        
+        rowData = new Object[display.size()];
         table.setModel(tableModel);
 
         add(menu, BorderLayout.NORTH);
@@ -185,6 +192,7 @@ public class EventsDisplay extends JPanel {
             EventView v = EventView.getInstance();
             v.setID(i);
             v.enableGUI(false);
+            v.setDate(String.valueOf(table.getModel().getValueAt(table.getSelectedRow(), 2)));
             
             try {
                 v.set(DatabaseControl.getInstance().select(i));
@@ -248,6 +256,10 @@ public class EventsDisplay extends JPanel {
                 }
             }
         } catch (SQLException ex) {}
+    }
+    
+    public void setDate(String date) {
+        this.date = date;
     }
        
     public static EventsDisplay getInstance() {

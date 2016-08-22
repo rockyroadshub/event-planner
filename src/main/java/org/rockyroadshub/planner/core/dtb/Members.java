@@ -18,7 +18,9 @@ package org.rockyroadshub.planner.core.dtb;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -30,8 +32,10 @@ public final class Members {
     
     private final StringBuilder createFormat0 = new StringBuilder("CREATE TABLE @ (");
     
-    public List<String> columns = new ArrayList<>();
-    public List<Integer> displayColumns = new ArrayList<>();
+    private final List<String> columns = new ArrayList<>();
+    private final List<String> activeColumns = new ArrayList<>();
+    private final List<Integer> displayColumns = new ArrayList<>();
+    private final Map<String, String> columnAltTexts = new HashMap<>();
     
     private String createFormat;
     private String insertFormat;
@@ -44,14 +48,24 @@ public final class Members {
     
     public Members() {}
     
+    /**
+     * Adds a column member
+     * @param column column label
+     * @param type column type (e.g. VARCHAR(20))
+     * @param isMainKey parameter if the added column is a primary/main key
+     * @return 
+     */
     public Members add(String column, String type, boolean isMainKey) {   
         createFormat0.append(column)
                      .append(" ")
                      .append(type)
                      .append(",");
         
+        columns.add(column);
+        columnAltTexts.put(column, column);
+        
         if(!isMainKey) {
-            columns.add(column);
+            activeColumns.add(column);
         }
         else if(!keyExists) {
             mainKey = column;
@@ -61,6 +75,12 @@ public final class Members {
         return this;
     }
   
+    /**
+     * Sets the columns to be displayed in the display panel. First <br>
+     * column is 0, the second is 1.. and so on.
+     * @param displayColumns columns to be displayed (as index)
+     * @return 
+     */
     public Members setDisplayColumns(Integer... displayColumns) {
         this.displayColumns.addAll(Arrays.asList(displayColumns));
         
@@ -77,7 +97,7 @@ public final class Members {
         String deleteFormat0 = "DELETE FROM @ WHERE mainKey = %d";
         String selectFormat0 = "SELECT * FROM @ WHERE mainKey = %d";
         
-        columns.stream().map((column) -> {
+        activeColumns.stream().map((column) -> {
             insertColumn.append(column).append(",");
             return column;
         }).forEach((column) -> {
@@ -140,12 +160,62 @@ public final class Members {
         this.selectFormat = selectFormat;
     }
     
+    /**
+     * 
+     * @return total active columns
+     */
     public int getTotalColumns() {
-        return columns.size();
+        return activeColumns.size();
     }
     
+    /**
+     * 
+     * @return listed columns
+     */
+    public List<String> getColumns() {
+        return columns;
+    }
+    
+    /**
+     * 
+     * @return active columns(listed columns without the main/primary key)
+     */
+    public List<String> getActiveColumns() {
+        return activeColumns;
+    }
+    
+    /**
+     * 
+     * @return columns to be displayed in the display panel
+     */
     public List<Integer> getDisplayColumns() {
-        return this.displayColumns;
+        return displayColumns;
+    }
+    
+    /**
+     * 
+     * @return alternative names of displayed columns
+     */
+    public Map<String, String> getColumnAltTexts() {
+        return columnAltTexts;
+    }
+    
+    /**
+     * 
+     * @param column the column label's index
+     * @param altText column label's alternative name 
+     */
+    public void setColumnAltText(int column, String altText) {
+        columnAltTexts.put(columns.get(column), altText);
+    }
+    
+    /**
+     * 
+     * @param column the column label
+     * @param altText column label's alternative name 
+     */
+    public void setColumnAltText(String column, String altText) {
+        columnAltTexts.put(column, altText);
     }
     
     public static void main(String[] args) {
