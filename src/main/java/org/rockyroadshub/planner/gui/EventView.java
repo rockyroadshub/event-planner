@@ -43,8 +43,9 @@ import net.miginfocom.swing.MigLayout;
 import org.rockyroadshub.planner.database.DatabaseConfig;
 import org.rockyroadshub.planner.database.DatabaseControl;
 import org.rockyroadshub.planner.utils.TextLimiter;
-import org.rockyroadshub.planner.core.Event;
 import org.rockyroadshub.planner.core.Globals;
+import org.rockyroadshub.planner.core.data.Event;
+import org.rockyroadshub.planner.core.data.EventMapper;
 
 /**
  *
@@ -55,7 +56,7 @@ import org.rockyroadshub.planner.core.Globals;
 public class EventView extends JPanel {
     public static final String NAME = "eventview";
     
-    private final JLabel       dateLabel        = new JLabel("Date");
+    private final JLabel       dateLabel        = new JLabel();
    
     private final JLabel       eventLimit       = new JLabel();
     private final JLabel       eventLabel       = new JLabel("Event Title");
@@ -270,41 +271,42 @@ public class EventView extends JPanel {
         }
     }
     
-    private void onSave() {
-        Event evt = Event.getInstance();
-        
+    private void onSave() {        
         event       = eventInput.getText();
         description = descriptionInput.getText();
         location    = locationInput.getText();
         
-        date  = evt.getDate();       
-        year  = evt.getYear();
-        month = evt.getMonth();
-        day   = evt.getDay();
+        date  = "2016-08-23";
         
         int sH = (int)startModelH.getValue();
         int sM = (int)startModelM.getValue();
         int eH = (int)endModelH.getValue();
         int eM = (int)endModelM.getValue();
         
-        start = String.format("%d.%02d.00", sH, sM);
-        end   = String.format("%d.%02d.00", eH, eM);  
-        
-        DatabaseControl dtb = DatabaseControl.getInstance();
-        
-        try {
-            Frame  f = Frame.getInstance();
-            String m = "Are you sure to save these changes?";
-            String t = "Event Planner";
-            int    q = JOptionPane.OK_CANCEL_OPTION;
-            int    o = JOptionPane.OK_OPTION;
-            if(JOptionPane.showConfirmDialog(f, m, t, q) == o) {
-                dtb.update(id, event, description, location, date, year, month, day, start, end);
-                Panel.getInstance().show(EventsDisplay.NAME);
-                EventsDisplay.getInstance().refresh();
-                refresh();
-            }
-        } catch (SQLException ex) { ex.printStackTrace(System.out); }
+        start = String.format("%d:%02d:00", sH, sM);
+        end   = String.format("%d:%02d:00", eH, eM);  
+                
+        Frame  f = Frame.getInstance();
+        String m = "Are you sure to save these changes?";
+        String t = "Event Planner";
+        int    q = JOptionPane.OK_CANCEL_OPTION;
+        int    o = JOptionPane.OK_OPTION;
+        if(JOptionPane.showConfirmDialog(f, m, t, q) == o) {
+            EventMapper map = EventMapper.getInstance();
+            Event eventz = new Event();
+            eventz.setID(id);
+            eventz.setEvent(event);
+            eventz.setDescription(description);
+            eventz.setLocation(location);
+            eventz.setDate(date);
+            eventz.setStart(start);
+            eventz.setEnd(end);
+            map.update(eventz);
+            
+            Panel.getInstance().show(EventsDisplay.NAME);
+            EventsDisplay.getInstance().refresh();
+            refresh();
+        }
     }
     
     private void onEdit() {

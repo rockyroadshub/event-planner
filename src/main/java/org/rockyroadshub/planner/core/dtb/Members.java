@@ -17,6 +17,7 @@
 package org.rockyroadshub.planner.core.dtb;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -27,14 +28,16 @@ import java.util.List;
  */
 public final class Members {
     
-    private final StringBuilder createFormat0 = new StringBuilder("CREATE TABLE %s (");
+    private final StringBuilder createFormat0 = new StringBuilder("CREATE TABLE @ (");
     
     public List<String> columns = new ArrayList<>();
+    public List<Integer> displayColumns = new ArrayList<>();
     
     private String createFormat;
     private String insertFormat;
     private String updateFormat;
     private String deleteFormat;
+    private String selectFormat;
     private String mainKey;
     
     private boolean keyExists = false;
@@ -57,23 +60,29 @@ public final class Members {
         
         return this;
     }
+  
+    public Members setDisplayColumns(Integer... displayColumns) {
+        this.displayColumns.addAll(Arrays.asList(displayColumns));
+        
+        return this;
+    }
     
     public Members pack() {
         createFormat0.replace(createFormat0.length()-1, createFormat0.length(), ")");
         createFormat = createFormat0.toString();
         
-        StringBuilder insertColumn  = new StringBuilder("INSERT INTO %s (");
+        StringBuilder insertColumn  = new StringBuilder("INSERT INTO @ (");
         StringBuilder insertValue   = new StringBuilder("VALUES (");
-        StringBuilder updateFormat0 = new StringBuilder("UPDATE %s");
-        String deleteFormat0 = "DELETE FROM %s WHERE " + mainKey + " = %d";
+        StringBuilder updateFormat0 = new StringBuilder("UPDATE @ SET ");
+        String deleteFormat0 = "DELETE FROM @ WHERE mainKey = %d";
+        String selectFormat0 = "SELECT * FROM @ WHERE mainKey = %d";
         
         columns.stream().map((column) -> {
             insertColumn.append(column).append(",");
             return column;
         }).forEach((column) -> {
             insertValue.append("'%s',");
-            updateFormat0.append(" SET ")
-                         .append(column)
+            updateFormat0.append(column)
                          .append(" = '%s',");
         });
         
@@ -85,7 +94,8 @@ public final class Members {
         
         insertFormat = insertColumn.toString() + insertValue.toString();
         updateFormat = updateFormat0.toString();
-        deleteFormat = deleteFormat0;
+        deleteFormat = deleteFormat0.replaceAll("mainKey", mainKey);
+        selectFormat = selectFormat0.replaceAll("mainKey", mainKey);
         
         return this;
     }
@@ -122,7 +132,34 @@ public final class Members {
         this.deleteFormat = deleteFormat;
     }
     
+    public String getSelectFormat() {
+        return selectFormat;
+    }
+    
+    public void setSelectFormat(String selectFormat) {
+        this.selectFormat = selectFormat;
+    }
+    
     public int getTotalColumns() {
         return columns.size();
+    }
+    
+    public List<Integer> getDisplayColumns() {
+        return this.displayColumns;
+    }
+    
+    public static void main(String[] args) {
+        Members mem = new Members().add("asdf", "qwer", true).add("baka","lang",false).pack()
+                .setDisplayColumns(1,2,5,8,9);
+        Memory  mer = new Memory(mem, "NUB");
+        mem.getDisplayColumns().stream().forEach((i) -> {
+            System.out.println(i);
+        });
+        
+        System.out.println(mer.getMembers().getCreateFormat());
+        System.out.println(mer.getMembers().getInsertFormat());
+        System.out.println(mer.getMembers().getUpdateFormat());
+        System.out.println(mer.getMembers().getDeleteFormat());
+        System.out.println(mer.getMembers().getSelectFormat());
     }
 }

@@ -44,8 +44,6 @@ import org.rockyroadshub.planner.utils.TextLimiter;
 import org.rockyroadshub.planner.core.Globals;
 import org.rockyroadshub.planner.core.data.Event;
 import org.rockyroadshub.planner.core.data.EventMapper;
-import org.rockyroadshub.planner.core.dtb.Members;
-import org.rockyroadshub.planner.core.dtb.Memory;
 /**
  *
  * @author Arnell Christoper D. Dalid

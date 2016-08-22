@@ -44,6 +44,7 @@ public final class EventMapper extends DataMapper {
             .add("EVENT_DAY"  ,"VARCHAR(10)" ,false)
             .add("EVENT_START","TIME"        ,false)
             .add("EVENT_END"  ,"TIME"        ,false)
+            .setDisplayColumns(1,2,5,8,9)
             .pack();
     
     private static final Memory MEMORY = new Memory(MEMBERS, "EVENTS");
@@ -66,13 +67,14 @@ public final class EventMapper extends DataMapper {
             DatabaseControl control = DatabaseControl.getInstance();
             Event event = new Event();
             String command = String.format(
-                    memory.getMembers().getDeleteFormat(), 
+                    memory.getMembers().getSelectFormat(), 
                     id);
             
             String[] data = control.find(command, 
                     memory.getMembers().getTotalColumns())
                     .split(DatabaseControl.SEPARATOR);
             
+            event.setID(id);
             event.setEvent(data[0]);
             event.setDescription(data[1]);
             event.setLocation(data[2]);
@@ -117,6 +119,11 @@ public final class EventMapper extends DataMapper {
         }
     }
 
+    /**
+     * Updates the selected event from the memory
+     * @param data data to be used for updating an event
+     * @throws DataMapperException 
+     */
     @Override
     public void update(Data data) throws DataMapperException {
         Event event = (Event)data;

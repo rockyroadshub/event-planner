@@ -50,20 +50,23 @@ public final class Memory {
     }
     
     private void initializeFormats() {
-        StringBuilder create = new StringBuilder(members.getCreateFormat());
-        StringBuilder insert = new StringBuilder(members.getInsertFormat());
-        StringBuilder update = new StringBuilder(members.getUpdateFormat());
-        StringBuilder delete = new StringBuilder(members.getDeleteFormat());
+        String create = members.getCreateFormat();
+        String insert = members.getInsertFormat();
+        String update = members.getUpdateFormat();
+        String delete = members.getDeleteFormat();
+        String select = members.getSelectFormat();
         
-        create.replace(13, 15, identifier);
-        insert.replace(12, 14, identifier);
-        update.replace(7, 9, identifier);
-        delete.replace(12, 14, identifier);
+        create = create.replaceAll("@", identifier);
+        insert = insert.replaceAll("@", identifier);
+        update = update.replaceAll("@", identifier);
+        delete = delete.replaceAll("@", identifier);
+        select = select.replaceAll("@", identifier);
         
-        members.setCreateFormat(create.toString());
-        members.setInsertFormat(insert.toString());
-        members.setUpdateFormat(update.toString());
-        members.setDeleteFormat(delete.toString());
+        members.setCreateFormat(create);
+        members.setInsertFormat(insert);
+        members.setUpdateFormat(update);
+        members.setDeleteFormat(delete);
+        members.setSelectFormat(select);
     }
     
     public Members getMembers() {

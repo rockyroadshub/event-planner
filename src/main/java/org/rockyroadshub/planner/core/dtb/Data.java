@@ -22,11 +22,9 @@ package org.rockyroadshub.planner.core.dtb;
  * @version 0.0.0
  * @since 1.8
  */
-public class Data {
+public abstract class Data {
     public int id;
     
-    public Data() {}
-
     public int getID() {
         return id;
     }

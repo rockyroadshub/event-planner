@@ -203,7 +203,7 @@ public class EventsDisplay extends JPanel {
             int    o = JOptionPane.OK_OPTION;
             if(JOptionPane.showConfirmDialog(f, m, t, q) == o) {
                 EventMapper map = EventMapper.getInstance();
-                map.delete(getID());
+                map.delete(i);
                 refresh();
             }
         }
