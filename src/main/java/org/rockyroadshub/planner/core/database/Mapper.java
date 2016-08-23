@@ -25,11 +25,32 @@ import java.util.Optional;
  * @since 1.8
  */
 public interface Mapper {
+    /**
+     * Finds a data from a given id
+     * @param id primary/main key of the data
+     * @return returns a data as in "Optional" container
+     * @see java.util.Optional
+     */
     Optional<Data> find(int id);
     
+    /**
+     * Inserts new data in the memory
+     * @param data data to be inserted
+     * @throws DataMapperException 
+     */
     void insert(Data data) throws DataMapperException;
 
+    /**
+     * Updates a data in the memory
+     * @param data data to be updated
+     * @throws DataMapperException 
+     */
     void update(Data data) throws DataMapperException;
 
+    /**
+     * Deletes a data in the memory
+     * @param id primary/main key of the data
+     * @throws DataMapperException 
+     */
     void delete(int id) throws DataMapperException;
 }

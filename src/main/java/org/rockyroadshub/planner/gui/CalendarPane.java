@@ -33,7 +33,6 @@ import net.miginfocom.layout.LC;
 import net.miginfocom.swing.MigLayout;
 import org.rockyroadshub.planner.core.Event;
 import org.rockyroadshub.planner.core.data.EventMapper;
-import org.rockyroadshub.planner.database.DatabaseControl;
 
 /**
  *
@@ -185,7 +184,6 @@ public class CalendarPane extends JPanel {
         int end   = s + e - 1;
         int delta = start - 1;
         
-        DatabaseControl dtb = DatabaseControl.getInstance();
         EventMapper map = EventMapper.getInstance();
         List<Integer> dayList = map.getRegisteredDays(MONTHS[m], String.valueOf(y));
         
@@ -203,15 +201,10 @@ public class CalendarPane extends JPanel {
             if(dayList != null && dayList.contains(current)) {
                 button.setBackground(SCHEDULE_COLOR);
                 int rows = 0;
-                try {
-                    rows = dtb.getRowCount("EVENT_DATE", 
-                    String.format("%d-%02d-%02d", y, m+1, i));
-                } catch (SQLException ex) {}
-                finally {
-                    if(rows != 0) {
-                        button.setToolTipText(String.format(
-                        "You have %d event(s) registered on this date.", rows));
-                    }
+                rows = map.getNumberOfEvents(String.format("%d-%02d-%02d", y, m+1, i));
+                if(rows != 0) {
+                    button.setToolTipText(String.format(
+                            "You have %d event(s) registered on this date.", rows));
                 }
             }
         }

@@ -21,7 +21,6 @@ import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
-import java.sql.SQLException;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -41,11 +40,11 @@ import javax.swing.text.NumberFormatter;
 import net.miginfocom.layout.LC;
 import net.miginfocom.swing.MigLayout;
 import org.rockyroadshub.planner.database.DatabaseConfig;
-import org.rockyroadshub.planner.database.DatabaseControl;
 import org.rockyroadshub.planner.utils.TextLimiter;
 import org.rockyroadshub.planner.core.Globals;
 import org.rockyroadshub.planner.core.data.Event;
 import org.rockyroadshub.planner.core.data.EventMapper;
+import org.rockyroadshub.planner.core.database.Data;
 
 /**
  *
@@ -337,17 +336,18 @@ public class EventView extends JPanel {
         endMinute.setEnabled(bool);   
     }
     
-    public void set(Object... args) 
+    public void set(Data data) 
     {
-        this.event       = String.valueOf(args[0]);
-        this.description = String.valueOf(args[1]);
-        this.location    = String.valueOf(args[2]);
-        this.date        = String.valueOf(args[3]);
-        this.year        = String.valueOf(args[4]);
-        this.month       = String.valueOf(args[5]);
-        this.day         = String.valueOf(args[6]);
-        this.start       = String.valueOf(args[7]);
-        this.end         = String.valueOf(args[8]);
+        Event evt        = (Event)data;
+        this.event       = evt.getEvent();
+        this.description = evt.getDescription();
+        this.location    = evt.getLocation();
+        this.date        = evt.getDate();
+        this.year        = evt.getYear();
+        this.month       = evt.getMonth();
+        this.day         = evt.getDay();
+        this.start       = evt.getStart();
+        this.end         = evt.getEnd();
         
         eventInput.setText(event);
         descriptionInput.setText(description);

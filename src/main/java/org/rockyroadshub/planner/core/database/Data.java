@@ -23,12 +23,23 @@ package org.rockyroadshub.planner.core.database;
  * @since 1.8
  */
 public abstract class Data {
-    public int id;
+    /**
+     * ID variable
+     */
+    private int id;
     
+    /**
+     * 
+     * @return primary/main key of a data
+     */
     public int getID() {
         return id;
     }
     
+    /**
+     * Sets the primary/main key of the data
+     * @param id ID parameter
+     */
     public void setID(int id) {
         this.id = id;
     }

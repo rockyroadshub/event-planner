@@ -22,7 +22,6 @@ import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import org.rockyroadshub.planner.database.DatabaseConnection;
 
 /**
  *
@@ -103,7 +102,7 @@ public final class DatabaseControl {
      * <strong>Note:</strong> This command returns the first row it gets from the command expression
      * @param SQLCommand command parameter
      * @param totalColumns number of columns in the memory
-     * @return returns all of the information of a row in array
+     * @return returns all of the information of a row an in array
      * @throws SQLException 
      */
     @LogExceptions
@@ -126,6 +125,12 @@ public final class DatabaseControl {
         return data;
     }
     
+    /**
+     * 
+     * @param SQLCommand command parameter
+     * @return returns the number of results got from a command
+     * @throws SQLException 
+     */
     @LogExceptions
     public int getRowCount(String SQLCommand) throws SQLException {
         int i = 0;

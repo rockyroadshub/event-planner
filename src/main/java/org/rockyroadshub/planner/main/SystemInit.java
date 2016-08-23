@@ -17,8 +17,7 @@ package org.rockyroadshub.planner.main;
 
 import javax.swing.SwingUtilities;
 import org.rockyroadshub.planner.database.DatabaseConfig;
-import org.rockyroadshub.planner.database.DatabaseConnection;
-import org.rockyroadshub.planner.database.DatabaseControl;
+import org.rockyroadshub.planner.core.database.DatabaseConnection;
 import org.rockyroadshub.planner.gui.Frame;
 
 /**
@@ -30,9 +29,8 @@ import org.rockyroadshub.planner.gui.Frame;
 public class SystemInit {    
     static {
         System.setProperty("log4j.configurationFile", "prop/log4j2.xml");
-        DatabaseConnection.getInstance().initialize();
+        DatabaseConnection.getInstance().init();
         DatabaseConfig.getInstance().initialize();
-        DatabaseControl.getInstance().initialize();
     }
     
     public static void main(String[] args) {

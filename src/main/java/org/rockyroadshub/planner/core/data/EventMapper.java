@@ -71,6 +71,12 @@ public final class EventMapper extends DataMapper {
         return Holder.INSTANCE;
     }
     
+    /**
+     * Finds an event from a given id
+     * @param id primary/main key of the event
+     * @return returns an event as in "Optional" container
+     * @see java.util.Optional
+     */
     @Override
     public Optional<Data> find(int id) {
         try {
@@ -95,7 +101,7 @@ public final class EventMapper extends DataMapper {
             
         } 
         catch (SQLException ex) {
-            throw new DataMapperException(ex);
+            return Optional.empty();
         }
     }
 
@@ -177,6 +183,40 @@ public final class EventMapper extends DataMapper {
         }
     }
     
+    /**
+     * Gets the number of events in a given date
+     * @param date date parameter
+     * @return number of events
+     */
+    public int getNumberOfEvents(String date) {
+        DatabaseControl control = DatabaseControl.getInstance();        
+        String command = String.format(
+            "SELECT * FROM EVENTS WHERE EVENT_DATE = '%s'", date);
+            
+        try {
+            return control.getRowCount(command);
+        } catch (SQLException ex) {
+            throw new DataMapperException(ex);
+        }
+    }
+    
+    /**
+     * Gets the number of events in a given month and year
+     * @param month month parameter
+     * @param year year parameter
+     * @return number of events
+     */
+    public int getNumberOfEvents(String month, String year) {
+        DatabaseControl control = DatabaseControl.getInstance();        
+        String command = String.format(
+            "SELECT * FROM EVENTS WHERE EVENT_MONTH = '%s' AND EVENT_YEAR = '%s'", month,year);
+        
+        try {
+            return control.getRowCount(command);
+        } catch (SQLException ex) {
+            throw new DataMapperException(ex);
+        }
+    }
     
     /**
      * Gets all events registered in a given date
@@ -184,8 +224,8 @@ public final class EventMapper extends DataMapper {
      * @return list of dates
      */
     public List<Event> getEvents(String date) {
-        org.rockyroadshub.planner.database.DatabaseConnection conn0 = 
-        org.rockyroadshub.planner.database.DatabaseConnection.getInstance();
+        org.rockyroadshub.planner.core.database.DatabaseConnection conn0 = 
+        org.rockyroadshub.planner.core.database.DatabaseConnection.getInstance();
         Connection conn = conn0.getConnection();
         
         try(PreparedStatement stmt = 
@@ -197,6 +237,7 @@ public final class EventMapper extends DataMapper {
                 while(rs.next()) {
                     Event event = new Event();
                     event.setID(rs.getInt("EVENT_ID"));
+                    event.setEvent(rs.getString("EVENT"));
                     event.setDescription(rs.getString("DESCRIPTION"));
                     event.setLocation(rs.getString("LOCATION"));
                     event.setDate(rs.getString("EVENT_DATE"));
@@ -224,8 +265,8 @@ public final class EventMapper extends DataMapper {
      * @return registered days with an event on a list
      */
     public List<Integer> getRegisteredDays(String month, String year) {
-        org.rockyroadshub.planner.database.DatabaseConnection conn0 = 
-        org.rockyroadshub.planner.database.DatabaseConnection.getInstance();
+        org.rockyroadshub.planner.core.database.DatabaseConnection conn0 = 
+        org.rockyroadshub.planner.core.database.DatabaseConnection.getInstance();
         Connection conn = conn0.getConnection();
         try(PreparedStatement stmt = 
             conn.prepareStatement("SELECT * FROM EVENTS WHERE EVENT_MONTH = ? AND EVENT_YEAR = ?"))
@@ -256,8 +297,8 @@ public final class EventMapper extends DataMapper {
      * @param year year of the event
      */
     public void deleteAll(String month, String year) {
-        org.rockyroadshub.planner.database.DatabaseConnection conn0 = 
-        org.rockyroadshub.planner.database.DatabaseConnection.getInstance();
+        org.rockyroadshub.planner.core.database.DatabaseConnection conn0 = 
+        org.rockyroadshub.planner.core.database.DatabaseConnection.getInstance();
         Connection conn = conn0.getConnection();
         try(PreparedStatement stmt = 
             conn.prepareStatement("SELECT * FROM EVENTS WHERE EVENT_MONTH = ? AND EVENT_YEAR = ?"))

@@ -97,6 +97,11 @@ public final class Members {
         String deleteFormat0 = "DELETE FROM @ WHERE mainKey = %d";
         String selectFormat0 = "SELECT * FROM @ WHERE mainKey = %d";
         
+//        String select1 = "SELECT * FROM @ WHERE %s";
+//        String select2 = "SELECT * FROM @ WHERE %s = '%s'";
+//        String select3 = "SELECT * FROM @ WHERE %s = '%s' OR %s = '%s'";
+//        String select4 = "SELECT * FROM @ WHERE %s = '%s' AND %s = '%s'";
+        
         activeColumns.stream().map((column) -> {
             insertColumn.append(column).append(",");
             return column;
@@ -217,7 +222,7 @@ public final class Members {
     public void setColumnAltText(String column, String altText) {
         columnAltTexts.put(column, altText);
     }
-    
+
     public static void main(String[] args) {
         Members mem = new Members().add("asdf", "qwer", true).add("baka","lang",false).pack()
                 .setDisplayColumns(1,2,5,8,9);

@@ -36,17 +36,35 @@ public class Event extends Data {
     private String start;
     private String end;
     
+    /**
+     * Start variable - hour
+     */
     private int startHour;
+    
+    /**
+     * Start variable - minute
+     */
     private int startMinute;
+    
+    /**
+     * End variable - hour
+     */
     private int endHour;
+    
+    /**
+     * End variable - minute
+     */
     private int endMinute;
     
+    /**
+     * Event's constructor
+     */
     public Event() {
         super();
     }
     
     /**
-     * Event Constructor
+     * Event's Constructor
      * @param event title/name of the event
      * @param description brief description of the event
      * @param location where the event is going to take place
@@ -89,73 +107,141 @@ public class Event extends Data {
         this.event = event;
     }
     
+    /**
+     * Gets the description of an event
+     * @return description parameter
+     */
     public String getDescription() {
         return description;
     }
     
+    /**
+     * Sets the description of an event
+     * @param description description parameter
+     */
     public void setDescription(String description) {
         this.description = description;
     }
     
+    /**
+     * Gets the location of an event
+     * @return location parameter
+     */
     public String getLocation() {
         return location;
     }
     
+    /**
+     * Sets the location of an event
+     * @param location location parameter
+     */
     public void setLocation(String location) {
         this.location = location;
     }
     
+    /**
+     * Gets the date of an event
+     * @return date parameter
+     */
     public String getDate() {
         return date;
     }
     
+    /**
+     * Sets the date of an event
+     * @param date date parameter
+     */
     public void setDate(String date) {
         this.date = date;
         breakDate(date);
     }   
     
+    /**
+     * Gets the time when the event will start
+     * @return start time parameter
+     */
     public String getStart() {
         return start;
     }
     
+    /**
+     * Sets the time when the event will start
+     * @param start start time parameter
+     */
     public void setStart(String start) {
         this.start = start;
         breakStartTime(start);
     }
     
+    /**
+     * Gets the time when the event will end
+     * @return end time parameter
+     */
     public String getEnd() {
         return end;
     }
     
+    /**
+     * Sets the time when the event will end
+     * @param end end time parameter
+     */
     public void setEnd(String end) {
         this.end = end;
         breakEndTime(end);
     }  
-        
+     
+    /**
+     * 
+     * @return year of the event
+     */
     public String getYear() {
         return year;
     }
     
+    /**
+     * 
+     * @return month of the event
+     */
     public String getMonth() {
         return month;
     }
     
+    /**
+     * 
+     * @return day of the event
+     */
     public String getDay() {
         return day;
     }
     
+    /**
+     * 
+     * @return start of the event (hour parameter)
+     */
     public int getStartHour() {
         return startHour;
     }
     
+    /**
+     * 
+     * @return start of the event (minute parameter)
+     */
     public int getStartMinute() {
         return startMinute;
     }
     
+    /**
+     * 
+     * @return end of the event (hour parameter)
+     */
     public int getEndHour() {
         return endHour;
     }
     
+    /**
+     * 
+     * @return end of the event (minute parameter)
+     */
     public int getEndMinute() {
         return endMinute;
     }

@@ -36,7 +36,6 @@ import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import net.miginfocom.swing.MigLayout;
 import org.rockyroadshub.planner.core.Event;
-import org.rockyroadshub.planner.database.DatabaseControl;
 import org.rockyroadshub.planner.core.Globals;
 import org.rockyroadshub.planner.core.data.EventMapper;
 
@@ -185,12 +184,8 @@ public class EventsDisplay extends JPanel {
             EventView v = EventView.getInstance();
             v.setID(i);
             v.enableGUI(false);
-            v.setDate(String.valueOf(table.getModel().getValueAt(table.getSelectedRow(), 2)));
-            
-            try {
-                v.set(DatabaseControl.getInstance().select(i));
-            } 
-            catch (SQLException ex) {}
+            v.setDate(String.valueOf(table.getModel().getValueAt(table.getSelectedRow(), 2)));          
+            v.set(EventMapper.getInstance().find(i).get());
         }
     }
     
