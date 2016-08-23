@@ -32,6 +32,7 @@ import javax.swing.JPanel;
 import net.miginfocom.layout.LC;
 import net.miginfocom.swing.MigLayout;
 import org.rockyroadshub.planner.core.Event;
+import org.rockyroadshub.planner.core.data.EventMapper;
 import org.rockyroadshub.planner.database.DatabaseControl;
 
 /**
@@ -185,17 +186,8 @@ public class CalendarPane extends JPanel {
         int delta = start - 1;
         
         DatabaseControl dtb = DatabaseControl.getInstance();
-        List<Integer> dayList = null;
-        String _m  = "EVENT_MONTH";
-        String _m0 = MONTHS[m];
-        String _y  = "EVENT_YEAR";
-        String _y0 = String.valueOf(y);
-        String _o  = "AND";
-        String _d  = "EVENT_DAY";
-        
-        try {
-            dayList = dtb.select(_m,_m0,_y,_y0,_o,_d);            
-        }catch (SQLException ex) {}
+        EventMapper map = EventMapper.getInstance();
+        List<Integer> dayList = map.getRegisteredDays(MONTHS[m], String.valueOf(y));
         
         for(int i = start; i < end; i++) {
             int current = i - delta;
