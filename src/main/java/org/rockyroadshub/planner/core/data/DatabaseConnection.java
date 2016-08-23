@@ -25,7 +25,7 @@ import java.sql.SQLException;
  *
  * @author Arnell Christoper D. Dalid
  * @version 0.0.0
- * @since 2016-08-13
+ * @since 1.8
  */
 public final class DatabaseConnection {
     private static final String PROTOCOL = "jdbc:derby:bin/mem;create=true";

@@ -16,16 +16,19 @@
 
 package org.rockyroadshub.planner.core.data;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-import org.rockyroadshub.planner.core.dtb.DatabaseControl;
-import org.rockyroadshub.planner.core.dtb.Data;
-import org.rockyroadshub.planner.core.dtb.DataMapperException;
-import org.rockyroadshub.planner.core.dtb.DataMapper;
-import org.rockyroadshub.planner.core.dtb.Members;
-import org.rockyroadshub.planner.core.dtb.Memory;
+import org.rockyroadshub.planner.core.database.DatabaseControl;
+import org.rockyroadshub.planner.core.database.Data;
+import org.rockyroadshub.planner.core.database.DataMapperException;
+import org.rockyroadshub.planner.core.database.DataMapper;
+import org.rockyroadshub.planner.core.database.Members;
+import org.rockyroadshub.planner.core.database.Memory;
 
 /**
  *
@@ -49,15 +52,15 @@ public final class EventMapper extends DataMapper {
             .setDisplayColumns(0,1,4,8,9)
             .pack();
     
+    private static final String[] ALTTEXTS = {"ID", "Title", "Date", "Start", "End"};  
     private static final Memory MEMORY = new Memory(MEMBERS, "EVENTS");
+    
+    private final List<Integer> dayList = new ArrayList<>();
+    private final List<Event> evtList = new ArrayList<>();
     
     private EventMapper() {
         setMemory(MEMORY);
-        memory.getMembers().setColumnAltText(0, "ID");
-        memory.getMembers().setColumnAltText(1, "Title");
-        memory.getMembers().setColumnAltText(4, "Date");
-        memory.getMembers().setColumnAltText(8, "Start");
-        memory.getMembers().setColumnAltText(9, "End");
+        setDisplayAltTexts(ALTTEXTS);
     }
     
     private static final class Holder {
@@ -74,20 +77,19 @@ public final class EventMapper extends DataMapper {
             DatabaseControl control = DatabaseControl.getInstance();
             Event event = new Event();
             String command = String.format(
-                    memory.getMembers().getSelectFormat(), 
+                    getMembers().getSelectFormat(), 
                     id);
             
             String[] data = control.find(command, 
-                    memory.getMembers().getTotalColumns())
-                    .split(DatabaseControl.SEPARATOR);
+                    getMembers().getTotalColumns());
             
-            event.setID(id);
-            event.setEvent(data[0]);
-            event.setDescription(data[1]);
-            event.setLocation(data[2]);
-            event.setDate(data[3]);
-            event.setStart(data[7]);
-            event.setEnd(data[8]);
+            event.setID(Integer.parseInt(data[0]));
+            event.setEvent(data[1]);
+            event.setDescription(data[2]);
+            event.setLocation(data[3]);
+            event.setDate(data[4]);
+            event.setStart(data[8]);
+            event.setEnd(data[9]);
             
             return Optional.of(event);
             
@@ -107,7 +109,7 @@ public final class EventMapper extends DataMapper {
         Event event = (Event)data;
         DatabaseControl control = DatabaseControl.getInstance();
         String command = String.format(
-                memory.getMembers().getInsertFormat(),
+                getMembers().getInsertFormat(),
                 event.getEvent(),
                 event.getDescription(),
                 event.getLocation(),
@@ -136,7 +138,7 @@ public final class EventMapper extends DataMapper {
         Event event = (Event)data;
         DatabaseControl control = DatabaseControl.getInstance();
         String command = String.format(
-                memory.getMembers().getUpdateFormat(),
+                getMembers().getUpdateFormat(),
                 event.getEvent(),
                 event.getDescription(),
                 event.getLocation(),
@@ -165,7 +167,7 @@ public final class EventMapper extends DataMapper {
     public void delete(int id) throws DataMapperException {
         DatabaseControl control = DatabaseControl.getInstance();
         String command = String.format(
-                memory.getMembers().getDeleteFormat(), id);
+                getMembers().getDeleteFormat(), id);
         
         try {
             control.execute(command);
@@ -175,35 +177,105 @@ public final class EventMapper extends DataMapper {
         }
     }
     
+    
     /**
-     * 
-     * @return listed columns
+     * Gets all events registered in a given date
+     * @param date date of the event
+     * @return list of dates
      */
-    public List<String> getColumns() {
-        return memory.getMembers().getColumns();
+    public List<Event> getEvents(String date) {
+        org.rockyroadshub.planner.database.DatabaseConnection conn0 = 
+        org.rockyroadshub.planner.database.DatabaseConnection.getInstance();
+        Connection conn = conn0.getConnection();
+        
+        try(PreparedStatement stmt = 
+            conn.prepareStatement("SELECT * FROM EVENTS WHERE EVENT_DATE = ?"))
+        {
+            stmt.setString(1, date);
+            evtList.clear();
+            try(ResultSet rs = stmt.executeQuery()) {
+                while(rs.next()) {
+                    Event event = new Event();
+                    event.setID(rs.getInt("EVENT_ID"));
+                    event.setDescription(rs.getString("DESCRIPTION"));
+                    event.setLocation(rs.getString("LOCATION"));
+                    event.setDate(rs.getString("EVENT_DATE"));
+                    event.setStart(rs.getString("EVENT_START"));
+                    event.setEnd(rs.getString("EVENT_END"));
+                    evtList.add(event);
+                }
+            }
+            catch (SQLException ex) {
+                throw new DataMapperException(ex);
+            }
+            
+        } 
+        catch (SQLException ex) {
+            throw new DataMapperException(ex);
+        }
+        
+        return evtList;
     }
     
     /**
-     * 
-     * @return active columns(listed columns without the main/primary key)
+     * Gets all the dates with a registered event with a given month and date
+     * @param month month of the event
+     * @param year year of the event
+     * @return registered days with an event on a list
      */
-    public List<String> getActiveColumns() {
-        return memory.getMembers().getActiveColumns();
-    }    
-    
-    /**
-     * 
-     * @return columns to be displayed in the display panel
-     */
-    public List<Integer> getDisplayColumns() {
-        return memory.getMembers().getDisplayColumns();
+    public List<Integer> getRegisteredDays(String month, String year) {
+        org.rockyroadshub.planner.database.DatabaseConnection conn0 = 
+        org.rockyroadshub.planner.database.DatabaseConnection.getInstance();
+        Connection conn = conn0.getConnection();
+        try(PreparedStatement stmt = 
+            conn.prepareStatement("SELECT * FROM EVENTS WHERE EVENT_MONTH = ? AND EVENT_YEAR = ?"))
+        {
+            stmt.setString(1, month);
+            stmt.setString(2, year); 
+            dayList.clear();
+            try(ResultSet rs = stmt.executeQuery()) {
+                while(rs.next()) {
+                    dayList.add(rs.getInt("EVENT_DAY"));
+                }
+            }
+            catch (SQLException ex) {
+                throw new DataMapperException(ex);
+            }
+            
+        }
+        catch (SQLException ex) {
+            throw new DataMapperException(ex);
+        }
+        
+        return dayList;
     }
     
     /**
-     * 
-     * @return alternative names of displayed columns
+     * Deletes all the registered events in a given month and year
+     * @param month month of the event
+     * @param year year of the event
      */
-    public Map<String, String> getColumnAltTexts() {
-        return memory.getMembers().getColumnAltTexts();
+    public void deleteAll(String month, String year) {
+        org.rockyroadshub.planner.database.DatabaseConnection conn0 = 
+        org.rockyroadshub.planner.database.DatabaseConnection.getInstance();
+        Connection conn = conn0.getConnection();
+        try(PreparedStatement stmt = 
+            conn.prepareStatement("SELECT * FROM EVENTS WHERE EVENT_MONTH = ? AND EVENT_YEAR = ?"))
+        {
+            stmt.setString(1, month);
+            stmt.setString(2, year); 
+            try(ResultSet rs = stmt.executeQuery()) {
+                while(rs.next()) {
+                    delete(rs.getInt("EVENT_ID"));
+                }
+            }
+            catch (SQLException ex) {
+                throw new DataMapperException(ex);
+            }
+            
+        }
+        catch (SQLException ex) {
+            throw new DataMapperException(ex);
+        }
     }
 }

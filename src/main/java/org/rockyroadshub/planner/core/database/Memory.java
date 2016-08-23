@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.rockyroadshub.planner.core.dtb;
+package org.rockyroadshub.planner.core.database;
 
 /**
  *

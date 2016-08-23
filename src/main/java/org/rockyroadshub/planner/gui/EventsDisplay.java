@@ -22,10 +22,7 @@ import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.List;
 import java.util.Map;
 import javax.imageio.ImageIO;
@@ -39,11 +36,9 @@ import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import net.miginfocom.swing.MigLayout;
 import org.rockyroadshub.planner.core.Event;
-import org.rockyroadshub.planner.database.DatabaseConfig;
 import org.rockyroadshub.planner.database.DatabaseControl;
 import org.rockyroadshub.planner.core.Globals;
 import org.rockyroadshub.planner.core.data.EventMapper;
-import org.rockyroadshub.planner.database.DatabaseConnection;
 
 /**
  *
@@ -97,8 +92,6 @@ public class EventsDisplay extends JPanel {
         initMenu();
         initButtons();
         
-        DatabaseConfig config = DatabaseConfig.getInstance();
-//        List<String> columns = config.getDisplayColumns();
         EventMapper map = EventMapper.getInstance();
         List<String> c = map.getColumns();
         List<Integer> display = map.getDisplayColumns();
@@ -229,33 +222,20 @@ public class EventsDisplay extends JPanel {
     
     public void refresh() {
         Event event = Event.getInstance();
-        String date = event.getDate();
+        String date0 = event.getDate();
         
         tableModel.getDataVector().removeAllElements();
         tableModel.fireTableDataChanged();
         
-        DatabaseConnection  dtb         = DatabaseConnection.getInstance();
-        DatabaseConfig      config      = DatabaseConfig.getInstance();
-        List<String>        displayList = config.getDisplayColumns();
-        Map<String, String> displayMap  = config.getDisplayColMap();
-        String              tableName   = config.getTableName();
-        Connection          connection  = dtb.getConnection();
-        
-        try(Statement stmt = connection.createStatement()) {
-            String statement = String.format(
-                    "SELECT * FROM %s WHERE EVENT_DATE = '%s'", tableName, date);
-            try(ResultSet rs = stmt.executeQuery(statement)) {
-                while(rs.next()) {
-                    int i = 0;
-                    for(String c : displayList) {
-                        String data = rs.getString(displayMap.get(c));
-                        rowData[i] = data;
-                        i++;
-                    }
-                    tableModel.addRow(rowData);
-                }
-            }
-        } catch (SQLException ex) {}
+        EventMapper map = EventMapper.getInstance();
+        for(org.rockyroadshub.planner.core.data.Event g : map.getEvents(date0)) {
+            rowData[0] = g.getID();
+            rowData[1] = g.getEvent();
+            rowData[2] = g.getDate();
+            rowData[3] = g.getStart();
+            rowData[4] = g.getEnd();
+            tableModel.addRow(rowData);
+        }
     }
     
     public void setDate(String date) {

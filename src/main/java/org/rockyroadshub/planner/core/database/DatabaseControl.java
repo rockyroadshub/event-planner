@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.rockyroadshub.planner.core.dtb;
+package org.rockyroadshub.planner.core.database;
 
 import com.jcabi.aspects.LogExceptions;
 import java.sql.Connection;
@@ -28,11 +28,9 @@ import org.rockyroadshub.planner.database.DatabaseConnection;
  *
  * @author Arnell Christoper D. Dalid
  * @version 0.0.0
- * @since 2016-08-13
+ * @since 1.8
  */
-public final class DatabaseControl {
-    public static final String SEPARATOR = ";";
-    
+public final class DatabaseControl {    
     private DatabaseControl() {}
     
     private static final class Holder {
@@ -43,6 +41,11 @@ public final class DatabaseControl {
         return Holder.INSTANCE;
     }  
     
+    /**
+     * Creates a new memory in the database
+     * @param memory memory to be created
+     * @throws SQLException
+     */
     @LogExceptions
     public void create(Memory memory) throws SQLException {
         String schemaPattern = memory.getSchemaPattern();
@@ -57,6 +60,14 @@ public final class DatabaseControl {
         }
     }
     
+    /**
+     * Checks if a memory already exists
+     * @param connection connection of the memory (database) where all of the data are saved
+     * @param schemaPattern schema pattern parameter
+     * @param tableNamePattern table name parameter
+     * @return returns true if a memory already exists; returns false otherwise
+     * @throws SQLException 
+     */
     @LogExceptions
     private boolean exists(Connection connection, 
             String schemaPattern,
@@ -72,6 +83,11 @@ public final class DatabaseControl {
         }
     }
     
+    /**
+     * Executes a given SQL command
+     * @param SQLCommand command parameter
+     * @throws SQLException 
+     */
     @LogExceptions
     public void execute(String SQLCommand) throws SQLException {
         DatabaseConnection connection = DatabaseConnection.getInstance();
@@ -81,25 +97,33 @@ public final class DatabaseControl {
         }
     }
     
+    /**
+     * Gets all of the data in a row by saving it in an array
+     * <p>
+     * <strong>Note:</strong> This command returns the first row it gets from the command expression
+     * @param SQLCommand command parameter
+     * @param totalColumns number of columns in the memory
+     * @return returns all of the information of a row in array
+     * @throws SQLException 
+     */
     @LogExceptions
-    public String find(String SQLCommand, int totalColumns) 
+    public String[] find(String SQLCommand, int totalColumns) 
             throws SQLException 
     {
         DatabaseConnection connection = DatabaseConnection.getInstance();
         Connection connection0 = connection.getConnection();
-        StringBuilder builder = new StringBuilder();
+        String[] data = new String[totalColumns + 1];
         
         try(Statement stmt = connection0.createStatement()) {
             try(ResultSet rs = stmt.executeQuery(SQLCommand)) {
                 if(rs.next()) {
-                    for(int i = 1; i < totalColumns + 1; i++) {
-                        builder.append(rs.getString(i)).append(SEPARATOR);
+                    for(int i = 0; i < totalColumns + 1; i++) {
+                        data[i] = rs.getString(i+1);
                     }
-                    builder.replace(builder.length()-1, builder.length(), "");
                 }           
             }
         }
-        return builder.toString();
+        return data;
     }
     
     @LogExceptions

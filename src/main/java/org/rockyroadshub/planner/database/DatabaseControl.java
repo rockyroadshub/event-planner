@@ -45,7 +45,7 @@ public class DatabaseControl implements Initializable {
     private String tableName;
     private String keyName;
     private List<String> columnsNList = new ArrayList<>();
-    private final List<String> dayList = new ArrayList<>();
+    private final List<Integer> dayList = new ArrayList<>();
     private final List<String> evtList = new ArrayList<>();
     private String[] dataList;
     
@@ -170,7 +170,7 @@ public class DatabaseControl implements Initializable {
      * @throws SQLException 
      */
     @LogExceptions
-    public Object[] select(int id) throws SQLException {
+    public String[] select(int id) throws SQLException {
         try(Statement stmt = connection.createStatement()) {
             String statement = String.format(selectFormat0,id);
             try(ResultSet rs = stmt.executeQuery(statement)) {
@@ -245,7 +245,7 @@ public class DatabaseControl implements Initializable {
      * @throws SQLException 
      */
     @LogExceptions
-    public List<String> select(String c0, String v0, String c1, 
+    public List<Integer> select(String c0, String v0, String c1, 
                                String v1, String o , String d) 
             throws SQLException 
     {
@@ -254,7 +254,7 @@ public class DatabaseControl implements Initializable {
             String statement = String.format(selectFormat2,c0,v0,o,c1,v1);
             try(ResultSet rs = stmt.executeQuery(statement)) {
                 while(rs.next()) {
-                    dayList.add(rs.getString(d));
+                    dayList.add(Integer.parseInt(rs.getString(d)));
                 }
             }
         }

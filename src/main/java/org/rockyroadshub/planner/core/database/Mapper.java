@@ -14,16 +14,22 @@
  * limitations under the License.
  */
 
-package org.rockyroadshub.planner.core.dtb;
+package org.rockyroadshub.planner.core.database;
+
+import java.util.Optional;
 
 /**
  *
  * @author Arnell Christoper D. Dalid
  * @version 0.0.0
- * @since 2016-08-13
+ * @since 1.8
  */
-public class DataMapperException extends RuntimeException {
-    public DataMapperException(final Throwable cause) {
-        super(cause);
-    }
+public interface Mapper {
+    Optional<Data> find(int id);
+    
+    void insert(Data data) throws DataMapperException;
+
+    void update(Data data) throws DataMapperException;
+
+    void delete(int id) throws DataMapperException;
 }

@@ -185,7 +185,7 @@ public class CalendarPane extends JPanel {
         int delta = start - 1;
         
         DatabaseControl dtb = DatabaseControl.getInstance();
-        List<String> dayList = null;
+        List<Integer> dayList = null;
         String _m  = "EVENT_MONTH";
         String _m0 = MONTHS[m];
         String _y  = "EVENT_YEAR";
@@ -208,7 +208,7 @@ public class CalendarPane extends JPanel {
                 button.setForeground(CURRENT_DAY_COLOR);
             }
             
-            if(dayList != null && dayList.contains(String.valueOf(current))) {
+            if(dayList != null && dayList.contains(current)) {
                 button.setBackground(SCHEDULE_COLOR);
                 int rows = 0;
                 try {

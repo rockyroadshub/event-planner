@@ -14,9 +14,7 @@
  * limitations under the License.
  */
 
-package org.rockyroadshub.planner.core.dtb;
-
-import java.util.Optional;
+package org.rockyroadshub.planner.core.database;
 
 /**
  *
@@ -24,12 +22,8 @@ import java.util.Optional;
  * @version 0.0.0
  * @since 1.8
  */
-public interface Mapper {
-    Optional<Data> find(int id);
-
-    void insert(Data data) throws DataMapperException;
-
-    void update(Data data) throws DataMapperException;
-
-    void delete(int id) throws DataMapperException;
+public class DataMapperException extends RuntimeException {
+    public DataMapperException(final Throwable cause) {
+        super(cause);
+    }
 }

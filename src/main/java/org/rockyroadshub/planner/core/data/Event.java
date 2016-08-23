@@ -16,7 +16,7 @@
 
 package org.rockyroadshub.planner.core.data;
 
-import org.rockyroadshub.planner.core.dtb.Data;
+import org.rockyroadshub.planner.core.database.Data;
 import org.rockyroadshub.planner.gui.CalendarPane;
 
 /**
@@ -170,7 +170,7 @@ public class Event extends Data {
         
         this.year = dates[0];
         this.month = CalendarPane.MONTHS[i-1];
-        this.day = dates[2];
+        this.day = dates[2];        
     }
     
     /**
