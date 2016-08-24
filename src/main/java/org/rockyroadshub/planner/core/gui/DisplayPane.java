@@ -138,18 +138,22 @@ public final class DisplayPane extends AbstractPane {
         homeButton.setToolTipText(Globals.HOME);
         homeButton.setName(CalendarPane.NAME);
         homeButton.addActionListener(action);
+        homeButton.setIcon(Globals.ICONS.get(Globals.HOME));
                 
         addButton.setToolTipText(Globals.ADD);
         addButton.setName(FormPane.NAME);
         addButton.addActionListener(action);
+        addButton.setIcon(Globals.ICONS.get(Globals.ADD));
         
         viewButton.setToolTipText(Globals.VIEW);
         viewButton.setName(ViewPane.NAME);
         viewButton.addActionListener(action);
+        viewButton.setIcon(Globals.ICONS.get(Globals.VIEW));
         
         deleteButton.setToolTipText(Globals.DELETE);
         deleteButton.setName(Globals.DELETE);
         deleteButton.addActionListener(action);
+        deleteButton.setIcon(Globals.ICONS.get(Globals.DELETE));
     }
     
     private void initTableModel() {

@@ -15,53 +15,82 @@
  */
 package org.rockyroadshub.planner.core.gui;
 
-import com.jcabi.aspects.LogExceptions;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Image;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URISyntaxException;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
-import org.rockyroadshub.planner.core.Globals;
-import org.rockyroadshub.planner.core.gui.MainPane;
+import org.apache.logging.log4j.core.util.FileUtils;
+import org.rockyroadshub.planner.core.utils.Globals;
 
 /**
  *
  * @author Arnell Christoper D. Dalid
  * @version 0.0.0
- * @since 2016-08-13
+ * @since 1.8
  */
-public class Frame extends JFrame {
+public final class Frame extends JFrame {
     private Frame() {}
     
-    public final void initialize() {
+    public static Frame getInstance() {
+        return Holder.INSTANCE;
+    }
+    
+    private static final class Holder {
+        private static final Frame INSTANCE = new Frame();
+    }  
+    
+    public void initialize() {
+        try {
+            File[] files = new File(Globals.ICONS_PATH).listFiles();
+            for(File file : files) {
+                Image img = ImageIO.read(file);
+                int index = file.getName().lastIndexOf('.');
+                String name = file.getName().substring(0, index);
+                Globals.ICONS.put(name, new ImageIcon(img)); 
+            }
+        } 
+        catch (IOException ex) {
+            throw new RuntimeException(ex);
+        }
+        
         MainPane panel = MainPane.getInstance();
         panel.initialize();
         
         setLayout(new BorderLayout());   
-        setTitle("Event Planner");
+        setTitle(Globals.FRAME_TITLE);
         setSize(800, 600);
         setPreferredSize(new Dimension(580, 650));
         addWindowListener(exit);
         setResizable(false);
         setVisible(true);
-        try {
-            initIcon("calendar-icon.png");
-        }catch (IOException ex) {}
         add(panel, BorderLayout.CENTER);
+        initIcon();
         pack();
         setLocationRelativeTo(null);
     }
     
-    @LogExceptions
-    private void initIcon(String n) throws IOException {
-        Image img = ImageIO.read(getClass().getResource(String.format(Globals.IMAGES_ROOT, n)));
-        setIconImage(img);
+    private void initIcon() {
+        try(InputStream in = getClass().getResourceAsStream(Globals.FRAME_ICON)) {
+            BufferedImage img = ImageIO.read(in);
+            setIconImage(img);
+        } 
+        catch (IOException ex) {
+            throw new RuntimeException(ex);
+        }
     }
     
     private final WindowListener exit = new WindowAdapter(){
@@ -76,12 +105,4 @@ public class Frame extends JFrame {
             }
         }
     };
-    
-    public static Frame getInstance() {
-        return Holder.INSTANCE;
-    }
-    
-    private static final class Holder {
-        private static final Frame INSTANCE = new Frame();
-    }  
 }

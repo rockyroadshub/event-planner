@@ -16,6 +16,11 @@
 
 package org.rockyroadshub.planner.core.utils;
 
+import java.awt.Image;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import javax.swing.Icon;
+
 /**
  *
  * @author Arnell Christoper D. Dalid
@@ -36,4 +41,8 @@ public final class Globals {
     public static final String EDIT    = "Edit";
     
     public static final String BUTTON_DIMENSIONS = "h 32!, w 32!";
+    
+    public static final String FRAME_ICON = "/org/rockyroadshub/planner/src/img/Frame.png";
+    public static final String ICONS_PATH = "src/images/icons/default";
+    public static final Map<String, Icon> ICONS = new LinkedHashMap<>();
 }

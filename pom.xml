@@ -89,6 +89,26 @@
                             </resources>              
                         </configuration>            
                     </execution>
+                    
+                    <execution>
+                        <id>copy-icons</id>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}/src/images/icons/default</outputDirectory>
+                            <resources>          
+                                <resource>
+                                <directory>${project.basedir}/src/images/icons/default</directory>
+                                     <filtering>true</filtering>
+                                     <includes>
+                                        <include>**/*.*</include>
+                                     </includes>
+                                </resource>
+                            </resources>              
+                        </configuration>            
+                    </execution>
                 </executions>
             </plugin>
             
@@ -155,7 +175,7 @@
                                  <mainClass>${project.main.class}</mainClass>
                                  <preCp>anything</preCp>
                              </classPath>
-                             <icon>resources/src/img/calendar-icon.ico</icon>
+                             <icon>resources/src/img/Frame.ico</icon>
                              <jre>
                                  <minVersion>1.8.0</minVersion>
                                  <jdkPreference>preferJre</jdkPreference>

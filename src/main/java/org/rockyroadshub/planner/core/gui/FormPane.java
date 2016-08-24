@@ -205,14 +205,17 @@ public final class FormPane extends AbstractPane {
         homeButton.setToolTipText(Globals.HOME);
         homeButton.setName(CalendarPane.NAME);
         homeButton.addActionListener(action);
+        homeButton.setIcon(Globals.ICONS.get(Globals.HOME));
         
         backButton.setToolTipText(Globals.BACK);
         backButton.setName(DisplayPane.NAME);
         backButton.addActionListener(action);
+        backButton.setIcon(Globals.ICONS.get(Globals.BACK));
         
         saveButton.setToolTipText(Globals.SAVE);
         saveButton.setName(Globals.SAVE);
         saveButton.addActionListener(action);
+        saveButton.setIcon(Globals.ICONS.get(Globals.SAVE));
     }
     
     private void pack() {

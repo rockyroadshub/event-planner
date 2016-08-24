@@ -209,18 +209,22 @@ public final class ViewPane extends AbstractPane {
         homeButton.setToolTipText(Globals.HOME);
         homeButton.setName(CalendarPane.NAME);
         homeButton.addActionListener(action);
+        homeButton.setIcon(Globals.ICONS.get(Globals.HOME));
         
         backButton.setToolTipText(Globals.BACK);
         backButton.setName(DisplayPane.NAME);
         backButton.addActionListener(action);
+        backButton.setIcon(Globals.ICONS.get(Globals.BACK));
         
         saveButton.setToolTipText(Globals.SAVE);
         saveButton.setName(Globals.SAVE);
         saveButton.addActionListener(action);
+        saveButton.setIcon(Globals.ICONS.get(Globals.SAVE));
         
         editButton.setToolTipText(Globals.EDIT);
         editButton.setName(Globals.EDIT);
-        editButton.addActionListener(action);        
+        editButton.addActionListener(action);     
+        editButton.setIcon(Globals.ICONS.get(Globals.EDIT));
     }
     
     private void pack() {
