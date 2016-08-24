@@ -17,7 +17,7 @@
 package org.rockyroadshub.planner.core.data;
 
 import org.rockyroadshub.planner.core.database.Data;
-import org.rockyroadshub.planner.gui.CalendarPane;
+import org.rockyroadshub.planner.core.gui.CalendarPane;
 
 /**
  *

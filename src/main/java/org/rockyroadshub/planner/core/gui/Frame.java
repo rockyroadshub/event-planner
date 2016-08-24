@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.rockyroadshub.planner.gui;
+package org.rockyroadshub.planner.core.gui;
 
 import com.jcabi.aspects.LogExceptions;
 import java.awt.BorderLayout;
@@ -28,6 +28,7 @@ import java.sql.SQLException;
 import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 import org.rockyroadshub.planner.core.Globals;
+import org.rockyroadshub.planner.core.gui.MainPane;
 
 /**
  *
@@ -39,7 +40,9 @@ public class Frame extends JFrame {
     private Frame() {}
     
     public final void initialize() {
-        Panel panel = Panel.getInstance();
+        MainPane panel = MainPane.getInstance();
+        panel.initialize();
+        
         setLayout(new BorderLayout());   
         setTitle("Event Planner");
         setSize(800, 600);

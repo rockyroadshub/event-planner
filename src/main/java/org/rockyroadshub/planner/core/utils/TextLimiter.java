@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.rockyroadshub.planner.utils;
+package org.rockyroadshub.planner.core.utils;
 
 import java.awt.Toolkit;
 import javax.swing.text.AttributeSet;

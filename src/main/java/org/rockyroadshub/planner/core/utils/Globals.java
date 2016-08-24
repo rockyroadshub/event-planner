@@ -14,9 +14,7 @@
  * limitations under the License.
  */
 
-package org.rockyroadshub.planner.core.gui;
-
-import org.rockyroadshub.planner.core.utils.Initializable;
+package org.rockyroadshub.planner.core.utils;
 
 /**
  *
@@ -24,14 +22,18 @@ import org.rockyroadshub.planner.core.utils.Initializable;
  * @version 0.0.0
  * @since 1.8
  */
-public interface GUI extends Initializable {
+public final class Globals {
+    private Globals(){}
     
-    void refresh();    
-    void clear();
+    public static final String FRAME_TITLE = "Event Planner";
     
-    String getDate();
-    void setDate(int year, int month, int day);
+    public static final String HOME    = "Home";
+    public static final String ADD     = "Add";
+    public static final String VIEW    = "View";
+    public static final String DELETE  = "Delete";
+    public static final String BACK    = "Back";
+    public static final String SAVE    = "Save";
+    public static final String EDIT    = "Edit";
     
-    String getTitleLabel();
-    void setTitleLabel(String titleLabel);
+    public static final String BUTTON_DIMENSIONS = "h 32!, w 32!";
 }

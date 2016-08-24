@@ -27,6 +27,7 @@ import org.rockyroadshub.planner.core.database.DatabaseControl;
 import org.rockyroadshub.planner.core.database.Data;
 import org.rockyroadshub.planner.core.database.DataMapperException;
 import org.rockyroadshub.planner.core.database.DataMapper;
+import org.rockyroadshub.planner.core.database.DatabaseConnection;
 import org.rockyroadshub.planner.core.database.Members;
 import org.rockyroadshub.planner.core.database.Memory;
 
@@ -224,8 +225,7 @@ public final class EventMapper extends DataMapper {
      * @return list of dates
      */
     public List<Event> getEvents(String date) {
-        org.rockyroadshub.planner.core.database.DatabaseConnection conn0 = 
-        org.rockyroadshub.planner.core.database.DatabaseConnection.getInstance();
+        DatabaseConnection conn0 = DatabaseConnection.getInstance();
         Connection conn = conn0.getConnection();
         
         try(PreparedStatement stmt = 
@@ -265,8 +265,7 @@ public final class EventMapper extends DataMapper {
      * @return registered days with an event on a list
      */
     public List<Integer> getRegisteredDays(String month, String year) {
-        org.rockyroadshub.planner.core.database.DatabaseConnection conn0 = 
-        org.rockyroadshub.planner.core.database.DatabaseConnection.getInstance();
+        DatabaseConnection conn0 = DatabaseConnection.getInstance();
         Connection conn = conn0.getConnection();
         try(PreparedStatement stmt = 
             conn.prepareStatement("SELECT * FROM EVENTS WHERE EVENT_MONTH = ? AND EVENT_YEAR = ?"))
@@ -297,8 +296,7 @@ public final class EventMapper extends DataMapper {
      * @param year year of the event
      */
     public void deleteAll(String month, String year) {
-        org.rockyroadshub.planner.core.database.DatabaseConnection conn0 = 
-        org.rockyroadshub.planner.core.database.DatabaseConnection.getInstance();
+        DatabaseConnection conn0 = DatabaseConnection.getInstance();
         Connection conn = conn0.getConnection();
         try(PreparedStatement stmt = 
             conn.prepareStatement("SELECT * FROM EVENTS WHERE EVENT_MONTH = ? AND EVENT_YEAR = ?"))

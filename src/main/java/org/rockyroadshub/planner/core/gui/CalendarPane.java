@@ -16,6 +16,8 @@
 
 package org.rockyroadshub.planner.core.gui;
 
+import org.rockyroadshub.planner.core.utils.Utilities;
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -31,12 +33,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import net.miginfocom.layout.LC;
 import net.miginfocom.swing.MigLayout;
-import org.rockyroadshub.planner.core.Event;
 import org.rockyroadshub.planner.core.data.EventMapper;
-import org.rockyroadshub.planner.gui.EventForm;
-import org.rockyroadshub.planner.gui.EventView;
-import org.rockyroadshub.planner.gui.EventsDisplay;
-import org.rockyroadshub.planner.gui.Panel;
 
 /**
  *
@@ -44,7 +41,7 @@ import org.rockyroadshub.planner.gui.Panel;
  * @version 0.0.0
  * @since 1.8
  */
-public class CalendarPane extends AbstractPane {
+public final class CalendarPane extends AbstractPane {
     private CalendarPane(){}
     
     private static final class Holder {
@@ -55,21 +52,14 @@ public class CalendarPane extends AbstractPane {
         return Holder.INSTANCE;
     }
     
-    public static final String NAME = "calendar";
-
+    public static final String NAME = "calendarpane";
+    
     private final JLabel    monthLabel = new JLabel("Month");
     private final JComboBox monthCombo = new JComboBox();
     private final JLabel    yearLabel  = new JLabel("Year");
     private final JComboBox yearCombo  = new JComboBox();
     private final JPanel    menuPanel  = new JPanel();
     private final JPanel    datePanel  = new JPanel();
-    
-    private final GregorianCalendar present  = new GregorianCalendar();
-    private final Calendar          calendar = Calendar.getInstance();
-    
-    private final int year  = present.get(Calendar.YEAR);
-    private final int month = present.get(Calendar.MONTH);
-    private final int date  = present.get(Calendar.DATE);
     
     private final List<JButton> buttonMap = new ArrayList<>();   
         
@@ -83,17 +73,25 @@ public class CalendarPane extends AbstractPane {
         "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"
     };
     
-    private static final Color CURRENT_DAY_COLOR = Color.YELLOW;
-    private static final Color SCHEDULE_COLOR = new Color(180, 50, 130);
-    private static final Color WEEKDAYS_COLOR = new Color(100,100,100);
-    private static final Color DEFAULT = new Color(50,50,50);
-    private static final Color DEFAULT_FG = Color.WHITE;
-    private static final int MAX = 42;
-    private static final int MAX_YEAR = 100;
-    private static final int START_YEAR = 2000;
-    private static final String DAYS_DIMENSION = "h 60!, w 72!";
-    private static final String COMBO_DIMENSION = "h 35!, w 200!";
-    private static final String SPACING = "gapright 35!";
+    private static final Color  CURRENT_DAY_COLOR = Color.YELLOW;
+    private static final Color  SCHEDULE_COLOR    = new Color(50, 130, 180);
+    private static final Color  WEEKDAYS_COLOR    = new Color(100,100,100);
+    private static final Color  DEFAULT           = new Color(50,50,50);
+    private static final Color  DEFAULT_FG        = Color.WHITE;
+    private static final int    MAX               = 42;
+    private static final int    MAX_YEAR          = 100;
+    private static final int    START_YEAR        = 2000;
+    private static final String DAYS_DIMENSION    = "h 60!, w 72!";
+    private static final String COMBO_DIMENSION   = "h 35!, w 200!";
+    private static final String SPACING           = "gapright 35!";
+    private static final String BUTTON_TOOLTIP    = "You have %d event(s) registered on this date.";
+       
+    private final GregorianCalendar present  = new GregorianCalendar();
+    private final Calendar          calendar = Calendar.getInstance();
+    
+    private final int year  = present.get(Calendar.YEAR);
+    private final int month = present.get(Calendar.MONTH);
+    private final int date  = present.get(Calendar.DATE);    
     
     private final ItemListener item = (ItemEvent ie) -> {
         if(ie.getStateChange() == ItemEvent.SELECTED) {
@@ -109,9 +107,9 @@ public class CalendarPane extends AbstractPane {
     @Override
     public void initialize() {
         setOpaque(false);
-        setLayout(new MigLayout(new LC().fill()));
         setName(NAME);
-        
+        setLayout(new BorderLayout());
+       
         initMonthYearPane();
         initDaysPane();
         pack();
@@ -130,7 +128,7 @@ public class CalendarPane extends AbstractPane {
     @Override
     public void clear() {
         for(int i = 0; i < MAX; i++) {
-            JButton button = (JButton)buttonMap.get(i);
+            JButton button = buttonMap.get(i);
             button.setText(null);
             button.setBackground(DEFAULT);
             button.setForeground(DEFAULT_FG);
@@ -145,7 +143,7 @@ public class CalendarPane extends AbstractPane {
         menuPanel.add(monthLabel, SPACING);
         menuPanel.add(monthCombo, COMBO_DIMENSION);
         menuPanel.add(yearLabel);
-        menuPanel.add(yearCombo, COMBO_DIMENSION);
+        menuPanel.add(yearCombo,  COMBO_DIMENSION);
         
         initComboYear();
         initComboMonth();
@@ -154,34 +152,37 @@ public class CalendarPane extends AbstractPane {
     private void initComboYear() {
        for(int i = 0; i < MAX_YEAR; i++) {
             yearCombo.addItem(START_YEAR + i);
-        } 
-       
+        }       
         yearCombo.addItemListener(item);
     }
     
     private void initComboMonth() {
         for(String i : MONTHS) {
             monthCombo.addItem(i);
-        } 
-        
+        }        
         monthCombo.addItemListener(item);
     }
-        
-    
+           
     private void initDaysPane() {
         datePanel.setOpaque(false);
-        datePanel.setLayout(new MigLayout("wrap 7"));
+        datePanel.setLayout(new MigLayout(new LC().fill()));
         
         initWeekDays();
         initDays();
     }
     
     private void initWeekDays() {
-        for(String i : DAYS) {
-            JButton button = new JButton(i);
+        for(int i = 0; i < DAYS.length; i++) {
+            JButton button = new JButton(DAYS[i]);
             button.setBackground(WEEKDAYS_COLOR);
             button.setForeground(DEFAULT_FG);
-            datePanel.add(button, DAYS_DIMENSION);
+            
+            if((i+1) % 7 == 0) {
+                datePanel.add(button, DAYS_DIMENSION + ", wrap");
+            }
+            else {
+                datePanel.add(button, DAYS_DIMENSION);
+            }
         }
     }
     
@@ -193,7 +194,13 @@ public class CalendarPane extends AbstractPane {
             button.addActionListener(action);
             button.setEnabled(false);
             buttonMap.add(button);
-            datePanel.add(button, DAYS_DIMENSION);
+            
+            if((i+1) % 7 == 0) {
+                datePanel.add(button, DAYS_DIMENSION + ", wrap");
+            }
+            else {
+                datePanel.add(button, DAYS_DIMENSION);
+            }
         }
         
         calendar.clear();
@@ -204,8 +211,8 @@ public class CalendarPane extends AbstractPane {
     private void pack() {
         monthCombo.setSelectedIndex(month);
         yearCombo.setSelectedItem(year);
-        add(menuPanel, "wrap");
-        add(datePanel);
+        add(menuPanel, BorderLayout.NORTH);
+        add(datePanel, BorderLayout.CENTER);
     }
     
     private void printDates(Calendar cal) {
@@ -223,7 +230,7 @@ public class CalendarPane extends AbstractPane {
 
         for(int i = start; i < end; i++) {
             int current = i - delta;
-            JButton button = (JButton)buttonMap.get(i);
+            JButton button = buttonMap.get(i);
             button.setText(String.valueOf(current)); 
             button.setEnabled(true);
             
@@ -233,10 +240,9 @@ public class CalendarPane extends AbstractPane {
             
             if(dayList != null && dayList.contains(current)) {
                 button.setBackground(SCHEDULE_COLOR);
-                int rows = map.getNumberOfEvents(String.format("%d-%02d-%02d", y, m+1, current));
+                int rows = map.getNumberOfEvents(Utilities.formatDate(y, m+1, current));
                 if(rows != 0) {
-                    button.setToolTipText(String.format(
-                            "You have %d event(s) registered on this date.", rows));
+                    button.setToolTipText(String.format(BUTTON_TOOLTIP, rows));
                 }
             }
         }
@@ -246,18 +252,14 @@ public class CalendarPane extends AbstractPane {
         int y = getSelectedYear();
         int m = getSelectedMonth();
         int d = Integer.valueOf(button.getText());
-            
-        EventsDisplay display = EventsDisplay.getInstance();
-        Event event = Event.getInstance();
-        event.refresh(y, m, d);
-        String label = event.getDateLabel();
-        EventForm.getInstance().setTitleLabel(label);
-        EventView.getInstance().setTitleLabel(label);
-        display.setDate(String.format("%d-%02d-%02d", y,m+1,d));
-        EventForm.getInstance().setDate(String.format("%d-%02d-%02d", y,m+1,d));
-        display.setTitleLabel(label);
-        display.refresh();
-        Panel.getInstance().show(EventsDisplay.NAME);
+                              
+        DisplayPane disp = DisplayPane.getInstance();
+        disp.setDate(y, m+1, d);
+        disp.refresh();
+        
+        ViewPane.getInstance().setDate(y, m+1, d);
+        FormPane.getInstance().setDate(y, m+1, d);
+        MainPane.getInstance().showPane(disp.getName());
     }    
     
     private int getSelectedMonth() {

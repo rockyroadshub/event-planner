@@ -18,7 +18,7 @@ package org.rockyroadshub.planner.main;
 import javax.swing.SwingUtilities;
 import org.rockyroadshub.planner.database.DatabaseConfig;
 import org.rockyroadshub.planner.core.database.DatabaseConnection;
-import org.rockyroadshub.planner.gui.Frame;
+import org.rockyroadshub.planner.core.gui.Frame;
 
 /**
  *

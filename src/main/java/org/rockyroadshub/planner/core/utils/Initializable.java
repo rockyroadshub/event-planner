@@ -14,9 +14,7 @@
  * limitations under the License.
  */
 
-package org.rockyroadshub.planner.core.gui;
-
-import org.rockyroadshub.planner.core.utils.Initializable;
+package org.rockyroadshub.planner.core.utils;
 
 /**
  *
@@ -24,14 +22,7 @@ import org.rockyroadshub.planner.core.utils.Initializable;
  * @version 0.0.0
  * @since 1.8
  */
-public interface GUI extends Initializable {
-    
-    void refresh();    
-    void clear();
-    
-    String getDate();
-    void setDate(int year, int month, int day);
-    
-    String getTitleLabel();
-    void setTitleLabel(String titleLabel);
+public interface Initializable {
+
+    void initialize();
 }
