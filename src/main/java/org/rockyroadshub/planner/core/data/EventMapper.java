@@ -101,7 +101,7 @@ public final class EventMapper extends DataMapper {
             
         } 
         catch (SQLException ex) {
-            return Optional.empty();
+            throw new DataMapperException(ex);
         }
     }
 

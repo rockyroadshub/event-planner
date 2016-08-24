@@ -166,10 +166,10 @@ public class CalendarPane extends JPanel {
     private void clear() {
         for(int i = 0; i < MAX; i++) {
             JButton button = (JButton)buttonMap.get(i);
-            button.setText("");
+            button.setText(null);
             button.setBackground(DEFAULT);
             button.setForeground(DEFAULT_FG);
-            button.setToolTipText("");
+            button.setToolTipText(null);
             button.setEnabled(false);
         }
     }
@@ -186,10 +186,9 @@ public class CalendarPane extends JPanel {
         
         EventMapper map = EventMapper.getInstance();
         List<Integer> dayList = map.getRegisteredDays(MONTHS[m], String.valueOf(y));
-        
+
         for(int i = start; i < end; i++) {
             int current = i - delta;
-            
             JButton button = (JButton)buttonMap.get(i);
             button.setText(String.valueOf(current)); 
             button.setEnabled(true);
@@ -200,8 +199,7 @@ public class CalendarPane extends JPanel {
             
             if(dayList != null && dayList.contains(current)) {
                 button.setBackground(SCHEDULE_COLOR);
-                int rows = 0;
-                rows = map.getNumberOfEvents(String.format("%d-%02d-%02d", y, m+1, i));
+                int rows = map.getNumberOfEvents(String.format("%d-%02d-%02d", y, m+1, current));
                 if(rows != 0) {
                     button.setToolTipText(String.format(
                             "You have %d event(s) registered on this date.", rows));

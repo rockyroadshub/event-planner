@@ -44,6 +44,11 @@ public final class Members {
     private String selectFormat;
     private String mainKey;
     
+//    private String findFormat0 = "SELECT * FROM @ WHERE ";;
+//    private String findFormat1 = "SELECT * FROM @ WHERE %s = '%s'";
+//    private String findFormat2 = "SELECT * FROM @ WHERE %s = '%s' OR %s = '%s'";
+//    private String findFormat3 = "SELECT * FROM @ WHERE %s = '%s' AND %s = '%s'";
+    
     private boolean keyExists = false;
     
     public Members() {}
@@ -96,11 +101,6 @@ public final class Members {
         StringBuilder updateFormat0 = new StringBuilder("UPDATE @ SET ");
         String deleteFormat0 = "DELETE FROM @ WHERE mainKey = %d";
         String selectFormat0 = "SELECT * FROM @ WHERE mainKey = %d";
-        
-//        String select1 = "SELECT * FROM @ WHERE %s";
-//        String select2 = "SELECT * FROM @ WHERE %s = '%s'";
-//        String select3 = "SELECT * FROM @ WHERE %s = '%s' OR %s = '%s'";
-//        String select4 = "SELECT * FROM @ WHERE %s = '%s' AND %s = '%s'";
         
         activeColumns.stream().map((column) -> {
             insertColumn.append(column).append(",");
@@ -165,6 +165,7 @@ public final class Members {
         this.selectFormat = selectFormat;
     }
     
+    
     /**
      * 
      * @return total active columns
@@ -223,18 +224,18 @@ public final class Members {
         columnAltTexts.put(column, altText);
     }
 
-    public static void main(String[] args) {
-        Members mem = new Members().add("asdf", "qwer", true).add("baka","lang",false).pack()
-                .setDisplayColumns(1,2,5,8,9);
-        Memory  mer = new Memory(mem, "NUB");
-        mem.getDisplayColumns().stream().forEach((i) -> {
-            System.out.println(i);
-        });
-                
-        System.out.println(mer.getMembers().getCreateFormat());
-        System.out.println(mer.getMembers().getInsertFormat());
-        System.out.println(mer.getMembers().getUpdateFormat());
-        System.out.println(mer.getMembers().getDeleteFormat());
-        System.out.println(mer.getMembers().getSelectFormat());
-    }
+//    public static void main(String[] args) {
+//        Members mem = new Members().add("asdf", "qwer", true).add("baka","lang",false).pack()
+//                .setDisplayColumns(1,2,5,8,9);
+//        Memory  mer = new Memory(mem, "NUB");
+//        mem.getDisplayColumns().stream().forEach((i) -> {
+//            System.out.println(i);
+//        });
+//                
+//        System.out.println(mer.getMembers().getCreateFormat());
+//        System.out.println(mer.getMembers().getInsertFormat());
+//        System.out.println(mer.getMembers().getUpdateFormat());
+//        System.out.println(mer.getMembers().getDeleteFormat());
+//        System.out.println(mer.getMembers().getSelectFormat());
+//    }
 }
