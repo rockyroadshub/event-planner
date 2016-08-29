@@ -12,7 +12,7 @@ distribution and reproduction of this software, please see [LICENSE](http://www.
 
 ## Changelogs
 
-### [\[0.1.0\]](https://github.com/rockyroadshub/event-planner/releases)  
+### [\[0.1.0\]](https://github.com/rockyroadshub/event-planner/releases/tag/0.1.0)  
   
 **New Features:**  
 
