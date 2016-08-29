@@ -16,6 +16,7 @@
 
 package org.rockyroadshub.planner.core.gui;
 
+import org.rockyroadshub.planner.core.gui.calendar.CalendarPane;
 import org.rockyroadshub.planner.core.utils.Utilities;
 import javax.swing.JPanel;
 
@@ -28,9 +29,6 @@ import javax.swing.JPanel;
 public abstract class AbstractPane extends JPanel implements GUI {
     private String targetDate;
     private String titleLabel;
-    
-    @Override
-    public abstract void initialize();
 
     @Override
     public abstract void refresh();
@@ -57,5 +55,9 @@ public abstract class AbstractPane extends JPanel implements GUI {
     @Override
     public void setTitleLabel(String titleLabel) {
         this.titleLabel = titleLabel;
+    }
+    
+    public static AbstractPane getInstance(){
+        return null;
     }
 }

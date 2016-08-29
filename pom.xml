@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.rockyroadshub</groupId>
     <artifactId>planner</artifactId>
-    <version>0.0.0</version>
+    <version>0.1.0</version>
     <packaging>jar</packaging>
     
     <properties>
@@ -219,4 +219,5 @@
     </dependencies>
     
     <name>Event Planner</name>
+    <description>A simple and comprehensive planner and scheduler that saves its data into a database</description>
 </project>

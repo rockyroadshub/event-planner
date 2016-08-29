@@ -16,15 +16,13 @@
 
 package org.rockyroadshub.planner.core.gui;
 
-import org.rockyroadshub.planner.core.utils.Initializable;
-
 /**
  *
  * @author Arnell Christoper D. Dalid
  * @version 0.0.0
  * @since 1.8
  */
-public interface GUI extends Initializable {
+public interface GUI {
     
     void refresh();    
     void clear();

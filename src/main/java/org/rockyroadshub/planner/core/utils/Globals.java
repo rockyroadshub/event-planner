@@ -16,13 +16,12 @@
 
 package org.rockyroadshub.planner.core.utils;
 
-import java.awt.Image;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import javax.swing.Icon;
 
 /**
- *
+ * Global configurations and constants used by the Event Planner
  * @author Arnell Christoper D. Dalid
  * @version 0.0.0
  * @since 1.8
@@ -30,19 +29,68 @@ import javax.swing.Icon;
 public final class Globals {
     private Globals(){}
     
+    /**
+     * Title of the application's frame
+     */
     public static final String FRAME_TITLE = "Event Planner";
     
-    public static final String HOME    = "Home";
-    public static final String ADD     = "Add";
-    public static final String VIEW    = "View";
-    public static final String DELETE  = "Delete";
-    public static final String BACK    = "Back";
-    public static final String SAVE    = "Save";
-    public static final String EDIT    = "Edit";
+    //================ Button Names =================
+    public static final String ADD      = "Add";
+    public static final String BACK     = "Back";
+    public static final String CLOSE    = "Close";
+    public static final String DEFAULT  = "Default";
+    public static final String DELETE   = "Delete";
+    public static final String EDIT     = "Edit";
+    public static final String HOME     = "Home";
+    public static final String SAVE     = "Save";
+    public static final String SET      = "Set";
+    public static final String SETTINGS = "Settings";
+    public static final String VIEW     = "View";
+    //================================================
     
+    /**
+     * Button file icon extension
+     */
+    public static final String ICONS_EXTENSION = ".png";
+    
+    /**
+     * Global button dimensions (for MigLayout)
+     */
     public static final String BUTTON_DIMENSIONS = "h 32!, w 32!";
     
+    /**
+     * Path of the application's frame icon
+     */
     public static final String FRAME_ICON = "/org/rockyroadshub/planner/src/img/Frame.png";
+    
+    /**
+     * Icons directory
+     */
     public static final String ICONS_PATH = "src/images/icons/default";
+    
+    /**
+     * Icon map for easier accessing
+     * <p>
+     * <strong>Note:</strong> String - name of the icon; Icon - file as "Icon" object
+     * </p>
+     * @see javax.swing.Icon
+     */
     public static final Map<String, Icon> ICONS = new LinkedHashMap<>();
+
+    //================ Calendar Constants ================
+    /**
+     * Character limit on event title input
+     */
+    public static final int EVENT_TITLE_SIZE = 25;
+    
+    /**
+     * Character limit on event description input
+     */
+    public static final int EVENT_DESCR_SIZE = 200;
+    
+    /**
+     * Character limit on event location input
+     */
+    public static final int EVENT_LOCAT_SIZE = 200;
+    //=====================================================
 }

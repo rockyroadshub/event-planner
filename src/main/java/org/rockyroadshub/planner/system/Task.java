@@ -14,14 +14,15 @@
  * limitations under the License.
  */
 
-package org.rockyroadshub.planner.core;
+package org.rockyroadshub.planner.system;
 
 /**
  *
  * @author Arnell Christoper D. Dalid
  * @version 0.0.0
- * @since 2016-08-13
+ * @since 1.8
  */
-public class Properties {
+public interface Task {
 
+    void start();
 }

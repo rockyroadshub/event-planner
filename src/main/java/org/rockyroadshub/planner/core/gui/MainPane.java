@@ -16,6 +16,11 @@
 
 package org.rockyroadshub.planner.core.gui;
 
+import org.rockyroadshub.planner.core.gui.calendar.ViewPane;
+import org.rockyroadshub.planner.core.gui.calendar.FormPane;
+import org.rockyroadshub.planner.core.gui.calendar.CalendarPane;
+import org.rockyroadshub.planner.core.gui.calendar.PropertiesPane;
+import org.rockyroadshub.planner.core.gui.calendar.DisplayPane;
 import java.awt.CardLayout;
 
 /**
@@ -24,8 +29,11 @@ import java.awt.CardLayout;
  * @version 0.0.0
  * @since 1.8
  */
+@SuppressWarnings("serial")
 public final class MainPane extends AbstractPane {    
-    private MainPane() {}
+    private MainPane() {
+        initialize();
+    }
 
     public static MainPane getInstance() {
         return Holder.INSTANCE;
@@ -37,8 +45,7 @@ public final class MainPane extends AbstractPane {
     
     public static final String NAME = "mainpane";
 
-    @Override
-    public void initialize() {
+    private void initialize() {
         setOpaque(false);
         setName(NAME);
         setLayout(new CardLayout());
@@ -47,30 +54,23 @@ public final class MainPane extends AbstractPane {
     }
     
     private void pack() {
-        CalendarPane cldr = CalendarPane.getInstance();
-        DisplayPane  disp = DisplayPane.getInstance();
-        FormPane     form = FormPane.getInstance();
-        ViewPane     view = ViewPane.getInstance();
+        CalendarPane.getInstance();
+        DisplayPane.getInstance();
+        FormPane.getInstance();
+        ViewPane.getInstance();
+        PropertiesPane.getInstance();
         
-        cldr.initialize();
-        disp.initialize();
-        view.initialize();
-        form.initialize();
-        
-        add(cldr, cldr.getName());
-        add(disp, disp.getName());
-        add(form, form.getName());
-        add(view, view.getName());
+        GUIUtils.packPanels(this);
     }
 
     @Override
     public void refresh() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        throw new UnsupportedOperationException("Not supported yet."); 
     }
 
     @Override
     public void clear() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        throw new UnsupportedOperationException("Not supported yet.");
     }
     
     public void showPane(String name) {

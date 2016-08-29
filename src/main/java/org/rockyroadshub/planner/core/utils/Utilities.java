@@ -16,6 +16,14 @@
 
 package org.rockyroadshub.planner.core.utils;
 
+import com.jcabi.aspects.LogExceptions;
+import java.io.File;
+import java.io.IOException;
+import java.net.URISyntaxException;
+import org.apache.commons.configuration.ConfigurationException;
+import org.apache.commons.io.FileUtils;
+import org.rockyroadshub.planner.system.Properties;
+
 /**
  *
  * @author Arnell Christoper D. Dalid
@@ -31,5 +39,41 @@ public final class Utilities {
     
     public static String formatDate(String month, int day, int year) {
         return String.format("%s %d, %d", month, day, year);
+    }
+    
+    public static String stamp(int limit) {
+        StringBuilder bld = new StringBuilder("(%0");
+        int digits = (int)(Math.log10(limit)+1);
+        bld.append(digits).append("d/").append(limit).append(")");
+        return bld.toString();
+    }
+          
+    public static Double getPercent(int numerator, int denominator) {
+        float n = numerator;
+        float d = denominator;
+        return new Double((n/d) * 100);
+    }
+    
+    /**
+     * Checks file if it exists or not.
+     * <p>
+     * If the checked file does not exist, this method will create a new copy from
+     * the specified source path and saves it in the specified file path.
+     * </p>
+     * @param path file path
+     * @param defaultPath source path
+     * @throws IOException
+     * @throws ConfigurationException
+     * @throws URISyntaxException 
+     */
+    @LogExceptions
+    public static void checkFile(String path, String defaultPath) 
+            throws IOException, ConfigurationException, URISyntaxException 
+    {
+        File file = new File(path);
+        if(!file.exists()) {
+            FileUtils.copyInputStreamToFile(
+                    Utilities.class.getResourceAsStream(defaultPath), file);
+        }
     }
 }

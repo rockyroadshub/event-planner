@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.rockyroadshub.planner.core.gui;
+package org.rockyroadshub.planner.core.gui.calendar;
 
 import java.awt.BorderLayout;
 import java.awt.Font;
@@ -22,6 +22,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
 import java.util.Map;
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -32,6 +33,11 @@ import javax.swing.table.DefaultTableModel;
 import net.miginfocom.swing.MigLayout;
 import org.rockyroadshub.planner.core.data.Event;
 import org.rockyroadshub.planner.core.data.EventMapper;
+import org.rockyroadshub.planner.core.gui.AbstractPane;
+import org.rockyroadshub.planner.core.gui.Frame;
+import org.rockyroadshub.planner.core.gui.GUIUtils;
+import org.rockyroadshub.planner.system.IconLoader;
+import org.rockyroadshub.planner.core.gui.MainPane;
 import org.rockyroadshub.planner.core.utils.Globals;
 
 /**
@@ -40,9 +46,12 @@ import org.rockyroadshub.planner.core.utils.Globals;
  * @version 0.0.0
  * @since 1.8
  */
+@SuppressWarnings("serial")
 public final class DisplayPane extends AbstractPane {
 
-    private DisplayPane() {}
+    private DisplayPane() {
+        initialize();
+    }
 
     public static DisplayPane getInstance() {
         return Holder.INSTANCE;
@@ -54,23 +63,25 @@ public final class DisplayPane extends AbstractPane {
     
     public static final String NAME = "displaypane";  
         
-    private final JLabel             paneLabel    = new JLabel();
-    private final JPanel             menuPanel    = new JPanel();
-    private final JButton            addButton    = new JButton();
-    private final JButton            homeButton   = new JButton();
-    private final JButton            viewButton   = new JButton();
-    private final JButton            deleteButton = new JButton();
+    private final JLabel        paneLabel     = new JLabel();
+    private final JPanel        menuPanel     = new JPanel();
+    private final JButton       addButton     = new JButton();
+    private final JButton       homeButton    = new JButton();
+    private final JButton       viewButton    = new JButton();
+    private final JButton       deleteButton  = new JButton();
    
-    private final JTable             table        = new JTable();
-    private final JScrollPane        tableScroll  = new JScrollPane(table);
+    private final JTable        table         = new JTable();
+    private final JScrollPane   tableScroll   = new JScrollPane(table);
     
-    private static final int    FONT_SIZE         = 40;
-    private static final int    FONT_STYLE        = Font.BOLD;
-    private static final String FONT_NAME         = "Calibri";
-    private static final String GAP_RIGHT         = "gapright 20!";
-    private static final String DELETE_DIALOG     = "Are you sure to delete \"%s\" event?";
+    private static final int    FONT_SIZE     = 40;
+    private static final int    FONT_STYLE    = Font.BOLD;
+    private static final String FONT_NAME     = "Calibri";
+    private static final String GAP_RIGHT     = "gapright 20!";
+    private static final String DELETE_DIALOG = "Are you sure to delete \"%s\" event?";
+    private static final String BORDER        = "Display Panel";
     
     private Object[] rowData;
+    private IconLoader iconLoader;
      
     private final DefaultTableModel  tableModel   = new DefaultTableModel() {
         @Override
@@ -84,30 +95,33 @@ public final class DisplayPane extends AbstractPane {
         onTrigger(button);
     };    
     
-    @Override
-    public void initialize() {
+    private void initialize() {
         setOpaque(false);
         setName(NAME);
         setLayout(new BorderLayout());
+        
+        iconLoader = IconLoader.getInstance();
         
         initTitle();
         initMenu();
         initButtons();
         initTableModel();
         pack();
+        
+        GUIUtils.addToPaneList(this);
     }
 
     @Override
     public void refresh() {
         clear();
         
-        EventMapper map = EventMapper.getInstance();
-        for(Event g : map.getEvents(getDate())) {
-            rowData[0] = g.getID();
-            rowData[1] = g.getEvent();
-            rowData[2] = g.getDate();
-            rowData[3] = g.getStart();
-            rowData[4] = g.getEnd();
+        EventMapper map = EventMapper.getInstance();        
+        for(Event evt : map.getEvents(getDate())) {
+            rowData[0] = evt.getID();
+            rowData[1] = evt.getEvent();
+            rowData[2] = evt.getDate();
+            rowData[3] = evt.getStart();
+            rowData[4] = evt.getEnd();
             tableModel.addRow(rowData);
         }
         
@@ -132,28 +146,29 @@ public final class DisplayPane extends AbstractPane {
         menuPanel.add(addButton,    Globals.BUTTON_DIMENSIONS);
         menuPanel.add(viewButton,   Globals.BUTTON_DIMENSIONS);
         menuPanel.add(deleteButton, Globals.BUTTON_DIMENSIONS);
+        menuPanel.setBorder(BorderFactory.createTitledBorder(BORDER));
     }
     
     private void initButtons() {
         homeButton.setToolTipText(Globals.HOME);
         homeButton.setName(CalendarPane.NAME);
         homeButton.addActionListener(action);
-        homeButton.setIcon(Globals.ICONS.get(Globals.HOME));
+        homeButton.setIcon(iconLoader.getIcon(Globals.HOME));
                 
         addButton.setToolTipText(Globals.ADD);
         addButton.setName(FormPane.NAME);
         addButton.addActionListener(action);
-        addButton.setIcon(Globals.ICONS.get(Globals.ADD));
+        addButton.setIcon(iconLoader.getIcon(Globals.ADD));
         
         viewButton.setToolTipText(Globals.VIEW);
         viewButton.setName(ViewPane.NAME);
         viewButton.addActionListener(action);
-        viewButton.setIcon(Globals.ICONS.get(Globals.VIEW));
+        viewButton.setIcon(iconLoader.getIcon(Globals.VIEW));
         
         deleteButton.setToolTipText(Globals.DELETE);
         deleteButton.setName(Globals.DELETE);
         deleteButton.addActionListener(action);
-        deleteButton.setIcon(Globals.ICONS.get(Globals.DELETE));
+        deleteButton.setIcon(iconLoader.getIcon(Globals.DELETE));
     }
     
     private void initTableModel() {

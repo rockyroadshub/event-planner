@@ -14,11 +14,12 @@
  * limitations under the License.
  */
 
-package org.rockyroadshub.planner.core.gui;
+package org.rockyroadshub.planner.core.gui.calendar;
 
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
@@ -37,8 +38,15 @@ import net.miginfocom.layout.LC;
 import net.miginfocom.swing.MigLayout;
 import org.rockyroadshub.planner.core.data.Event;
 import org.rockyroadshub.planner.core.data.EventMapper;
+import org.rockyroadshub.planner.core.database.Data;
+import org.rockyroadshub.planner.core.gui.AbstractPane;
+import org.rockyroadshub.planner.core.gui.Frame;
+import org.rockyroadshub.planner.core.gui.GUIUtils;
+import org.rockyroadshub.planner.system.IconLoader;
+import org.rockyroadshub.planner.core.gui.MainPane;
 import org.rockyroadshub.planner.core.utils.Globals;
 import org.rockyroadshub.planner.core.utils.TextLimiter;
+import org.rockyroadshub.planner.core.utils.Utilities;
 
 /**
  *
@@ -46,19 +54,21 @@ import org.rockyroadshub.planner.core.utils.TextLimiter;
  * @version 0.0.0
  * @since 1.8
  */
-public final class FormPane extends AbstractPane {
+public final class ViewPane extends AbstractPane {
 
-    private FormPane() {}
+    private ViewPane() {
+        initialize();
+    }
 
-    public static FormPane getInstance() {
+    public static ViewPane getInstance() {
         return Holder.INSTANCE;
     }
 
     private static class Holder {
-        private static final FormPane INSTANCE = new FormPane();
+        private static final ViewPane INSTANCE = new ViewPane();
     }
     
-    public static final String NAME = "formpane";
+    public static final String NAME = "viewpane";
     
     private final JLabel       dateLabel        = new JLabel();
    
@@ -90,9 +100,11 @@ public final class FormPane extends AbstractPane {
     private final JButton      homeButton       = new JButton();
     private final JButton      backButton       = new JButton();
     private final JButton      saveButton       = new JButton();
+    private final JButton      editButton       = new JButton();
    
     private final Font font = new Font("MONOSPACED", 0, 12);   
     
+    private int id;
     private String event;
     private String location;
     private String description;
@@ -102,6 +114,8 @@ public final class FormPane extends AbstractPane {
     private String day;
     private String start;
     private String end;
+    
+    private IconLoader iconLoader;
 
     private final ActionListener action = (ActionEvent ae) -> {
         JButton button = (JButton)ae.getSource();
@@ -121,24 +135,24 @@ public final class FormPane extends AbstractPane {
     private String formatEvt;
     private String formatDsc; 
     private String formatLoc;
- 
-    private static final int EVT_LIMIT = 50;
-    private static final int DSC_LIMIT = 500;
-    private static final int LOC_LIMIT = 250;
+     
+    private static final String SAVE_DIALOG = "Are you sure to save these changes?";
+    private static final String BORDER      = "View/Edit Panel";
     
-    private static final String SAVE_DIALOG = "Are you sure to save this event?";
-    
-    @Override
-    public void initialize() {
+    private void initialize() {
         setOpaque(false);
         setLayout(new MigLayout(new LC().fill()));
         setName(NAME);
+        
+        iconLoader = IconLoader.getInstance();
         
         initDocuments();
         initSpinners();
         initMenu();
         initButtons();
         pack();
+        
+        GUIUtils.addToPaneList(this);
     }
 
     @Override
@@ -161,26 +175,26 @@ public final class FormPane extends AbstractPane {
     
     private void initDocuments() {    
         documentEvt = new DefaultStyledDocument();
-        documentEvt.setDocumentFilter(new TextLimiter(EVT_LIMIT));
+        documentEvt.setDocumentFilter(new TextLimiter(Globals.EVENT_TITLE_SIZE));
         documentEvt.addDocumentListener(document);
-        formatEvt = stamp(EVT_LIMIT);
+        formatEvt = Utilities.stamp(Globals.EVENT_TITLE_SIZE);
         eventInput.setFont(font);
         eventInput.setDocument(documentEvt);
         eventLimit.setText(String.format(formatEvt, 0));
         
         documentDsc = new DefaultStyledDocument();
-        documentDsc.setDocumentFilter(new TextLimiter(DSC_LIMIT));
+        documentDsc.setDocumentFilter(new TextLimiter(Globals.EVENT_DESCR_SIZE));
         documentDsc.addDocumentListener(document);
-        formatDsc = stamp(DSC_LIMIT);
+        formatDsc = Utilities.stamp(Globals.EVENT_DESCR_SIZE);
         descriptionInput.setFont(font);
         descriptionInput.setDocument(documentDsc);
         descriptionLimit.setText(String.format(formatDsc, 0));
         descriptionInput.setLineWrap(true);
        
         documentLoc = new DefaultStyledDocument();
-        documentLoc.setDocumentFilter(new TextLimiter(LOC_LIMIT));
+        documentLoc.setDocumentFilter(new TextLimiter(Globals.EVENT_LOCAT_SIZE));
         documentLoc.addDocumentListener(document);
-        formatLoc = stamp(LOC_LIMIT);
+        formatLoc = Utilities.stamp(Globals.EVENT_LOCAT_SIZE);
         locationInput.setFont(font);
         locationInput.setDocument(documentLoc);
         locationLimit.setText(String.format(formatLoc, 0));
@@ -196,30 +210,37 @@ public final class FormPane extends AbstractPane {
     
     private void initMenu() {
         menuPanel.setLayout(new MigLayout());
+        menuPanel.add(dateLabel, "h 32!, gapright 35");
         menuPanel.add(homeButton, Globals.BUTTON_DIMENSIONS);
         menuPanel.add(backButton, Globals.BUTTON_DIMENSIONS);
         menuPanel.add(saveButton, Globals.BUTTON_DIMENSIONS);
+        menuPanel.add(editButton, Globals.BUTTON_DIMENSIONS);    
+        menuPanel.setBorder(BorderFactory.createTitledBorder(BORDER));
     }
     
     private void initButtons() {
         homeButton.setToolTipText(Globals.HOME);
         homeButton.setName(CalendarPane.NAME);
         homeButton.addActionListener(action);
-        homeButton.setIcon(Globals.ICONS.get(Globals.HOME));
+        homeButton.setIcon(iconLoader.getIcon(Globals.HOME));
         
         backButton.setToolTipText(Globals.BACK);
         backButton.setName(DisplayPane.NAME);
         backButton.addActionListener(action);
-        backButton.setIcon(Globals.ICONS.get(Globals.BACK));
+        backButton.setIcon(iconLoader.getIcon(Globals.BACK));
         
         saveButton.setToolTipText(Globals.SAVE);
         saveButton.setName(Globals.SAVE);
         saveButton.addActionListener(action);
-        saveButton.setIcon(Globals.ICONS.get(Globals.SAVE));
+        saveButton.setIcon(iconLoader.getIcon(Globals.SAVE));
+        
+        editButton.setToolTipText(Globals.EDIT);
+        editButton.setName(Globals.EDIT);
+        editButton.addActionListener(action);     
+        editButton.setIcon(iconLoader.getIcon(Globals.EDIT));
     }
     
     private void pack() {
-        add(dateLabel, "h 32!");
         add(menuPanel, "growx, wrap");
         add(eventLabel, "h 32!");
         add(eventLimit, "h 32!, align right, wrap");
@@ -230,10 +251,10 @@ public final class FormPane extends AbstractPane {
         add(descriptionLabel, "h 32!");
         add(descriptionLimit, "h 32!, align right, wrap");
         add(descriptionInput, "growx, h 150!, span 3, wrap");
-        add(startLabel, "h 32!, growx");
+        add(startLabel, "h 32!, growx, split");
         add(startHour, "h 32!, w 64!");
         add(startMinute, "h 32!, w 64!, wrap");
-        add(endLabel, "h 32!, growx");
+        add(endLabel, "h 32!, growx, split");
         add(endHour, "h 32!, w 64!");
         add(endMinute, "h 32!, w 64!, wrap");
     }
@@ -260,19 +281,14 @@ public final class FormPane extends AbstractPane {
         limit.setText(String.format(format, doc.getLength()));
     }
     
-    private String stamp(int limit) {
-        StringBuilder bld = new StringBuilder("(%0");
-        int digits = (int)(Math.log10(limit)+1);
-        bld.append(digits).append("d/").append(limit).append(")");
-        return bld.toString();
-    }
-    
     private void onTrigger(JButton button) {
         String name = button.getName();
-        
-        switch(name) {
+        switch (name) {
             case Globals.SAVE:
                 onSave();
+                break;
+            case Globals.EDIT:
+                onEdit();
                 break;
             default:
                 DisplayPane.getInstance().refresh();
@@ -283,20 +299,19 @@ public final class FormPane extends AbstractPane {
         }
     }
     
-    private void onSave() {      
+    private void onSave() {        
         event       = eventInput.getText();
         description = descriptionInput.getText();
         location    = locationInput.getText();
-        date        = getDate();       
-        
+                
         int sH = (int)startModelH.getValue();
         int sM = (int)startModelM.getValue();
         int eH = (int)endModelH.getValue();
         int eM = (int)endModelM.getValue();
         
         start = String.format("%d:%02d:00", sH, sM);
-        end   = String.format("%d:%02d:00", eH, eM);   
-                        
+        end   = String.format("%d:%02d:00", eH, eM);  
+                
         Frame  f = Frame.getInstance();
         String m = SAVE_DIALOG;
         String t = Globals.FRAME_TITLE;
@@ -305,18 +320,59 @@ public final class FormPane extends AbstractPane {
         if(JOptionPane.showConfirmDialog(f, m, t, q) == o) {
             EventMapper map = EventMapper.getInstance();
             Event evt = new Event();
-                        
+            
+            evt.setID(id);
             evt.setEvent(event);
             evt.setDescription(description);
             evt.setLocation(location);
             evt.setDate(date);
             evt.setStart(start);
-            evt.setEnd(end);
-            map.insert(evt);
+            evt.setEnd(end);           
+            map.update(evt);
             
             DisplayPane.getInstance().getInstance().refresh();
             MainPane.getInstance().showPane(DisplayPane.NAME);
             clear();
         }
+    }
+    
+    private void onEdit() {
+        enableGUI(true);
+    }
+    
+    public void enableGUI(boolean bool) {
+        eventInput.setEditable(bool);
+        descriptionInput.setEditable(bool);
+        locationInput.setEditable(bool);
+        startHour.setEnabled(bool);
+        startMinute.setEnabled(bool);      
+        endHour.setEnabled(bool);          
+        endMinute.setEnabled(bool);
+        editButton.setEnabled(!bool);
+        saveButton.setEnabled(bool);
+    }
+    
+    public void set(Data data) {        
+        Event evt = (Event)data;
+        
+        this.id          = evt.getID();
+        this.event       = evt.getEvent();
+        this.description = evt.getDescription();
+        this.location    = evt.getLocation();
+        this.date        = evt.getDate();
+        this.year        = evt.getYear();
+        this.month       = evt.getMonth();
+        this.day         = evt.getDay();
+        this.start       = evt.getStart();
+        this.end         = evt.getEnd();
+        
+        dateLabel.setText(getTitleLabel());
+        eventInput.setText(event);
+        descriptionInput.setText(description);
+        locationInput.setText(location);
+        startHour.setValue(evt.getStartHour());
+        startMinute.setValue(evt.getStartMinute());      
+        endHour.setValue(evt.getEndHour());          
+        endMinute.setValue(evt.getEndMinute());  
     }
 }

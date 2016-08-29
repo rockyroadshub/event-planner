@@ -17,7 +17,7 @@
 package org.rockyroadshub.planner.core.data;
 
 import org.rockyroadshub.planner.core.database.Data;
-import org.rockyroadshub.planner.core.gui.CalendarPane;
+import org.rockyroadshub.planner.core.gui.calendar.CalendarPane;
 
 /**
  *
@@ -25,7 +25,8 @@ import org.rockyroadshub.planner.core.gui.CalendarPane;
  * @version 0.0.0
  * @since 1.8
  */
-public class Event extends Data {
+@SuppressWarnings("serial")
+public final class Event extends Data {
     private String event;
     private String description;
     private String location;

@@ -59,9 +59,14 @@ public final class EventMapper extends DataMapper {
     private final List<Integer> dayList = new ArrayList<>();
     private final List<Event> evtList = new ArrayList<>();
     
+    private static final String SELECT_EVENT_DATE = 
+            "SELECT * FROM EVENTS WHERE EVENT_DATE = ?";
+    
+    private static final String SELECT_EVENT_MONTH_YEAR = 
+            "SELECT * FROM EVENTS WHERE EVENT_MONTH = ? AND EVENT_YEAR = ?";
+    
     private EventMapper() {
-        setMemory(MEMORY);
-        setDisplayAltTexts(ALTTEXTS);
+        initialize();
     }
     
     private static final class Holder {
@@ -72,6 +77,15 @@ public final class EventMapper extends DataMapper {
         return Holder.INSTANCE;
     }
     
+    private void initialize() {
+        try {
+            DatabaseControl.getInstance().create(MEMORY);
+        } 
+        catch (SQLException ex) {}
+        setMemory(MEMORY);
+        setDisplayAltTexts(ALTTEXTS);
+    }
+    
     /**
      * Finds an event from a given id
      * @param id primary/main key of the event
@@ -80,26 +94,28 @@ public final class EventMapper extends DataMapper {
      */
     @Override
     public Optional<Data> find(int id) {
-        try {
-            DatabaseControl control = DatabaseControl.getInstance();
-            Event event = new Event();
-            String command = String.format(
-                    getMembers().getSelectFormat(), 
-                    id);
-            
-            String[] data = control.find(command, 
-                    getMembers().getTotalColumns());
-            
-            event.setID(Integer.parseInt(data[0]));
-            event.setEvent(data[1]);
-            event.setDescription(data[2]);
-            event.setLocation(data[3]);
-            event.setDate(data[4]);
-            event.setStart(data[8]);
-            event.setEnd(data[9]);
-            
-            return Optional.of(event);
-            
+        DatabaseConnection conn0 = DatabaseConnection.getInstance();
+        Connection conn = conn0.getConnection();
+        
+        try(PreparedStatement stmt = 
+                conn.prepareStatement(getMembers().getSelectFormat())) 
+        {
+            stmt.setInt(1, id);
+            try(ResultSet rs = stmt.executeQuery()) {
+                if(rs.next()) {
+                    Event event = new Event();
+                    event.setID(rs.getInt(1));
+                    event.setEvent(rs.getString(2));
+                    event.setDescription(rs.getString(3));
+                    event.setLocation(rs.getString(4));
+                    event.setDate(rs.getString(5));
+                    event.setStart(rs.getString(9));
+                    event.setEnd(rs.getString(10));
+                    return Optional.of(event);
+                }
+                else 
+                    return Optional.empty();
+            }
         } 
         catch (SQLException ex) {
             throw new DataMapperException(ex);
@@ -114,21 +130,22 @@ public final class EventMapper extends DataMapper {
     @Override
     public void insert(Data data) throws DataMapperException {
         Event event = (Event)data;
-        DatabaseControl control = DatabaseControl.getInstance();
-        String command = String.format(
-                getMembers().getInsertFormat(),
-                event.getEvent(),
-                event.getDescription(),
-                event.getLocation(),
-                event.getDate(),
-                event.getYear(),
-                event.getMonth(),
-                event.getDay(),
-                event.getStart(),
-                event.getEnd());
+        DatabaseConnection conn0 = DatabaseConnection.getInstance();
+        Connection conn = conn0.getConnection();
         
-        try {
-            control.execute(command);
+        try(PreparedStatement stmt = 
+                conn.prepareStatement(getMembers().getInsertFormat())) 
+        {
+            stmt.setString(1, event.getEvent());
+            stmt.setString(2, event.getDescription());
+            stmt.setString(3, event.getLocation());
+            stmt.setString(4, event.getDate());
+            stmt.setString(5, event.getYear());
+            stmt.setString(6, event.getMonth());
+            stmt.setString(7, event.getDay());
+            stmt.setString(8, event.getStart());
+            stmt.setString(9, event.getEnd());
+            stmt.executeUpdate();
         } 
         catch (SQLException ex) {
             throw new DataMapperException(ex);
@@ -143,22 +160,23 @@ public final class EventMapper extends DataMapper {
     @Override
     public void update(Data data) throws DataMapperException {
         Event event = (Event)data;
-        DatabaseControl control = DatabaseControl.getInstance();
-        String command = String.format(
-                getMembers().getUpdateFormat(),
-                event.getEvent(),
-                event.getDescription(),
-                event.getLocation(),
-                event.getDate(),
-                event.getYear(),
-                event.getMonth(),
-                event.getDay(),
-                event.getStart(),
-                event.getEnd(),
-                event.getID());
+        DatabaseConnection conn0 = DatabaseConnection.getInstance();
+        Connection conn = conn0.getConnection();
         
-        try {
-            control.execute(command);
+        try(PreparedStatement stmt = 
+                conn.prepareStatement(getMembers().getUpdateFormat())) 
+        {
+            stmt.setString(1, event.getEvent());
+            stmt.setString(2, event.getDescription());
+            stmt.setString(3, event.getLocation());
+            stmt.setString(4, event.getDate());
+            stmt.setString(5, event.getYear());
+            stmt.setString(6, event.getMonth());
+            stmt.setString(7, event.getDay());
+            stmt.setString(8, event.getStart());
+            stmt.setString(9, event.getEnd());
+            stmt.setInt(10, event.getID());
+            stmt.executeUpdate();
         } 
         catch (SQLException ex) {
             throw new DataMapperException(ex);
@@ -172,12 +190,14 @@ public final class EventMapper extends DataMapper {
      */
     @Override
     public void delete(int id) throws DataMapperException {
-        DatabaseControl control = DatabaseControl.getInstance();
-        String command = String.format(
-                getMembers().getDeleteFormat(), id);
+        DatabaseConnection conn0 = DatabaseConnection.getInstance();
+        Connection conn = conn0.getConnection();
         
-        try {
-            control.execute(command);
+        try(PreparedStatement stmt = 
+                conn.prepareStatement(getMembers().getDeleteFormat())) 
+        {
+            stmt.setInt(1, id);
+            stmt.executeUpdate();
         } 
         catch (SQLException ex) {
             throw new DataMapperException(ex);
@@ -190,15 +210,23 @@ public final class EventMapper extends DataMapper {
      * @return number of events
      */
     public int getNumberOfEvents(String date) {
-        DatabaseControl control = DatabaseControl.getInstance();        
-        String command = String.format(
-            "SELECT * FROM EVENTS WHERE EVENT_DATE = '%s'", date);
-            
-        try {
-            return control.getRowCount(command);
-        } catch (SQLException ex) {
+        DatabaseConnection conn0 = DatabaseConnection.getInstance();
+        Connection conn = conn0.getConnection();
+        int i = 0;
+        try(PreparedStatement stmt = 
+                conn.prepareStatement(SELECT_EVENT_DATE)) 
+        {
+            stmt.setString(1, date);
+            try(ResultSet rs = stmt.executeQuery()) {
+                while(rs.next()) {
+                    i++;
+                }
+            }
+        } 
+        catch (SQLException ex) {
             throw new DataMapperException(ex);
         }
+        return i;
     }
     
     /**
@@ -208,15 +236,24 @@ public final class EventMapper extends DataMapper {
      * @return number of events
      */
     public int getNumberOfEvents(String month, String year) {
-        DatabaseControl control = DatabaseControl.getInstance();        
-        String command = String.format(
-            "SELECT * FROM EVENTS WHERE EVENT_MONTH = '%s' AND EVENT_YEAR = '%s'", month,year);
-        
-        try {
-            return control.getRowCount(command);
-        } catch (SQLException ex) {
+        DatabaseConnection conn0 = DatabaseConnection.getInstance();
+        Connection conn = conn0.getConnection();
+        int i = 0;
+        try(PreparedStatement stmt = 
+                conn.prepareStatement(SELECT_EVENT_MONTH_YEAR)) 
+        {
+            stmt.setString(1, month);
+            stmt.setString(2, year);
+            try(ResultSet rs = stmt.executeQuery()) {
+                while(rs.next()) {
+                    i++;
+                }
+            }
+        } 
+        catch (SQLException ex) {
             throw new DataMapperException(ex);
         }
+        return i;
     }
     
     /**
@@ -229,20 +266,20 @@ public final class EventMapper extends DataMapper {
         Connection conn = conn0.getConnection();
         
         try(PreparedStatement stmt = 
-            conn.prepareStatement("SELECT * FROM EVENTS WHERE EVENT_DATE = ?"))
+            conn.prepareStatement(SELECT_EVENT_DATE))
         {
             stmt.setString(1, date);
             evtList.clear();
             try(ResultSet rs = stmt.executeQuery()) {
                 while(rs.next()) {
                     Event event = new Event();
-                    event.setID(rs.getInt("EVENT_ID"));
-                    event.setEvent(rs.getString("EVENT"));
-                    event.setDescription(rs.getString("DESCRIPTION"));
-                    event.setLocation(rs.getString("LOCATION"));
-                    event.setDate(rs.getString("EVENT_DATE"));
-                    event.setStart(rs.getString("EVENT_START"));
-                    event.setEnd(rs.getString("EVENT_END"));
+                    event.setID(rs.getInt(1));
+                    event.setEvent(rs.getString(2));
+                    event.setDescription(rs.getString(3));
+                    event.setLocation(rs.getString(4));
+                    event.setDate(rs.getString(5));
+                    event.setStart(rs.getString(9));
+                    event.setEnd(rs.getString(10));
                     evtList.add(event);
                 }
             }
@@ -268,14 +305,14 @@ public final class EventMapper extends DataMapper {
         DatabaseConnection conn0 = DatabaseConnection.getInstance();
         Connection conn = conn0.getConnection();
         try(PreparedStatement stmt = 
-            conn.prepareStatement("SELECT * FROM EVENTS WHERE EVENT_MONTH = ? AND EVENT_YEAR = ?"))
+            conn.prepareStatement(SELECT_EVENT_MONTH_YEAR))
         {
             stmt.setString(1, month);
             stmt.setString(2, year); 
             dayList.clear();
             try(ResultSet rs = stmt.executeQuery()) {
                 while(rs.next()) {
-                    dayList.add(rs.getInt("EVENT_DAY"));
+                    dayList.add(rs.getInt(8));
                 }
             }
             catch (SQLException ex) {
@@ -299,13 +336,13 @@ public final class EventMapper extends DataMapper {
         DatabaseConnection conn0 = DatabaseConnection.getInstance();
         Connection conn = conn0.getConnection();
         try(PreparedStatement stmt = 
-            conn.prepareStatement("SELECT * FROM EVENTS WHERE EVENT_MONTH = ? AND EVENT_YEAR = ?"))
+            conn.prepareStatement(SELECT_EVENT_MONTH_YEAR))
         {
             stmt.setString(1, month);
             stmt.setString(2, year); 
             try(ResultSet rs = stmt.executeQuery()) {
                 while(rs.next()) {
-                    delete(rs.getInt("EVENT_ID"));
+                    delete(rs.getInt(1));
                 }
             }
             catch (SQLException ex) {

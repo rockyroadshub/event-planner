@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.rockyroadshub.planner.core.utils;
+package org.rockyroadshub.planner.system;
 
 /**
  *
@@ -22,7 +22,13 @@ package org.rockyroadshub.planner.core.utils;
  * @version 0.0.0
  * @since 1.8
  */
-public interface Initializable {
-
-    void initialize();
+public final class TaskManager {
+    
+    public static void initialize() {
+        
+    }
+    
+    public static void next() {
+        
+    }
 }
