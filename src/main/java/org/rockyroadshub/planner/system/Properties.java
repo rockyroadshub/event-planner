@@ -103,7 +103,7 @@ public final class Properties implements PropertyChangeListener {
         }
     }
     
-    private void load() {
+    public void load() {
         color_eventday   = getColor(COLOR_EVENTDAY);
         color_currentday = getColor(COLOR_CURRENTDAY);
     }

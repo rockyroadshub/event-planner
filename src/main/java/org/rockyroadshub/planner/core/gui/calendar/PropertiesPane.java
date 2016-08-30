@@ -2,17 +2,20 @@ package org.rockyroadshub.planner.core.gui.calendar;
 
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JColorChooser;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSeparator;
 import net.miginfocom.layout.LC;
 import net.miginfocom.swing.MigLayout;
 import org.rockyroadshub.planner.core.gui.AbstractPane;
+import org.rockyroadshub.planner.core.gui.Frame;
 import org.rockyroadshub.planner.core.gui.GUIUtils;
 import org.rockyroadshub.planner.system.IconLoader;
 import org.rockyroadshub.planner.core.gui.MainPane;
@@ -74,8 +77,8 @@ public final class PropertiesPane extends AbstractPane {
         onTrigger(button);
     };    
     
-    private static final String SAVE_DIALOG      = "";
-    private static final String DEFAULT_DIALOG   = "";
+    private static final String SAVE_DIALOG      = "Are you sure to save these changes?";
+    private static final String DEFAULT_DIALOG   = "Are you sure to revert properties to default?";
     private static final String BORDER           = "Properties";
     
     private void initialize() {
@@ -142,11 +145,37 @@ public final class PropertiesPane extends AbstractPane {
     }
     
     private void onSave() {
-        properties.setProperty(Properties.COLOR_EVENTDAY,container.eventColor.getBackground());
-        properties.setProperty(Properties.COLOR_CURRENTDAY,container.currentColor.getBackground());
+        Frame  f = Frame.getInstance();
+        String m = SAVE_DIALOG;
+        String t = Globals.FRAME_TITLE;
+        int    q = JOptionPane.OK_CANCEL_OPTION;
+        int    o = JOptionPane.OK_OPTION;
+        if(JOptionPane.showConfirmDialog(f, m, t, q) == o) {
+            properties.setProperty(Properties.COLOR_EVENTDAY,
+                container.eventColor.getBackground());
+            properties.setProperty(Properties.COLOR_CURRENTDAY,
+                container.currentColor.getBackground());
+            
+            properties.load();
+        }
     }
     
-    private void onDefault() {}
+    private void onDefault() {
+        Frame  f = Frame.getInstance();
+        String m = DEFAULT_DIALOG;
+        String t = Globals.FRAME_TITLE;
+        int    q = JOptionPane.OK_CANCEL_OPTION;
+        int    o = JOptionPane.OK_OPTION;
+        if(JOptionPane.showConfirmDialog(f, m, t, q) == o) {
+            properties.setProperty(Properties.COLOR_EVENTDAY,
+                new Color(50,130,180));
+            properties.setProperty(Properties.COLOR_CURRENTDAY,
+                Color.YELLOW);
+        
+            properties.load();
+            container.refresh();
+        } 
+    }
     
     private void onTrigger(JButton button) {
         String name = button.getName();
@@ -215,8 +244,8 @@ public final class PropertiesPane extends AbstractPane {
                
         @Override
         public void refresh() {
-            eventColor.setBackground(properties.getColor(Properties.COLOR_EVENTDAY));
-            currentColor.setBackground(properties.getColor(Properties.COLOR_CURRENTDAY));
+            eventColor.setBackground(properties.color_eventday);
+            currentColor.setBackground(properties.color_currentday);
         }
 
         @Override

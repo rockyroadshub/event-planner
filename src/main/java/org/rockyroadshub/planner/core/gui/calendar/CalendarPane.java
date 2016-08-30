@@ -312,11 +312,11 @@ public final class CalendarPane extends AbstractPane {
             button.setEnabled(true);
             
             if(current == date && y == year && m == month) {
-                button.setForeground(properties.getColor(Properties.COLOR_CURRENTDAY));
+                button.setForeground(properties.color_currentday);
             }
             
             if(dayList != null && dayList.contains(current)) {
-                button.setBackground(properties.getColor(Properties.COLOR_EVENTDAY));
+                button.setBackground(properties.color_eventday);
                 int rows = map.getNumberOfEvents(Utilities.formatDate(y, m+1, current));
                 if(rows != 0) {
                     button.setToolTipText(String.format(BUTTON_TOOLTIP, rows));
