@@ -14,15 +14,35 @@
  * limitations under the License.
  */
 
-package org.rockyroadshub.planner.system;
+package org.rockyroadshub.planner.loader;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  *
  * @author Arnell Christoper D. Dalid
- * @version 0.0.0
- * @since 1.8
+ * @param <L>
+ * @since 0.1.2
  */
-public interface Task {
-
-    void start();
+public abstract class AbstractLoader<L> {
+    /**
+     * Loader Map where loaded entities are saved.
+     * 
+     */
+    protected final Map<String, L> loaderMap = new HashMap<>();
+    
+    public abstract void load();
+    
+    protected void add(String name, L entity) {
+        loaderMap.put(name, entity);
+    }
+    
+    public synchronized L get(String name) {
+        return loaderMap.get(name);
+    }
+    
+    public synchronized Map<String, L> getMap() {
+        return loaderMap;
+    }
 }

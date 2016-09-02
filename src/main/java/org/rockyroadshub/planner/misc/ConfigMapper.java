@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.rockyroadshub.planner.core.data;
+package org.rockyroadshub.planner.misc;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -55,21 +55,11 @@ public final class ConfigMapper extends DataMapper {
     }
     
     private ConfigMapper() {
-        initialize();
+        super(null);
     }
 
     public static ConfigMapper getInstance() {
         return Holder.INSTANCE;
-    }
-    
-    private void initialize() {
-        try {
-            DatabaseControl.getInstance().create(MEMORY);
-        } 
-        catch (SQLException ex) {
-            throw new DataMapperException(ex);
-        }
-        setMemory(MEMORY);
     }
     
     @Override

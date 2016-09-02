@@ -22,7 +22,6 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.io.FileUtils;
-import org.rockyroadshub.planner.system.Properties;
 
 /**
  *
@@ -62,18 +61,22 @@ public final class Utilities {
      * </p>
      * @param path file path
      * @param defaultPath source path
+     * @return returns true if the file is newly created; returns false if
+     *         otherwise
      * @throws IOException
      * @throws ConfigurationException
      * @throws URISyntaxException 
      */
     @LogExceptions
-    public static void checkFile(String path, String defaultPath) 
+    public static boolean checkFile(String path, String defaultPath) 
             throws IOException, ConfigurationException, URISyntaxException 
     {
         File file = new File(path);
         if(!file.exists()) {
             FileUtils.copyInputStreamToFile(
                     Utilities.class.getResourceAsStream(defaultPath), file);
-        }
+            return true;
+        } 
+        return false;
     }
 }

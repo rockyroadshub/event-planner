@@ -23,9 +23,9 @@ import javax.swing.JPanel;
 /**
  *
  * @author Arnell Christoper D. Dalid
- * @version 0.0.0
- * @since 1.8
+ * @since 0.1.2
  */
+@SuppressWarnings("serial")
 public abstract class AbstractPane extends JPanel implements GUI {
     private String targetDate;
     private String titleLabel;

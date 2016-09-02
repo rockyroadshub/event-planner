@@ -40,9 +40,9 @@ import org.rockyroadshub.planner.core.data.Event;
 import org.rockyroadshub.planner.core.data.EventMapper;
 import org.rockyroadshub.planner.core.database.Data;
 import org.rockyroadshub.planner.core.gui.AbstractPane;
-import org.rockyroadshub.planner.core.gui.Frame;
+import org.rockyroadshub.planner.core.gui.MainFrame;
 import org.rockyroadshub.planner.core.gui.GUIUtils;
-import org.rockyroadshub.planner.system.IconLoader;
+import org.rockyroadshub.planner.loader.IconLoader;
 import org.rockyroadshub.planner.core.gui.MainPane;
 import org.rockyroadshub.planner.core.utils.Globals;
 import org.rockyroadshub.planner.core.utils.TextLimiter;
@@ -51,9 +51,9 @@ import org.rockyroadshub.planner.core.utils.Utilities;
 /**
  *
  * @author Arnell Christoper D. Dalid
- * @version 0.0.0
- * @since 1.8
+ * @version 0.1.0
  */
+@SuppressWarnings("serial")
 public final class ViewPane extends AbstractPane {
 
     private ViewPane() {
@@ -222,22 +222,22 @@ public final class ViewPane extends AbstractPane {
         homeButton.setToolTipText(Globals.HOME);
         homeButton.setName(CalendarPane.NAME);
         homeButton.addActionListener(action);
-        homeButton.setIcon(iconLoader.getIcon(Globals.HOME));
+        homeButton.setIcon(iconLoader.get(Globals.HOME));
         
         backButton.setToolTipText(Globals.BACK);
         backButton.setName(DisplayPane.NAME);
         backButton.addActionListener(action);
-        backButton.setIcon(iconLoader.getIcon(Globals.BACK));
+        backButton.setIcon(iconLoader.get(Globals.BACK));
         
         saveButton.setToolTipText(Globals.SAVE);
         saveButton.setName(Globals.SAVE);
         saveButton.addActionListener(action);
-        saveButton.setIcon(iconLoader.getIcon(Globals.SAVE));
+        saveButton.setIcon(iconLoader.get(Globals.SAVE));
         
         editButton.setToolTipText(Globals.EDIT);
         editButton.setName(Globals.EDIT);
         editButton.addActionListener(action);     
-        editButton.setIcon(iconLoader.getIcon(Globals.EDIT));
+        editButton.setIcon(iconLoader.get(Globals.EDIT));
     }
     
     private void pack() {
@@ -312,7 +312,7 @@ public final class ViewPane extends AbstractPane {
         start = String.format("%d:%02d:00", sH, sM);
         end   = String.format("%d:%02d:00", eH, eM);  
                 
-        Frame  f = Frame.getInstance();
+        MainFrame  f = MainFrame.getInstance();
         String m = SAVE_DIALOG;
         String t = Globals.FRAME_TITLE;
         int    q = JOptionPane.OK_CANCEL_OPTION;

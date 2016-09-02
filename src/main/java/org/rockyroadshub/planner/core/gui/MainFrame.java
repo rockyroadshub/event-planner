@@ -37,18 +37,20 @@ import org.rockyroadshub.planner.core.utils.Globals;
  * @since 1.8
  */
 @SuppressWarnings("serial")
-public final class Frame extends JFrame {
-    private Frame() {}
+public final class MainFrame extends JFrame {
+    private MainFrame() {
+        initialize();
+    }
     
-    public static Frame getInstance() {
+    public static MainFrame getInstance() {
         return Holder.INSTANCE;
     }
     
     private static final class Holder {
-        private static final Frame INSTANCE = new Frame();
+        private static final MainFrame INSTANCE = new MainFrame();
     }  
     
-    public void initialize() {
+    private void initialize() {
         
         SwingUtilities.invokeLater(() -> {
             setLayout(new BorderLayout());
@@ -66,7 +68,7 @@ public final class Frame extends JFrame {
     }
     
     private void initIcon() {
-        try(InputStream in = Frame.class.getResourceAsStream(Globals.FRAME_ICON)) {
+        try(InputStream in = MainFrame.class.getResourceAsStream(Globals.FRAME_ICON)) {
             BufferedImage img = ImageIO.read(in);
             setIconImage(img);
         } 

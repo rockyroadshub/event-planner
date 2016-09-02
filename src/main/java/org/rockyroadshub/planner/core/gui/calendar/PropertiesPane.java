@@ -15,12 +15,13 @@ import javax.swing.JSeparator;
 import net.miginfocom.layout.LC;
 import net.miginfocom.swing.MigLayout;
 import org.rockyroadshub.planner.core.gui.AbstractPane;
-import org.rockyroadshub.planner.core.gui.Frame;
+import org.rockyroadshub.planner.core.gui.MainFrame;
 import org.rockyroadshub.planner.core.gui.GUIUtils;
-import org.rockyroadshub.planner.system.IconLoader;
+import org.rockyroadshub.planner.loader.IconLoader;
 import org.rockyroadshub.planner.core.gui.MainPane;
 import org.rockyroadshub.planner.core.utils.Globals;
-import org.rockyroadshub.planner.system.Properties;
+import org.rockyroadshub.planner.loader.Property;
+import org.rockyroadshub.planner.loader.PropertyLoader;
 
 /*
  * Copyright 2016 Arnell Christoper D. Dalid.
@@ -41,8 +42,7 @@ import org.rockyroadshub.planner.system.Properties;
 /**
  *
  * @author Arnell Christoper D. Dalid
- * @version 0.0.0
- * @since 1.8
+ * @version 0.1.0
  */
 @SuppressWarnings("serial")
 public final class PropertiesPane extends AbstractPane {
@@ -70,7 +70,7 @@ public final class PropertiesPane extends AbstractPane {
     private PropertiesContainer container;
     
     private IconLoader iconLoader;
-    private Properties properties;
+    private PropertyLoader properties;
     
     private final ActionListener action = (ActionEvent ae) -> {    
         JButton button = (JButton)ae.getSource();
@@ -87,7 +87,7 @@ public final class PropertiesPane extends AbstractPane {
         setLayout(new BorderLayout());
         
         iconLoader = IconLoader.getInstance();
-        properties = Properties.getInstance();
+        properties = PropertyLoader.getInstance();
         container  = new PropertiesContainer();
         
         initButtons();
@@ -99,6 +99,7 @@ public final class PropertiesPane extends AbstractPane {
 
     @Override
     public void refresh() {
+        properties.refresh();
         container.refresh();
     }
 
@@ -111,22 +112,22 @@ public final class PropertiesPane extends AbstractPane {
         homeButton.setToolTipText(Globals.HOME);
         homeButton.setName(CalendarPane.NAME);
         homeButton.addActionListener(action);
-        homeButton.setIcon(iconLoader.getIcon(Globals.HOME));
+        homeButton.setIcon(iconLoader.get(Globals.HOME));
         
         backButton.setToolTipText(Globals.BACK);
         backButton.setName(Globals.BACK);
         backButton.addActionListener(action);
-        backButton.setIcon(iconLoader.getIcon(Globals.BACK));
+        backButton.setIcon(iconLoader.get(Globals.BACK));
         
         saveButton.setToolTipText(Globals.SAVE);
         saveButton.setName(Globals.SAVE);
         saveButton.addActionListener(action);
-        saveButton.setIcon(iconLoader.getIcon(Globals.SAVE));
+        saveButton.setIcon(iconLoader.get(Globals.SAVE));
         
         defaultButton.setToolTipText(Globals.DEFAULT);
         defaultButton.setName(Globals.DEFAULT);
         defaultButton.addActionListener(action);
-        defaultButton.setIcon(iconLoader.getIcon(Globals.DEFAULT));
+        defaultButton.setIcon(iconLoader.get(Globals.DEFAULT));
     }
     
     private void initMenu() {
@@ -145,35 +146,34 @@ public final class PropertiesPane extends AbstractPane {
     }
     
     private void onSave() {
-        Frame  f = Frame.getInstance();
+        MainFrame  f = MainFrame.getInstance();
         String m = SAVE_DIALOG;
         String t = Globals.FRAME_TITLE;
         int    q = JOptionPane.OK_CANCEL_OPTION;
         int    o = JOptionPane.OK_OPTION;
         if(JOptionPane.showConfirmDialog(f, m, t, q) == o) {
-            properties.setProperty(Properties.COLOR_EVENTDAY,
+            properties.setProperty(Property.CALENDAR_COLOR_EVENTDAY,
                 container.eventColor.getBackground());
-            properties.setProperty(Properties.COLOR_CURRENTDAY,
+            properties.setProperty(Property.CALENDAR_COLOR_CURRENTDAY,
                 container.currentColor.getBackground());
             
-            properties.load();
+            this.refresh();
         }
     }
     
     private void onDefault() {
-        Frame  f = Frame.getInstance();
+        MainFrame  f = MainFrame.getInstance();
         String m = DEFAULT_DIALOG;
         String t = Globals.FRAME_TITLE;
         int    q = JOptionPane.OK_CANCEL_OPTION;
         int    o = JOptionPane.OK_OPTION;
         if(JOptionPane.showConfirmDialog(f, m, t, q) == o) {
-            properties.setProperty(Properties.COLOR_EVENTDAY,
+            properties.setProperty(Property.CALENDAR_COLOR_EVENTDAY,
                 new Color(50,130,180));
-            properties.setProperty(Properties.COLOR_CURRENTDAY,
+            properties.setProperty(Property.CALENDAR_COLOR_CURRENTDAY,
                 Color.YELLOW);
         
-            properties.load();
-            container.refresh();
+            this.refresh();
         } 
     }
     
@@ -183,7 +183,8 @@ public final class PropertiesPane extends AbstractPane {
             case CalendarPane.NAME:
                 CalendarPane.getInstance().refresh();
                 MainPane.getInstance().showPane(name);
-                this.refresh();
+                container.showPane(PropertiesContainer.DISPLAY_PANE);
+                container.refresh();
                 break;
             case Globals.BACK:
                 container.showPane(PropertiesContainer.DISPLAY_PANE);
@@ -244,8 +245,8 @@ public final class PropertiesPane extends AbstractPane {
                
         @Override
         public void refresh() {
-            eventColor.setBackground(properties.color_eventday);
-            currentColor.setBackground(properties.color_currentday);
+            eventColor.setBackground(properties.calendar_color_eventday);
+            currentColor.setBackground(properties.calendar_color_currentday);
         }
 
         @Override
@@ -262,11 +263,11 @@ public final class PropertiesPane extends AbstractPane {
             displayPane.add(currentColor, Globals.BUTTON_DIMENSIONS + ",split 2");
             displayPane.add(currentLabel,"wrap");
             
-            eventColor.setBackground(properties.color_eventday);
+            eventColor.setBackground(properties.calendar_color_eventday);
             eventColor.setName(COLOR_CHOOSER_EVENT);      
             eventColor.addActionListener(propertiesAction);
             
-            currentColor.setBackground(properties.color_currentday);
+            currentColor.setBackground(properties.calendar_color_currentday);
             currentColor.setName(COLOR_CHOOSER_CURRENT);
             currentColor.addActionListener(propertiesAction);
         }
@@ -275,7 +276,7 @@ public final class PropertiesPane extends AbstractPane {
             setButton.setToolTipText(Globals.SET);
             setButton.setName(Globals.SET);
             setButton.addActionListener(propertiesAction);
-            setButton.setIcon(iconLoader.getIcon(Globals.SET));
+            setButton.setIcon(iconLoader.get(Globals.SET));
             colorMenu.setLayout(new MigLayout());
             colorMenu.setOpaque(false);            
             colorMenu.add(setButton, Globals.BUTTON_DIMENSIONS);

@@ -14,21 +14,28 @@
  * limitations under the License.
  */
 
-package org.rockyroadshub.planner.system;
+package org.rockyroadshub.planner.loader;
 
 /**
  *
  * @author Arnell Christoper D. Dalid
- * @version 0.0.0
- * @since 1.8
+ * @since 0.1.2
  */
-public final class TaskManager {
-    
-    public static void initialize() {
+public enum Property {
+    CALENDAR_COLOR_EVENTDAY("calendar.color.eventday"),
+    CALENDAR_COLOR_CURRENTDAY("calendar.color.currentday"),
+    CALENDAR_COLOR_WEEKDAYS("calendar.color.weekdays"),
+    CALENDAR_COLOR_DEFAULTDAY("calendar.color.defaultday"),
+    CALENDAR_COLOR_FOREGROUND("calendar.color.foreground");
         
+    private final String key; 
+    
+    Property(String key) {
+        this.key = key;
     }
     
-    public static void next() {
-        
+    @Override
+    public String toString() {
+        return key;
     }
 }

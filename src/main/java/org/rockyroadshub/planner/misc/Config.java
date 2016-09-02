@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.rockyroadshub.planner.core.data;
+package org.rockyroadshub.planner.misc;
 
 import java.awt.Color;
 import java.io.Serializable;

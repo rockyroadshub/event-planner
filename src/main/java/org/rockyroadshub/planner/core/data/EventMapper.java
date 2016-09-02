@@ -23,50 +23,29 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import org.rockyroadshub.planner.core.database.DatabaseControl;
 import org.rockyroadshub.planner.core.database.Data;
 import org.rockyroadshub.planner.core.database.DataMapperException;
 import org.rockyroadshub.planner.core.database.DataMapper;
 import org.rockyroadshub.planner.core.database.DatabaseConnection;
-import org.rockyroadshub.planner.core.database.Members;
-import org.rockyroadshub.planner.core.database.Memory;
+import org.rockyroadshub.planner.loader.MemoryLoader;
 
 /**
  *
  * @author Arnell Christoper D. Dalid
- * @version 0.0.0
- * @since 1.8
+ * @since 0.1.2
  */
 public final class EventMapper extends DataMapper {
-    private static final Members MEMBERS = new Members()
-            .add("EVENT_ID", "INT NOT NULL PRIMARY KEY GENERATED "
-                + "ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1)", true)
-            .add("EVENT"      ,"VARCHAR(50)" ,false)
-            .add("DESCRIPTION","VARCHAR(500)",false)
-            .add("LOCATION"   ,"VARCHAR(250)",false)
-            .add("EVENT_DATE" ,"DATE"        ,false)
-            .add("EVENT_YEAR" ,"VARCHAR(10)" ,false)
-            .add("EVENT_MONTH","VARCHAR(20)" ,false)
-            .add("EVENT_DAY"  ,"VARCHAR(10)" ,false)
-            .add("EVENT_START","TIME"        ,false)
-            .add("EVENT_END"  ,"TIME"        ,false)
-            .setDisplayColumns(0,1,4,8,9)
-            .pack();
-    
-    private static final String[] ALTTEXTS = {"ID", "Title", "Date", "Start", "End"};  
-    private static final Memory MEMORY = new Memory(MEMBERS, "EVENTS");
-    
     private final List<Integer> dayList = new ArrayList<>();
     private final List<Event> evtList = new ArrayList<>();
     
     private static final String SELECT_EVENT_DATE = 
-            "SELECT * FROM EVENTS WHERE EVENT_DATE = ?";
+            "SELECT * FROM PLANNER.EVENTS WHERE EVENT_DATE = ?";
     
     private static final String SELECT_EVENT_MONTH_YEAR = 
-            "SELECT * FROM EVENTS WHERE EVENT_MONTH = ? AND EVENT_YEAR = ?";
+            "SELECT * FROM PLANNER.EVENTS WHERE EVENT_MONTH = ? AND EVENT_YEAR = ?";
     
     private EventMapper() {
-        initialize();
+        super(MemoryLoader.getInstance().get("EventMapper"));
     }
     
     private static final class Holder {
@@ -75,15 +54,6 @@ public final class EventMapper extends DataMapper {
     
     public static EventMapper getInstance() {
         return Holder.INSTANCE;
-    }
-    
-    private void initialize() {
-        try {
-            DatabaseControl.getInstance().create(MEMORY);
-        } 
-        catch (SQLException ex) {}
-        setMemory(MEMORY);
-        setDisplayAltTexts(ALTTEXTS);
     }
     
     /**

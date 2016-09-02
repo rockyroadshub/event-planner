@@ -1,4 +1,4 @@
-package org.rockyroadshub.planner.core.utils;
+package org.rockyroadshub.planner.misc;
 
 import java.awt.EventQueue;
 import java.awt.Font;

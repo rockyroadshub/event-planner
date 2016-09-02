@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.rockyroadshub</groupId>
     <artifactId>planner</artifactId>
-    <version>0.1.1</version>
+    <version>0.2.0</version>
     <packaging>jar</packaging>
     
     <properties>
@@ -104,6 +104,27 @@
                                      <filtering>true</filtering>
                                      <includes>
                                         <include>**/*.*</include>
+                                     </includes>
+                                </resource>
+                            </resources>              
+                        </configuration>            
+                    </execution>
+                    
+                    <execution>
+                        <id>copy-misc</id>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}</outputDirectory>
+                            <resources>          
+                                <resource>
+                                <directory>${project.basedir}</directory>
+                                     <filtering>true</filtering>
+                                     <includes>
+                                        <include>LICENSE.txt</include>
+                                        <include>README.md</include>
                                      </includes>
                                 </resource>
                             </resources>              

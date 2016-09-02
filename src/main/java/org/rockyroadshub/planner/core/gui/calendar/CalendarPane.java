@@ -18,15 +18,12 @@ package org.rockyroadshub.planner.core.gui.calendar;
 
 import org.rockyroadshub.planner.core.utils.Utilities;
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
-import java.util.LinkedList;
 import java.util.List;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -38,18 +35,17 @@ import net.miginfocom.layout.LC;
 import net.miginfocom.swing.MigLayout;
 import org.rockyroadshub.planner.core.data.EventMapper;
 import org.rockyroadshub.planner.core.gui.AbstractPane;
-import org.rockyroadshub.planner.core.gui.Frame;
+import org.rockyroadshub.planner.core.gui.MainFrame;
 import org.rockyroadshub.planner.core.gui.GUIUtils;
-import org.rockyroadshub.planner.system.IconLoader;
+import org.rockyroadshub.planner.loader.IconLoader;
 import org.rockyroadshub.planner.core.gui.MainPane;
 import org.rockyroadshub.planner.core.utils.Globals;
-import org.rockyroadshub.planner.system.Properties;
+import org.rockyroadshub.planner.loader.PropertyLoader;
 
 /**
  *
  * @author Arnell Christoper D. Dalid
- * @version 0.0.0
- * @since 1.8
+ * @version 0.1.2
  */
 @SuppressWarnings("serial")
 public final class CalendarPane extends AbstractPane {
@@ -67,32 +63,6 @@ public final class CalendarPane extends AbstractPane {
     
     public static final String NAME = "calendarpane";
     
-    private final JLabel    monthLabel     = new JLabel("Month");
-    private final JComboBox monthCombo     = new JComboBox();
-    private final JLabel    yearLabel      = new JLabel("Year");
-    private final JComboBox yearCombo      = new JComboBox();
-    private final JPanel    menuPanel      = new JPanel();
-    private final JPanel    buttonsPanel   = new JPanel();
-    private final JPanel    datePanel      = new JPanel();
-    private final JButton   settingsButton = new JButton();
-    private final JButton   deleteButton   = new JButton();
-    
-    private final List<JButton> buttonMap  = new ArrayList<>();   
-    private final List<JButton> weekdayMap = new LinkedList<>();
-        
-    public static final String[] MONTHS = { 
-        "January", "February", "March", "April", 
-        "May", "June", "July", "August", 
-        "September", "October", "November", "December" 
-    };
-    
-    public static final String[] DAYS = {
-        "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"
-    };
-    
-    private static final Color  WEEKDAYS_COLOR    = new Color(100,100,100);
-    private static final Color  DEFAULT           = new Color(50,50,50);
-    private static final Color  DEFAULT_FG        = Color.WHITE;
     private static final int    MAX               = 42;
     private static final int    MAX_YEAR          = 100;
     private static final int    START_YEAR        = 2000;
@@ -103,7 +73,30 @@ public final class CalendarPane extends AbstractPane {
     private static final String DAY_BUTTON        = "daybutton";
     private static final String BUTTON_TOOLTIP    = "You have %d event(s) registered on this date.";
     private static final String BORDER            = "Calendar";
-       
+    
+    private final JLabel    monthLabel     = new JLabel("Month");
+    private final JComboBox monthCombo     = new JComboBox();
+    private final JLabel    yearLabel      = new JLabel("Year");
+    private final JComboBox yearCombo      = new JComboBox();
+    private final JPanel    menuPanel      = new JPanel();
+    private final JPanel    buttonsPanel   = new JPanel();
+    private final JPanel    datePanel      = new JPanel();
+    private final JButton   settingsButton = new JButton();
+    private final JButton   deleteButton   = new JButton();
+    
+    public static final String[] MONTHS = { 
+        "January", "February", "March", "April", 
+        "May", "June", "July", "August", 
+        "September", "October", "November", "December" 
+    };
+    
+    public static final String[] DAYS = {
+        "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"
+    };       
+    
+    private final JButton[]     dayButtons     = new JButton[MAX];
+    private final JButton[]     weekdayButtons = new JButton[DAYS.length];
+            
     private final GregorianCalendar present  = new GregorianCalendar();
     private final Calendar          calendar = Calendar.getInstance();
     
@@ -112,10 +105,9 @@ public final class CalendarPane extends AbstractPane {
     private final int date  = present.get(Calendar.DATE);    
     
     private static final String DELETE_DIALOG = "Delete all events from %s %s?";
-
-    
+  
     private IconLoader iconLoader;
-    private Properties properties;
+    private PropertyLoader properties;
     
     private final ItemListener item = (ItemEvent ie) -> {
         if(ie.getStateChange() == ItemEvent.SELECTED) {
@@ -134,7 +126,7 @@ public final class CalendarPane extends AbstractPane {
         setLayout(new BorderLayout());
        
         iconLoader = IconLoader.getInstance();
-        properties = Properties.getInstance();
+        properties = PropertyLoader.getInstance();
         
         initButtonsPane();
         initMonthYearPane();
@@ -157,10 +149,10 @@ public final class CalendarPane extends AbstractPane {
     @Override
     public void clear() {
         for(int i = 0; i < MAX; i++) {
-            JButton button = buttonMap.get(i);
+            JButton button = dayButtons[i];
             button.setText(null);
-            button.setBackground(DEFAULT);
-            button.setForeground(DEFAULT_FG);
+            button.setBackground(properties.calendar_color_defaultday);
+            button.setForeground(properties.calendar_color_foreground);
             button.setToolTipText(null);
             button.setEnabled(false);
         }
@@ -204,37 +196,35 @@ public final class CalendarPane extends AbstractPane {
     
     private void initWeekDays() {
         for(int i = 0; i < DAYS.length; i++) {
-            JButton button = new JButton(DAYS[i]);
-            button.setBackground(WEEKDAYS_COLOR);
-            button.setForeground(DEFAULT_FG);
-            button.addActionListener(action);
-            button.setName(WEEKDAY_BUTTON);
-            weekdayMap.add(button);
+            weekdayButtons[i] = new JButton(DAYS[i]);
+            weekdayButtons[i].setBackground(properties.calendar_color_weekdays);
+            weekdayButtons[i].setForeground(properties.calendar_color_foreground);
+            weekdayButtons[i].addActionListener(action);
+            weekdayButtons[i].setName(WEEKDAY_BUTTON);
             
             if((i+1) % 7 == 0) {
-                datePanel.add(button, DAYS_DIMENSION + ", wrap");
+                datePanel.add(weekdayButtons[i], DAYS_DIMENSION + ", wrap");
             }
             else {
-                datePanel.add(button, DAYS_DIMENSION);
+                datePanel.add(weekdayButtons[i], DAYS_DIMENSION);
             }
         }
     }
     
     private void initDays() {
         for(int i = 0; i < MAX; i++) {   
-            JButton button = new JButton();
-            button.setForeground(DEFAULT_FG);
-            button.setBackground(DEFAULT);
-            button.addActionListener(action);
-            button.setEnabled(false);
-            button.setName(DAY_BUTTON);
-            buttonMap.add(button);
+            dayButtons[i] = new JButton();
+            dayButtons[i].setForeground(properties.calendar_color_foreground);
+            dayButtons[i].setBackground(properties.calendar_color_defaultday);
+            dayButtons[i].addActionListener(action);
+            dayButtons[i].setEnabled(false);
+            dayButtons[i].setName(DAY_BUTTON);
             
             if((i+1) % 7 == 0) {
-                datePanel.add(button, DAYS_DIMENSION + ", wrap");
+                datePanel.add(dayButtons[i], DAYS_DIMENSION + ", wrap");
             }
             else {
-                datePanel.add(button, DAYS_DIMENSION);
+                datePanel.add(dayButtons[i], DAYS_DIMENSION);
             }
         }
         
@@ -255,12 +245,12 @@ public final class CalendarPane extends AbstractPane {
         settingsButton.setToolTipText(Globals.SETTINGS);
         settingsButton.setName(PropertiesPane.NAME);
         settingsButton.addActionListener(action);
-        settingsButton.setIcon(iconLoader.getIcon(Globals.SETTINGS));
+        settingsButton.setIcon(iconLoader.get(Globals.SETTINGS));
         
         deleteButton.setToolTipText(Globals.DELETE);
         deleteButton.setName(Globals.DELETE);
         deleteButton.addActionListener(action);
-        deleteButton.setIcon(iconLoader.getIcon(Globals.DELETE));
+        deleteButton.setIcon(iconLoader.get(Globals.DELETE));
     }
     
     private void pack() {
@@ -290,14 +280,14 @@ public final class CalendarPane extends AbstractPane {
                                      
         if(s == 1) {              
             for(int i = daysBefore - 7; i < daysBefore; i++) {
-                JButton button = buttonMap.get(p);
+                JButton button = dayButtons[p];
                 button.setText((String.valueOf(i+1)));
                 p++;
             }
         }
         else {
             for(int i = 0; i < start; i++) {
-                JButton button = buttonMap.get(i);
+                JButton button = dayButtons[i];
                 button.setText(String.valueOf(max + i + 1));
             }     
         }
@@ -307,16 +297,16 @@ public final class CalendarPane extends AbstractPane {
 
         for(int i = start + p; i < end + p; i++) {
             int current = i - delta - p;
-            JButton button = buttonMap.get(i);
+            JButton button = dayButtons[i];
             button.setText(String.valueOf(current)); 
             button.setEnabled(true);
             
             if(current == date && y == year && m == month) {
-                button.setForeground(properties.color_currentday);
+                button.setForeground(properties.calendar_color_currentday);
             }
             
             if(dayList != null && dayList.contains(current)) {
-                button.setBackground(properties.color_eventday);
+                button.setBackground(properties.calendar_color_eventday);
                 int rows = map.getNumberOfEvents(Utilities.formatDate(y, m+1, current));
                 if(rows != 0) {
                     button.setToolTipText(String.format(BUTTON_TOOLTIP, rows));
@@ -325,7 +315,7 @@ public final class CalendarPane extends AbstractPane {
         }
         
         for(int i = end + p, j = 1; i < MAX; i++) {
-            JButton button = buttonMap.get(i);
+            JButton button = dayButtons[i];
             button.setText(String.valueOf(j));             
             j++;
         }
@@ -364,7 +354,7 @@ public final class CalendarPane extends AbstractPane {
     private void onDelete() {
         String y0 = String.valueOf(getSelectedYear());
         String m0 = (String)monthCombo.getSelectedItem();
-        Frame  f = Frame.getInstance();
+        MainFrame  f = MainFrame.getInstance();
         String m = String.format(DELETE_DIALOG, m0, y0);
         String t = Globals.FRAME_TITLE;
         int    q = JOptionPane.OK_CANCEL_OPTION;

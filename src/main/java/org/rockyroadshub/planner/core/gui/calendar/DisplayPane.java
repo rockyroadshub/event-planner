@@ -34,17 +34,16 @@ import net.miginfocom.swing.MigLayout;
 import org.rockyroadshub.planner.core.data.Event;
 import org.rockyroadshub.planner.core.data.EventMapper;
 import org.rockyroadshub.planner.core.gui.AbstractPane;
-import org.rockyroadshub.planner.core.gui.Frame;
+import org.rockyroadshub.planner.core.gui.MainFrame;
 import org.rockyroadshub.planner.core.gui.GUIUtils;
-import org.rockyroadshub.planner.system.IconLoader;
+import org.rockyroadshub.planner.loader.IconLoader;
 import org.rockyroadshub.planner.core.gui.MainPane;
 import org.rockyroadshub.planner.core.utils.Globals;
 
 /**
  *
  * @author Arnell Christoper D. Dalid
- * @version 0.0.0
- * @since 1.8
+ * @version 0.1.0
  */
 @SuppressWarnings("serial")
 public final class DisplayPane extends AbstractPane {
@@ -153,22 +152,22 @@ public final class DisplayPane extends AbstractPane {
         homeButton.setToolTipText(Globals.HOME);
         homeButton.setName(CalendarPane.NAME);
         homeButton.addActionListener(action);
-        homeButton.setIcon(iconLoader.getIcon(Globals.HOME));
+        homeButton.setIcon(iconLoader.get(Globals.HOME));
                 
         addButton.setToolTipText(Globals.ADD);
         addButton.setName(FormPane.NAME);
         addButton.addActionListener(action);
-        addButton.setIcon(iconLoader.getIcon(Globals.ADD));
+        addButton.setIcon(iconLoader.get(Globals.ADD));
         
         viewButton.setToolTipText(Globals.VIEW);
         viewButton.setName(ViewPane.NAME);
         viewButton.addActionListener(action);
-        viewButton.setIcon(iconLoader.getIcon(Globals.VIEW));
+        viewButton.setIcon(iconLoader.get(Globals.VIEW));
         
         deleteButton.setToolTipText(Globals.DELETE);
         deleteButton.setName(Globals.DELETE);
         deleteButton.addActionListener(action);
-        deleteButton.setIcon(iconLoader.getIcon(Globals.DELETE));
+        deleteButton.setIcon(iconLoader.get(Globals.DELETE));
     }
     
     private void initTableModel() {
@@ -221,7 +220,7 @@ public final class DisplayPane extends AbstractPane {
     private void onDelete() {
         int i = getID();
         if(i != -1) {
-            Frame  f = Frame.getInstance();
+            MainFrame  f = MainFrame.getInstance();
             String m = String.format(DELETE_DIALOG, getEventTitle());
             String t = Globals.FRAME_TITLE;
             int    q = JOptionPane.OK_CANCEL_OPTION;

@@ -18,7 +18,7 @@ limitations under the License.
 
 <database>
     <tables>
-        <table schema="" tablename="">
+        <table mapper="EventMapper" schema="PLANNER" name="EVENTS">
             <columns>
                 <column name="EVENT_ID" 
                 type="INT NOT NULL PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1)"
@@ -33,6 +33,13 @@ limitations under the License.
                 <column name="EVENT_START" type="TIME"         key="false"/>
                 <column name="EVENT_END"   type="TIME"         key="false"/>    
             </columns>
+            <displays>
+                <display index="0" alt="ID"/>
+                <display index="1" alt="Title"/>
+                <display index="4" alt="Date"/>
+                <display index="8" alt="Start"/>
+                <display index="9" alt="End"/>
+            </displays>
         </table>
     </tables>
 </database>

@@ -16,26 +16,24 @@
 package org.rockyroadshub.planner.main;
 
 import javax.swing.SwingUtilities;
-import org.rockyroadshub.planner.core.data.EventMapper;
 import org.rockyroadshub.planner.core.database.DatabaseConnection;
-import org.rockyroadshub.planner.system.Properties;
+import org.rockyroadshub.planner.core.gui.splash.SplashFrame;
 
 /**
  *
  * @author Arnell Christoper D. Dalid
- * @version 0.0.0
- * @since 1.8
+ * @since 0.1.2
  */
-public class SystemInit {    
+public final class SystemInit {    
     static {
         System.setProperty("log4j.configurationFile", "prop/log4j2.xml");
         DatabaseConnection.getInstance().initialize();
     }
     
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {               
-            EventMapper.getInstance();
-            Properties.getInstance();
+        SwingUtilities.invokeLater(() -> {  
+//            FileLoader.getInstance().load();
+            SplashFrame.getInstance();
         });
     }
 }
