@@ -25,13 +25,13 @@ import org.apache.commons.configuration.XMLConfiguration;
 import org.rockyroadshub.planner.core.database.DatabaseControl;
 import org.rockyroadshub.planner.core.database.Members;
 import org.rockyroadshub.planner.core.database.Memory;
-import org.rockyroadshub.planner.core.gui.splash.SplashFrame;
+import org.rockyroadshub.planner.splash.SplashFrame;
 import org.rockyroadshub.planner.core.utils.Utilities;
 
 /**
  *
  * @author Arnell Christoper D. Dalid
- * @since 0.1.2
+ * @since 0.2.0
  */
 public final class MemoryLoader extends AbstractLoader<Memory> {
     private final XMLConfiguration databaseProperties = new XMLConfiguration();
@@ -61,7 +61,10 @@ public final class MemoryLoader extends AbstractLoader<Memory> {
     
     @Override
     public void load() {
-        Task task = new Task(SplashFrame.getInstance(), PropertyLoader.getInstance());
+        super.load();
+        Task task = new Task(
+                SplashFrame.getInstance(), 
+                IconLoader.getInstance());
         task.execute();
     }
     
@@ -73,12 +76,12 @@ public final class MemoryLoader extends AbstractLoader<Memory> {
         @LogExceptions
         @Override
         protected Void doInBackground() throws Exception {
+            setProgress(0);
             publish("Loading database properties...");
             loadProperties();
+            setProgress(50);
             publish("Database properties loaded.");
-
             publish("Checking memory...");
-            setProgress(0);
             List<HierarchicalConfiguration> tables 
                     = databaseProperties.configurationsAt(TABLES);
             for(int j = 0; j < tables.size(); j++) {     
@@ -117,8 +120,7 @@ public final class MemoryLoader extends AbstractLoader<Memory> {
                 add(mapper, memory);
                 publish("Memory: " + memory.getIdentifier() + 
                         ((isCreated) ? " created." : " loaded."));
-                setProgress(Utilities.getPercent(j, tables.size()).intValue());
-                debug();
+                setProgress(Utilities.getPercent(j + 51, tables.size() + 50).intValue());
             }
             return null;
         }

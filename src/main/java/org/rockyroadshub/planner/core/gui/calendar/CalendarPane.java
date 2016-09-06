@@ -45,7 +45,7 @@ import org.rockyroadshub.planner.loader.PropertyLoader;
 /**
  *
  * @author Arnell Christoper D. Dalid
- * @version 0.1.2
+ * @since 0.2.0
  */
 @SuppressWarnings("serial")
 public final class CalendarPane extends AbstractPane {

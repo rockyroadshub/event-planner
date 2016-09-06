@@ -51,7 +51,7 @@ import org.rockyroadshub.planner.core.utils.Utilities;
 /**
  *
  * @author Arnell Christoper D. Dalid
- * @version 0.1.0
+ * @since 0.2.0
  */
 @SuppressWarnings("serial")
 public final class ViewPane extends AbstractPane {

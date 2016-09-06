@@ -32,7 +32,7 @@ import org.rockyroadshub.planner.loader.MemoryLoader;
 /**
  *
  * @author Arnell Christoper D. Dalid
- * @since 0.1.2
+ * @since 0.2.0
  */
 public final class EventMapper extends DataMapper {
     private final List<Integer> dayList = new ArrayList<>();
@@ -64,8 +64,7 @@ public final class EventMapper extends DataMapper {
      */
     @Override
     public Optional<Data> find(int id) {
-        DatabaseConnection conn0 = DatabaseConnection.getInstance();
-        Connection conn = conn0.getConnection();
+        Connection conn = DatabaseConnection.getConnection();
         
         try(PreparedStatement stmt = 
                 conn.prepareStatement(getMembers().getSelectFormat())) 
@@ -100,8 +99,7 @@ public final class EventMapper extends DataMapper {
     @Override
     public void insert(Data data) throws DataMapperException {
         Event event = (Event)data;
-        DatabaseConnection conn0 = DatabaseConnection.getInstance();
-        Connection conn = conn0.getConnection();
+        Connection conn = DatabaseConnection.getConnection();
         
         try(PreparedStatement stmt = 
                 conn.prepareStatement(getMembers().getInsertFormat())) 
@@ -130,8 +128,7 @@ public final class EventMapper extends DataMapper {
     @Override
     public void update(Data data) throws DataMapperException {
         Event event = (Event)data;
-        DatabaseConnection conn0 = DatabaseConnection.getInstance();
-        Connection conn = conn0.getConnection();
+        Connection conn = DatabaseConnection.getConnection();
         
         try(PreparedStatement stmt = 
                 conn.prepareStatement(getMembers().getUpdateFormat())) 
@@ -160,8 +157,7 @@ public final class EventMapper extends DataMapper {
      */
     @Override
     public void delete(int id) throws DataMapperException {
-        DatabaseConnection conn0 = DatabaseConnection.getInstance();
-        Connection conn = conn0.getConnection();
+        Connection conn = DatabaseConnection.getConnection();
         
         try(PreparedStatement stmt = 
                 conn.prepareStatement(getMembers().getDeleteFormat())) 
@@ -180,8 +176,7 @@ public final class EventMapper extends DataMapper {
      * @return number of events
      */
     public int getNumberOfEvents(String date) {
-        DatabaseConnection conn0 = DatabaseConnection.getInstance();
-        Connection conn = conn0.getConnection();
+        Connection conn = DatabaseConnection.getConnection();
         int i = 0;
         try(PreparedStatement stmt = 
                 conn.prepareStatement(SELECT_EVENT_DATE)) 
@@ -206,8 +201,7 @@ public final class EventMapper extends DataMapper {
      * @return number of events
      */
     public int getNumberOfEvents(String month, String year) {
-        DatabaseConnection conn0 = DatabaseConnection.getInstance();
-        Connection conn = conn0.getConnection();
+        Connection conn = DatabaseConnection.getConnection();
         int i = 0;
         try(PreparedStatement stmt = 
                 conn.prepareStatement(SELECT_EVENT_MONTH_YEAR)) 
@@ -231,9 +225,8 @@ public final class EventMapper extends DataMapper {
      * @param date date of the event
      * @return list of dates
      */
-    public List<Event> getEvents(String date) {
-        DatabaseConnection conn0 = DatabaseConnection.getInstance();
-        Connection conn = conn0.getConnection();
+    public synchronized List<Event> getEvents(String date) {
+        Connection conn = DatabaseConnection.getConnection();
         
         try(PreparedStatement stmt = 
             conn.prepareStatement(SELECT_EVENT_DATE))
@@ -271,9 +264,10 @@ public final class EventMapper extends DataMapper {
      * @param year year of the event
      * @return registered days with an event on a list
      */
-    public List<Integer> getRegisteredDays(String month, String year) {
-        DatabaseConnection conn0 = DatabaseConnection.getInstance();
-        Connection conn = conn0.getConnection();
+    public synchronized List<Integer> getRegisteredDays
+        (String month, String year) 
+    {
+        Connection conn = DatabaseConnection.getConnection();
         try(PreparedStatement stmt = 
             conn.prepareStatement(SELECT_EVENT_MONTH_YEAR))
         {
@@ -303,8 +297,7 @@ public final class EventMapper extends DataMapper {
      * @param year year of the event
      */
     public void deleteAll(String month, String year) {
-        DatabaseConnection conn0 = DatabaseConnection.getInstance();
-        Connection conn = conn0.getConnection();
+        Connection conn = DatabaseConnection.getConnection();
         try(PreparedStatement stmt = 
             conn.prepareStatement(SELECT_EVENT_MONTH_YEAR))
         {

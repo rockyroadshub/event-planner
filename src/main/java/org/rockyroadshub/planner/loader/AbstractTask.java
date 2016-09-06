@@ -18,19 +18,17 @@ package org.rockyroadshub.planner.loader;
 
 import java.util.List;
 import javax.swing.SwingWorker;
-import org.rockyroadshub.planner.core.gui.splash.SplashFrame;
+import org.rockyroadshub.planner.splash.SplashFrame;
 
 /**
  *
  * @author Arnell Christoper D. Dalid
  * @param <T>
- * @since 0.1.2
+ * @since 0.2.0
  */
 public abstract class AbstractTask<T> 
         extends SwingWorker<T, String> 
 {
-    private static final boolean DEBUG = false;
-    private static final long    DELAY = 250L;
             
     protected SplashFrame frame;
     protected AbstractLoader loader;
@@ -51,14 +49,10 @@ public abstract class AbstractTask<T>
         this.loader = loader;
     }
     
-    public void debug() throws InterruptedException {
-        if(DEBUG) Thread.sleep(DELAY);
-    }
-    
     @Override
     protected void process(List<String> chunks) {
         chunks.stream().forEach((str) -> {
-            frame.getLabel().setText(str);
+            frame.getProgressLabel().setText(str);
         });
     }
 

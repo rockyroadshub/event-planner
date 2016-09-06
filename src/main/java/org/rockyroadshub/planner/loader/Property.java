@@ -19,14 +19,15 @@ package org.rockyroadshub.planner.loader;
 /**
  *
  * @author Arnell Christoper D. Dalid
- * @since 0.1.2
+ * @since 0.2.0
  */
 public enum Property {
     CALENDAR_COLOR_EVENTDAY("calendar.color.eventday"),
     CALENDAR_COLOR_CURRENTDAY("calendar.color.currentday"),
     CALENDAR_COLOR_WEEKDAYS("calendar.color.weekdays"),
     CALENDAR_COLOR_DEFAULTDAY("calendar.color.defaultday"),
-    CALENDAR_COLOR_FOREGROUND("calendar.color.foreground");
+    CALENDAR_COLOR_FOREGROUND("calendar.color.foreground"),
+    CALENDAR_ICON_THEME("calendar.icon.theme");
         
     private final String key; 
     

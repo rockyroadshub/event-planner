@@ -17,17 +17,21 @@
 package org.rockyroadshub.planner.core.utils;
 
 import com.jcabi.aspects.LogExceptions;
+import java.awt.Font;
+import java.awt.FontFormatException;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URISyntaxException;
+import javax.imageio.ImageIO;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.io.FileUtils;
 
 /**
  *
  * @author Arnell Christoper D. Dalid
- * @version 0.0.0
- * @since 1.8
+ * @since 0.2.0
  */
 public final class Utilities {
     private Utilities(){}
@@ -78,5 +82,36 @@ public final class Utilities {
             return true;
         } 
         return false;
+    }
+    
+    /**
+     * Gets an image as {@code BufferedImage} object from the jar file.
+     * @param jarPath path of the image inside the jar file(e.g. 
+     *                /org/rockyrodshub/planner/src/img/Frame.png)
+     * @return buffered image based on the specified jar path
+     * @throws IOException 
+     */
+    @LogExceptions
+    public static BufferedImage getBufferedImage(String jarPath) 
+            throws IOException 
+    {
+        try(InputStream in = Utilities.class.getResourceAsStream(jarPath)) {
+            return ImageIO.read(in);
+        }
+    }
+    
+    /**
+     * 
+     * @param jarPath
+     * @return
+     * @throws IOException
+     * @throws FontFormatException 
+     */
+    @LogExceptions
+    public static Font getFont(String jarPath) throws IOException, FontFormatException {
+        try (InputStream in = Utilities.class.getResourceAsStream(jarPath))
+        {
+            return Font.createFont(Font.TRUETYPE_FONT, in);
+        } 
     }
 }

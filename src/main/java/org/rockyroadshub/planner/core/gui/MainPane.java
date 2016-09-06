@@ -26,8 +26,7 @@ import java.awt.CardLayout;
 /**
  *
  * @author Arnell Christoper D. Dalid
- * @version 0.0.0
- * @since 1.8
+ * @since 0.1.0
  */
 @SuppressWarnings("serial")
 public final class MainPane extends AbstractPane {    

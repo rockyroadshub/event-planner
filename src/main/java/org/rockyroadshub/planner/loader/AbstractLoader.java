@@ -23,16 +23,22 @@ import java.util.Map;
  *
  * @author Arnell Christoper D. Dalid
  * @param <L>
- * @since 0.1.2
+ * @since 0.2.0
  */
 public abstract class AbstractLoader<L> {
+    private boolean isLoaded = false;
     /**
      * Loader Map where loaded entities are saved.
      * 
      */
-    protected final Map<String, L> loaderMap = new HashMap<>();
+    private final Map<String, L> loaderMap = new HashMap<>();
     
-    public abstract void load();
+    public void load() {
+        if(isLoaded)
+            throw new IllegalStateException("Loader object has been already loaded.");
+        
+        isLoaded = true;
+    }
     
     protected void add(String name, L entity) {
         loaderMap.put(name, entity);

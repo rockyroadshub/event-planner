@@ -16,15 +16,10 @@
 
 package org.rockyroadshub.planner.core.utils;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
-import javax.swing.Icon;
-
 /**
  * Global configurations and constants used by the Event Planner
  * @author Arnell Christoper D. Dalid
- * @version 0.0.0
- * @since 1.8
+ * @since 0.2.0
  */
 public final class Globals {
     private Globals(){}
@@ -49,11 +44,6 @@ public final class Globals {
     //================================================
     
     /**
-     * Button file icon extension
-     */
-    public static final String ICONS_EXTENSION = ".png";
-    
-    /**
      * Global button dimensions (for MigLayout)
      */
     public static final String BUTTON_DIMENSIONS = "h 32!, w 32!";
@@ -62,20 +52,6 @@ public final class Globals {
      * Path of the application's frame icon
      */
     public static final String FRAME_ICON = "/org/rockyroadshub/planner/src/img/Frame.png";
-    
-    /**
-     * Icons directory
-     */
-    public static final String ICONS_PATH = "src/images/icons/default";
-    
-    /**
-     * Icon map for easier accessing
-     * <p>
-     * <strong>Note:</strong> String - name of the icon; Icon - file as "Icon" object
-     * </p>
-     * @see javax.swing.Icon
-     */
-    public static final Map<String, Icon> ICONS = new LinkedHashMap<>();
 
     //================ Calendar Constants ================
     /**

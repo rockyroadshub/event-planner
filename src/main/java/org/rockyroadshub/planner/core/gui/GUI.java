@@ -19,8 +19,7 @@ package org.rockyroadshub.planner.core.gui;
 /**
  *
  * @author Arnell Christoper D. Dalid
- * @version 0.0.0
- * @since 1.8
+ * @since 0.1.0
  */
 public interface GUI {
     

@@ -23,7 +23,7 @@ import javax.swing.JPanel;
 /**
  *
  * @author Arnell Christoper D. Dalid
- * @since 0.1.2
+ * @since 0.1.0
  */
 @SuppressWarnings("serial")
 public abstract class AbstractPane extends JPanel implements GUI {

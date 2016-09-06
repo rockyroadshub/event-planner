@@ -43,7 +43,7 @@ import org.rockyroadshub.planner.core.utils.Globals;
 /**
  *
  * @author Arnell Christoper D. Dalid
- * @version 0.1.0
+ * @since 0.2.0
  */
 @SuppressWarnings("serial")
 public final class DisplayPane extends AbstractPane {

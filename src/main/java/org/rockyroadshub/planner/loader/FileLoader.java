@@ -19,13 +19,13 @@ package org.rockyroadshub.planner.loader;
 import com.jcabi.aspects.LogExceptions;
 import java.io.File;
 import org.apache.commons.io.FilenameUtils;
-import org.rockyroadshub.planner.core.gui.splash.SplashFrame;
+import org.rockyroadshub.planner.splash.SplashFrame;
 import org.rockyroadshub.planner.core.utils.Utilities;
 
 /**
  *
  * @author Arnell Christoper D. Dalid
- * @since 0.1.2
+ * @since 0.2.0
  */
 public final class FileLoader extends AbstractLoader<File> {     
     private FileLoader() {}
@@ -38,7 +38,7 @@ public final class FileLoader extends AbstractLoader<File> {
         private static final FileLoader INSTANCE = new FileLoader();
     }
     
-    enum Files {
+    private enum Files {
         PLANNER("prop/planner.properties","/org/rockyroadshub/planner/src/cfg/planner.properties"),
         DATABASE("prop/database.xml","/org/rockyroadshub/planner/src/cfg/database.xml");
         
@@ -53,7 +53,10 @@ public final class FileLoader extends AbstractLoader<File> {
        
     @Override
     public void load() {
-        Task task = new Task(SplashFrame.getInstance(), IconLoader.getInstance());
+        super.load();
+        Task task = new Task(
+                SplashFrame.getInstance(), 
+                PropertyLoader.getInstance());
         task.execute();
     }
     
@@ -66,10 +69,10 @@ public final class FileLoader extends AbstractLoader<File> {
         @LogExceptions
         @Override
         protected Void doInBackground() throws Exception {
+            setProgress(0);
             publish("Checking system files...");
             int max = Files.values().length;
             int count = 0;
-            setProgress(0);
             for(Files f : Files.values()) {
                 String path = f.path;
                 String source = f.source;
@@ -79,7 +82,6 @@ public final class FileLoader extends AbstractLoader<File> {
                 add(FilenameUtils.removeExtension(file.getName()), file);
                 publish((isNew) ? path + " created." : path + " loaded.");
                 setProgress(Utilities.getPercent(count, max).intValue()); 
-                debug();
             }
             return null;
         }

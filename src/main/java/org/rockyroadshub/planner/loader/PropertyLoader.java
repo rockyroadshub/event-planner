@@ -19,15 +19,16 @@ package org.rockyroadshub.planner.loader;
 import com.jcabi.aspects.LogExceptions;
 import java.awt.Color;
 import java.io.File;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
-import org.rockyroadshub.planner.core.gui.MainFrame;
-import org.rockyroadshub.planner.core.gui.splash.SplashFrame;
+import org.rockyroadshub.planner.splash.SplashFrame;
 
 /**
  *
  * @author Arnell Christoper D. Dalid
- * @since 0.1.2
+ * @since 0.2.0
  */
 public final class PropertyLoader extends AbstractLoader<Object> {
     private final PropertiesConfiguration plannerProperties = new PropertiesConfiguration();
@@ -46,29 +47,35 @@ public final class PropertyLoader extends AbstractLoader<Object> {
         String val = null;
         if(value instanceof Color) {
             Color color = (Color)value;
-            val = String.format("%d,%d,%d,%d", 
-                    color.getRed(), 
-                    color.getGreen(), 
-                    color.getBlue(),
-                    color.getAlpha());
+            val = String.format("#%08x", color.getRGB());
         }
         plannerProperties.setProperty(property.toString(), val);
-        
-        try {
-           save();
-        } 
-        catch (ConfigurationException ex) {}
     }
     
-    public Color getColor(Property property) {
-        String[] values = 
-                plannerProperties.getStringArray(property.toString());
+    public Color getColor(Property property) {        
+        int c = Long.decode(plannerProperties
+                    .getString(property
+                    .toString()))
+                    .intValue();
         
-        int r = Integer.parseInt(values[0]);
-        int g = Integer.parseInt(values[1]);
-        int b = Integer.parseInt(values[2]);
-        int a = Integer.parseInt(values[3]);
+        int r = (c >> 16) & 0xFF;
+        int g = (c >> 8)  & 0xFF;
+        int b = (c & 0xFF);
+        int a = (c >> 24) & 0xFF;
         return new Color(r,g,b,a);
+    }
+    
+    public String getString(Property property) {
+        return plannerProperties.getString(property.toString());
+    }
+    
+    public void commit() {
+        try {
+            save();
+        } 
+        catch (ConfigurationException ex) {
+            ex.printStackTrace(System.out);
+        }
     }
     
     @LogExceptions
@@ -78,7 +85,10 @@ public final class PropertyLoader extends AbstractLoader<Object> {
     
     @Override
     public void load() {
-        Task task = new Task(SplashFrame.getInstance(), null);
+        super.load();
+        Task task = new Task(
+                SplashFrame.getInstance(),
+                MemoryLoader.getInstance());
         task.execute();
     }
     
@@ -91,21 +101,17 @@ public final class PropertyLoader extends AbstractLoader<Object> {
         @LogExceptions
         @Override
         protected Void doInBackground() throws Exception {
+            setProgress(0);
             publish("Loading planner properties...");
             loadProperties();
+            setProgress(50);
             publish("Planner properties loaded.");
             
             publish("Loading configurations...");
             refresh();
             publish("All configurations loaded.");
-            debug();
+            setProgress(100);
             return null;
-        }
-        
-        @Override
-        protected void done() {
-            MainFrame.getInstance();
-            frame.dispose();
         }
         
         private void loadProperties() throws ConfigurationException {
@@ -123,11 +129,15 @@ public final class PropertyLoader extends AbstractLoader<Object> {
     public Color calendar_color_defaultday;
     public Color calendar_color_foreground;
     
+    public String calendar_icon_theme;
+    
     public void refresh() {
         calendar_color_eventday   = getColor(Property.CALENDAR_COLOR_EVENTDAY);
         calendar_color_currentday = getColor(Property.CALENDAR_COLOR_CURRENTDAY);
         calendar_color_weekdays   = getColor(Property.CALENDAR_COLOR_WEEKDAYS);
         calendar_color_defaultday = getColor(Property.CALENDAR_COLOR_DEFAULTDAY);
-        calendar_color_foreground = getColor(Property.CALENDAR_COLOR_FOREGROUND);
+        calendar_color_foreground = getColor(Property.CALENDAR_COLOR_FOREGROUND);  
+        
+        calendar_icon_theme       = getString(Property.CALENDAR_ICON_THEME);
     }
  }

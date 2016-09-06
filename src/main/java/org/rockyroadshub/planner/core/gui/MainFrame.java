@@ -29,12 +29,12 @@ import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 import org.rockyroadshub.planner.core.utils.Globals;
+import org.rockyroadshub.planner.core.utils.Utilities;
 
 /**
  *
  * @author Arnell Christoper D. Dalid
- * @version 0.0.0
- * @since 1.8
+ * @since 0.2.0
  */
 @SuppressWarnings("serial")
 public final class MainFrame extends JFrame {
@@ -50,30 +50,32 @@ public final class MainFrame extends JFrame {
         private static final MainFrame INSTANCE = new MainFrame();
     }  
     
-    private void initialize() {
-        
+    private void initialize() {        
         SwingUtilities.invokeLater(() -> {
-            setLayout(new BorderLayout());
-            setTitle(Globals.FRAME_TITLE);
-            setSize(820, 600);
-            setPreferredSize(new Dimension(580, 670));
-            addWindowListener(exit);
-            setResizable(false);
-            add(MainPane.getInstance(), BorderLayout.CENTER);
-            initIcon();
-            pack();
-            setLocationRelativeTo(null);
-            setVisible(true);
+            create();
         });    
     }
     
-    private void initIcon() {
-        try(InputStream in = MainFrame.class.getResourceAsStream(Globals.FRAME_ICON)) {
-            BufferedImage img = ImageIO.read(in);
-            setIconImage(img);
+    private void create() {
+        setLayout(new BorderLayout());
+        setTitle(Globals.FRAME_TITLE);
+        setSize(820, 600);
+        setPreferredSize(new Dimension(580, 670));
+        addWindowListener(exit);
+        setResizable(false);
+        add(MainPane.getInstance(), BorderLayout.CENTER);
+        initFrameIcon();
+        pack();
+        setLocationRelativeTo(null);
+        setVisible(true);        
+    }
+    
+    private void initFrameIcon() {
+        try {
+            setIconImage(Utilities.getBufferedImage(Globals.FRAME_ICON));
         } 
         catch (IOException ex) {
-            throw new RuntimeException(ex);
+            ex.printStackTrace(System.out);
         }
     }
     

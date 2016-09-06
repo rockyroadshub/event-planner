@@ -22,7 +22,7 @@ import org.rockyroadshub.planner.core.gui.calendar.CalendarPane;
 /**
  *
  * @author Arnell Christoper D. Dalid
- * @since 0.0.0
+ * @since 0.1.0
  */
 @SuppressWarnings("serial")
 public final class Event extends Data {

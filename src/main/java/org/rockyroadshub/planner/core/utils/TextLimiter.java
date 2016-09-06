@@ -20,6 +20,11 @@ import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DocumentFilter;
 
+/**
+ * 
+ * @author Arnell Christoper D. Dalid
+ * @since 0.1.0
+ */
 public class TextLimiter extends DocumentFilter {
     int max;
  
