@@ -24,4 +24,15 @@ System Requirements:
 [\[0.1.0\] - August 29, 2016](https://github.com/rockyroadshub/event-planner/releases/tag/0.1.0)  
 [\[0.0.0\] - August 20, 2016](https://github.com/rockyroadshub/event-planner/releases/tag/0.0.0)  
 
+**To do's:**  
+- Plugin support  
+- Smart notifications  
+- Real time alarm (for registered schedules/events)  
+- Improve GUI (Look and Feel support)  
+- System tray (Windows)  
+- Error Handling  
+- Update Java docs  
+- Holiday memory database  
+- Contacts memory database  
+
 [Please visit Rocky Roads Hub!](https://rockyroadshub.wordpress.com)
