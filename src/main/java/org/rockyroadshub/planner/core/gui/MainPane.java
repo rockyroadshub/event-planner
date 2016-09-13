@@ -22,11 +22,13 @@ import org.rockyroadshub.planner.core.gui.calendar.CalendarPane;
 import org.rockyroadshub.planner.core.gui.calendar.PropertiesPane;
 import org.rockyroadshub.planner.core.gui.calendar.DisplayPane;
 import java.awt.CardLayout;
+import javax.swing.JComponent;
+import org.rockyroadshub.planner.core.gui.calendar.ChangelogPane;
 
 /**
  *
  * @author Arnell Christoper D. Dalid
- * @since 0.1.0
+ * @since 0.2.0
  */
 @SuppressWarnings("serial")
 public final class MainPane extends AbstractPane {    
@@ -53,6 +55,7 @@ public final class MainPane extends AbstractPane {
     }
     
     private void pack() {
+        ChangelogPane.getInstance();
         CalendarPane.getInstance();
         DisplayPane.getInstance();
         FormPane.getInstance();

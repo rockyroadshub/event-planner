@@ -64,13 +64,19 @@ public final class MemoryLoader extends AbstractLoader<Memory> {
         super.load();
         Task task = new Task(
                 SplashFrame.getInstance(), 
-                IconLoader.getInstance());
+                IconLoader.getInstance(),
+                this);
         task.execute();
     }
     
+    @Override
+    public String getName() {
+        return "memory";
+    }
+    
     private class Task extends AbstractTask<Void> {
-        public Task(SplashFrame frame, AbstractLoader loader) {
-            super(frame, loader);
+        public Task(SplashFrame frame, AbstractLoader loader, AbstractLoader main) {
+            super(frame, loader, main);
         }
 
         @LogExceptions

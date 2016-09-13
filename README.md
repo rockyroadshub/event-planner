@@ -11,6 +11,22 @@ distribution and reproduction of this software, please see [LICENSE](http://www.
 ![Event Planner](https://s5.postimg.org/45jrtkkjr/Event_Planner.jpg)
 
 ## Changelogs  
+  
+### [\[0.2.0\]](https://github.com/rockyroadshub/event-planner/releases/tag/0.2.0)  
+  
+**New Features:**  
+  
+- Added a splash screen (For systematic monitoring and loading files)  
+- User can now see the date (and time) in real-time. (Still depends on user's  
+computer)  
+- Added Changelog Pane  
+  
+**Modifications**  
+  
+- Properties Panel can now change the color of the default day, weekday, text foreground,  
+and set of icons (set as _default_) to be loaded (in the calendar)  
+- Systematic loading of files and memories for database  
+- Set the date panel GUI from _MigLayout_ to _GridLayout(7 by 7)_  
 
 ### [\[0.1.1\]](https://github.com/rockyroadshub/event-planner/releases/tag/0.1.1)  
 
@@ -27,7 +43,7 @@ distribution and reproduction of this software, please see [LICENSE](http://www.
 - New panel: Properties (can now change the color of the current day (foreground)  
 and the color of the day with a registered event (background) and save it in the  
 _planner.properties_)  
-- Creates the properties file '_planner.properties_' if it doesn't exist  
+- Creates the properties file _planner.properties_ if it doesn't exist  
 - Can now delete events in a month and date (e.g. delete all events in August 2016)  
 - Separated button icon source files outside jar file for easier customization  
 - Separated [database libraries](https://github.com/rockyroadshub/planner-core) for accessing (preparation for plugin support)  

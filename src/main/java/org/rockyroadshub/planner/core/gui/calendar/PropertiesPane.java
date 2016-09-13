@@ -1,13 +1,19 @@
 package org.rockyroadshub.planner.core.gui.calendar;
 
+import org.rockyroadshub.planner.core.gui.CButton;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.util.ArrayList;
+import java.util.List;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JColorChooser;
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -20,6 +26,7 @@ import org.rockyroadshub.planner.core.gui.GUIUtils;
 import org.rockyroadshub.planner.loader.IconLoader;
 import org.rockyroadshub.planner.core.gui.MainPane;
 import org.rockyroadshub.planner.core.utils.Globals;
+import org.rockyroadshub.planner.loader.Loaders;
 import org.rockyroadshub.planner.loader.Property;
 import org.rockyroadshub.planner.loader.PropertyLoader;
 
@@ -152,12 +159,19 @@ public final class PropertiesPane extends AbstractPane {
         int    q = JOptionPane.OK_CANCEL_OPTION;
         int    o = JOptionPane.OK_OPTION;
         if(JOptionPane.showConfirmDialog(f, m, t, q) == o) {
-            properties.setProperty(Property.CALENDAR_COLOR_EVENTDAY,
-                container.eventColor.getBackground());
-            properties.setProperty(Property.CALENDAR_COLOR_CURRENTDAY,
-                container.currentColor.getBackground());
+            for(ColorButtons cb : container.getColorButtonCache()) {
+                cb.setColor(cb.button.getBackground());
+                properties.setProperty(cb.property,cb.button.getBackground());
+            }                             
+                
+            for(ComboBoxes cmb : container.getComboCache()) {
+                cmb.setItemName((String)cmb.combo.getSelectedItem());
+                properties.setProperty(cmb.property,cmb.combo.getSelectedItem());
+            }
             
-            properties.commit();           
+            container.getColorButtonCache().clear();
+            container.getComboCache().clear();
+            properties.commit();   
             this.refresh();
         }
     }
@@ -169,12 +183,8 @@ public final class PropertiesPane extends AbstractPane {
         int    q = JOptionPane.OK_CANCEL_OPTION;
         int    o = JOptionPane.OK_OPTION;
         if(JOptionPane.showConfirmDialog(f, m, t, q) == o) {
-            properties.setProperty(Property.CALENDAR_COLOR_EVENTDAY,
-                new Color(50,130,180));
-            properties.setProperty(Property.CALENDAR_COLOR_CURRENTDAY,
-                Color.YELLOW);
-        
-            properties.commit();
+            properties.reset();           
+            container.reassess();
             this.refresh();
         } 
     }
@@ -183,13 +193,15 @@ public final class PropertiesPane extends AbstractPane {
         String name = button.getName();
         switch(name) {
             case CalendarPane.NAME:
-                CalendarPane.getInstance().refresh();
+                CalendarPane cp = CalendarPane.getInstance();
+                cp.refresh();
+                cp.refreshWeekdays();
                 MainPane.getInstance().showPane(name);
-                container.showPane(PropertiesContainer.DISPLAY_PANE);
+                container.showPane(Globals.SET);
                 container.refresh();
                 break;
             case Globals.BACK:
-                container.showPane(PropertiesContainer.DISPLAY_PANE);
+                container.showPane(Globals.SET);
                 break;
             case Globals.SAVE:
                 onSave();
@@ -200,36 +212,86 @@ public final class PropertiesPane extends AbstractPane {
         }
     }
     
+    enum ColorButtons {
+        EVENT(new CButton(), new JLabel("Event Day Color"), Property.CALENDAR_COLOR_EVENTDAY),
+        CURRENT(new CButton(), new JLabel("Current Day Color"), Property.CALENDAR_COLOR_CURRENTDAY),
+        DEFAULT(new CButton(), new JLabel("Default Day Color"), Property.CALENDAR_COLOR_DEFAULTDAY),
+        FOREGROUND(new CButton(), new JLabel("Foreground Color"), Property.CALENDAR_COLOR_FOREGROUND),
+        WEEKDAYS(new CButton(), new JLabel("Weekdays Color"), Property.CALENDAR_COLOR_WEEKDAYS),
+        ;
+        
+        final CButton button;
+        final JLabel label;
+        final Property property;
+        Color color;
+        
+        ColorButtons(CButton button, JLabel label, Property property) {
+            this.button = button;
+            this.label = label;
+            this.property = property;
+            this.color = PropertyLoader.getInstance().getColor(property);
+        }
+        
+        void setColor(Color color) {
+            this.color = color;
+        }
+    }
+    
+    enum ComboBoxes {
+        ICON(new JLabel("Icon Themes"), Property.CALENDAR_ICON_THEME, "icon")
+        ;
+        
+        final JLabel label;
+        final Property property;
+        final JComboBox combo;
+        String itemName;
+        
+        ComboBoxes(JLabel label, Property property, String loaderName) {
+            this.label = label;
+            this.property = property;
+            this.itemName = PropertyLoader.getInstance().getString(property);
+            this.combo = new JComboBox(Loaders.getLoader(loaderName).getComboItems());
+        }
+        
+        void setItemName(String itemName) {
+            this.itemName = itemName;
+        }
+    }
+    
     private class PropertiesContainer extends AbstractPane {
         private static final String NAME = "propertiescontainer";
         
-        private final JPanel     displayPane  = new JPanel();
-        private final JLabel     calendar     = new JLabel("Calendar Properties");
-        private final JSeparator separator    = new JSeparator();
-        private final JButton    eventColor   = new JButton();
-        private final JLabel     eventLabel   = new JLabel("Event Day Color");
-        private final JButton    currentColor = new JButton();
-        private final JLabel     currentLabel = new JLabel("Current Day Color");
+        private final JPanel     displayPane     = new JPanel();
+        private final JLabel     calendarColors  = new JLabel("Colors");
+        private final JSeparator separator0      = new JSeparator();
+        private final JLabel     calendarTheme   = new JLabel("Themes");
+        private final JSeparator separator1      = new JSeparator();
         
         private final JPanel        colorPane    = new JPanel();
         private final JPanel        colorMenu    = new JPanel();
         private final JButton       setButton    = new JButton();
         private final JColorChooser colorChooser = new JColorChooser();
         
-        private static final String COLOR_PANE            = "color";
-        private static final String DISPLAY_PANE          = "display";
-        private static final String COLOR_CHOOSER_EVENT   = "eventcolor";
-        private static final String COLOR_CHOOSER_CURRENT = "currentcolor";
+        private static final String COLOR_PANE   = "color";
+             
+        private ColorButtons colorButton = null;
+        private JButton targetButton;
+        
+        private final List<ColorButtons> colorButtonCache = new ArrayList<>();
+        private final List<ComboBoxes> comboCache = new ArrayList<>();
         
         private final ActionListener propertiesAction = (ActionEvent ae) -> {    
             JButton button = (JButton)ae.getSource();
-            displayTrigger(button);
+            buttonTrigger(button);
+        };    
+        
+        private final ItemListener propertiesItem = (ItemEvent ie) -> {    
+            JComboBox combo = (JComboBox)ie.getSource();
+            comboTrigger(combo);
         };    
         
         private final CardLayout layout = new CardLayout();
-        
-        private JButton target;
-        
+                
         private PropertiesContainer() {
             initialize();
         }
@@ -237,18 +299,32 @@ public final class PropertiesPane extends AbstractPane {
         private void initialize() {
             setOpaque(false);
             setName(NAME);
-            setLayout(layout);
+            setLayout(layout);           
             
-            
-            initDisplayPane();
             initColorPane();
+            initDisplayPane();
             pack();
         }
                
         @Override
         public void refresh() {
-            eventColor.setBackground(properties.calendar_color_eventday);
-            currentColor.setBackground(properties.calendar_color_currentday);
+            for(ColorButtons cb : ColorButtons.values()) {
+                cb.button.setBackground(cb.color);
+            }
+            
+            for(ComboBoxes cmb : ComboBoxes.values()) {
+                cmb.combo.setSelectedItem(cmb.itemName);
+            }
+        }
+        
+        public void reassess() {
+            for(ColorButtons cb : ColorButtons.values()) {
+                cb.setColor(properties.getColor(cb.property));
+            }
+            
+            for(ComboBoxes cmb : ComboBoxes.values()) {
+                cmb.setItemName(properties.getString(cmb.property));
+            }
         }
 
         @Override
@@ -257,21 +333,34 @@ public final class PropertiesPane extends AbstractPane {
         }
         
         private void initDisplayPane() {
+            displayPane.setName(Globals.SET);
             displayPane.setLayout(new MigLayout(new LC().fillX()));
-            displayPane.add(calendar, "wrap");
-            displayPane.add(separator, "growx, wrap");
-            displayPane.add(eventColor, Globals.BUTTON_DIMENSIONS + ",split 2");
-            displayPane.add(eventLabel, "wrap");
-            displayPane.add(currentColor, Globals.BUTTON_DIMENSIONS + ",split 2");
-            displayPane.add(currentLabel,"wrap");
-            
-            eventColor.setBackground(properties.calendar_color_eventday);
-            eventColor.setName(COLOR_CHOOSER_EVENT);      
-            eventColor.addActionListener(propertiesAction);
-            
-            currentColor.setBackground(properties.calendar_color_currentday);
-            currentColor.setName(COLOR_CHOOSER_CURRENT);
-            currentColor.addActionListener(propertiesAction);
+            initColorButtons();
+            initComboBoxes();
+        }
+      
+        private void initColorButtons() {
+            displayPane.add(calendarColors, "wrap");
+            displayPane.add(separator0, "growx, wrap");
+            for(ColorButtons cb : ColorButtons.values()) {
+                displayPane.add(cb.button, Globals.BUTTON_DIMENSIONS + ",split 2");
+                displayPane.add(cb.label, "wrap");
+                cb.button.setBackground(cb.color);
+                cb.button.setName(cb.name());
+                cb.button.addActionListener(propertiesAction);
+            }
+        }
+        
+        private void initComboBoxes() {
+            displayPane.add(calendarTheme, "gaptop 30!, wrap");
+            displayPane.add(separator1, "growx, wrap");            
+            for(ComboBoxes cmb : ComboBoxes.values()) {
+                displayPane.add(cmb.label, "split 2");
+                displayPane.add(cmb.combo, "h 20!, w 200!, wrap");
+                cmb.combo.addItemListener(propertiesItem);
+                cmb.combo.setName(cmb.name());
+                cmb.combo.setSelectedItem(cmb.itemName);
+            }
         }
         
         private void initColorPane() {
@@ -279,41 +368,55 @@ public final class PropertiesPane extends AbstractPane {
             setButton.setName(Globals.SET);
             setButton.addActionListener(propertiesAction);
             setButton.setIcon(iconLoader.get(Globals.SET));
+            
             colorMenu.setLayout(new MigLayout());
             colorMenu.setOpaque(false);            
             colorMenu.add(setButton, Globals.BUTTON_DIMENSIONS);
             
             colorPane.setLayout(new BorderLayout());
-            colorMenu.setOpaque(false);
+            colorPane.setOpaque(false);
             colorPane.add(colorMenu, BorderLayout.NORTH);
             colorPane.add(colorChooser, BorderLayout.CENTER);
         }
         
         private void pack() {
-            add(displayPane, DISPLAY_PANE);
+            add(displayPane, Globals.SET);
             add(colorPane, COLOR_PANE);
         }  
         
-        private void displayTrigger(JButton button) {
+        private void buttonTrigger(JButton button) {
             String name = button.getName();
+            
+            if(button instanceof CButton) {
+                colorButton = ColorButtons.valueOf(name);
+                name = COLOR_PANE;
+                targetButton = button;
+            }
+            
             switch(name) {
-                case COLOR_CHOOSER_EVENT:
-                    showPane(COLOR_PANE);
-                    target = button;
-                    break;
-                case COLOR_CHOOSER_CURRENT:
-                    showPane(COLOR_PANE);
-                    target = button;
-                    break;
                 case Globals.SET:
-                    target.setBackground(colorChooser.getColor());
-                    showPane(DISPLAY_PANE);
+                    targetButton.setBackground(colorChooser.getColor());
+                    colorButtonCache.add(colorButton);
                     break;
             }
+            
+            showPane(name);
+        }
+        
+        private void comboTrigger(JComboBox combo) {
+            comboCache.add(ComboBoxes.valueOf(combo.getName()));    
         }
         
         private void showPane(String name) {
             layout.show(this, name);
+        }
+        
+        List<ColorButtons> getColorButtonCache() {
+            return colorButtonCache;
+        }
+        
+        List<ComboBoxes> getComboCache() {
+            return comboCache;
         }
     }
 }

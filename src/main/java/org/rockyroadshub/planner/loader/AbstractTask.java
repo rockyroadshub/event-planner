@@ -32,12 +32,14 @@ public abstract class AbstractTask<T>
             
     protected SplashFrame frame;
     protected AbstractLoader loader;
+    protected AbstractLoader main;
     
     public AbstractTask() {}
     
-    public AbstractTask(SplashFrame frame, AbstractLoader loader) {
+    public AbstractTask(SplashFrame frame, AbstractLoader loader, AbstractLoader main) {
         this.frame  = frame;
         this.loader = loader;
+        this.main   = main;
         this.addPropertyChangeListener(frame);
     }
     
@@ -61,6 +63,9 @@ public abstract class AbstractTask<T>
     
     @Override
     protected void done() {
-        loader.load();
+        if(loader != null) {
+            loader.load();
+        }
+        Loaders.addToMap(main.getName(), main);
     }
 }

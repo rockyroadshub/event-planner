@@ -124,7 +124,8 @@
                                      <filtering>true</filtering>
                                      <includes>
                                         <include>LICENSE.txt</include>
-                                        <include>README.md</include>
+                                        <include>changelogs/README.html</include>
+                                        <include>changelogs/src/paypal.gif</include>
                                      </includes>
                                 </resource>
                             </resources>              

@@ -19,8 +19,6 @@ package org.rockyroadshub.planner.loader;
 import com.jcabi.aspects.LogExceptions;
 import java.awt.Color;
 import java.io.File;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
 import org.rockyroadshub.planner.splash.SplashFrame;
@@ -44,10 +42,13 @@ public final class PropertyLoader extends AbstractLoader<Object> {
     }
     
     public void setProperty(Property property, Object value) {
-        String val = null;
+        String val;
         if(value instanceof Color) {
             Color color = (Color)value;
             val = String.format("#%08x", color.getRGB());
+        }
+        else {
+            val = (String)value;
         }
         plannerProperties.setProperty(property.toString(), val);
     }
@@ -57,16 +58,19 @@ public final class PropertyLoader extends AbstractLoader<Object> {
                     .getString(property
                     .toString()))
                     .intValue();
-        
-        int r = (c >> 16) & 0xFF;
-        int g = (c >> 8)  & 0xFF;
-        int b = (c & 0xFF);
-        int a = (c >> 24) & 0xFF;
-        return new Color(r,g,b,a);
+        return new Color(c, true);
+    }
+    
+    public boolean getBoolean(Property property) {
+        return plannerProperties.getBoolean(property.toString());
     }
     
     public String getString(Property property) {
         return plannerProperties.getString(property.toString());
+    }
+    
+    public Object getProperty(String key) {
+        return plannerProperties.getProperty(key);
     }
     
     public void commit() {
@@ -88,14 +92,20 @@ public final class PropertyLoader extends AbstractLoader<Object> {
         super.load();
         Task task = new Task(
                 SplashFrame.getInstance(),
-                MemoryLoader.getInstance());
+                MemoryLoader.getInstance(),
+                this);
         task.execute();
+    }
+    
+    @Override
+    public String getName() {
+        return "property";
     }
     
     private class Task extends AbstractTask<Void> {
 
-        public Task(SplashFrame frame, AbstractLoader loader) {
-            super(frame, loader);
+        public Task(SplashFrame frame, AbstractLoader loader, AbstractLoader main) {
+            super(frame, loader, main);
         }
 
         @LogExceptions
@@ -131,6 +141,8 @@ public final class PropertyLoader extends AbstractLoader<Object> {
     
     public String calendar_icon_theme;
     
+    public boolean changelog_is_display;
+    
     public void refresh() {
         calendar_color_eventday   = getColor(Property.CALENDAR_COLOR_EVENTDAY);
         calendar_color_currentday = getColor(Property.CALENDAR_COLOR_CURRENTDAY);
@@ -139,5 +151,19 @@ public final class PropertyLoader extends AbstractLoader<Object> {
         calendar_color_foreground = getColor(Property.CALENDAR_COLOR_FOREGROUND);  
         
         calendar_icon_theme       = getString(Property.CALENDAR_ICON_THEME);
+        
+        changelog_is_display      = getBoolean(Property.CHANGELOG_IS_DISPLAY);
+    }
+    
+    public void reset() {
+        setProperty(Property.CALENDAR_COLOR_EVENTDAY, new Color(50,130,180));
+        setProperty(Property.CALENDAR_COLOR_CURRENTDAY, Color.YELLOW);
+        setProperty(Property.CALENDAR_COLOR_WEEKDAYS, new Color(100,100,100));
+        setProperty(Property.CALENDAR_COLOR_DEFAULTDAY, new Color(50,50,50));
+        setProperty(Property.CALENDAR_COLOR_FOREGROUND, Color.WHITE);  
+        
+        setProperty(Property.CALENDAR_ICON_THEME, "default");
+        
+        commit();
     }
  }

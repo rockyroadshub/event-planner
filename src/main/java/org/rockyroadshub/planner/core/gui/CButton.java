@@ -14,31 +14,19 @@
  * limitations under the License.
  */
 
-package org.rockyroadshub.planner.loader;
+package org.rockyroadshub.planner.core.gui;
+
+import javax.swing.JButton;
 
 /**
  *
  * @author Arnell Christoper D. Dalid
  * @since 0.2.0
  */
-public enum Property {
-    CALENDAR_COLOR_EVENTDAY("calendar.color.eventday"),
-    CALENDAR_COLOR_CURRENTDAY("calendar.color.currentday"),
-    CALENDAR_COLOR_WEEKDAYS("calendar.color.weekdays"),
-    CALENDAR_COLOR_DEFAULTDAY("calendar.color.defaultday"),
-    CALENDAR_COLOR_FOREGROUND("calendar.color.foreground"),
-    CALENDAR_ICON_THEME("calendar.icon.theme"),
-    CHANGELOG_IS_DISPLAY("changelog.is.display"),
-    ;
-        
-    private final String key; 
-    
-    Property(String key) {
-        this.key = key;
-    }
-    
-    @Override
-    public String toString() {
-        return key;
+@SuppressWarnings("serial")
+public final class CButton extends JButton {
+
+    public CButton(){
+        super();
     }
 }

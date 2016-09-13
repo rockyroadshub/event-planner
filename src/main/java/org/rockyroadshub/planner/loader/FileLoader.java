@@ -56,14 +56,20 @@ public final class FileLoader extends AbstractLoader<File> {
         super.load();
         Task task = new Task(
                 SplashFrame.getInstance(), 
-                PropertyLoader.getInstance());
+                PropertyLoader.getInstance(),
+                this);
         task.execute();
+    }
+    
+    @Override
+    public String getName() {
+        return "file";
     }
     
     private class Task extends AbstractTask<Void> {
     
-        private Task(SplashFrame frame, AbstractLoader loader) {
-            super(frame, loader);
+        private Task(SplashFrame frame, AbstractLoader loader, AbstractLoader main) {
+            super(frame, loader, main);
         }
         
         @LogExceptions

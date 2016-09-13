@@ -38,7 +38,7 @@ import org.rockyroadshub.planner.core.utils.Utilities;
  * @author Arnell Christoper D. Dalid
  * @since 0.2.0
  */
-public final class IconLoader extends AbstractLoader<Icon>{
+public final class IconLoader extends AbstractLoader<Icon>  {
     private static final String[] EXTENSIONS = {"png"};
     private static final String   DIRECTORY  = "src/images/icons";
     private static final String   MAIN_PATH  = DIRECTORY + "/%s";
@@ -60,8 +60,14 @@ public final class IconLoader extends AbstractLoader<Icon>{
         super.load();
         Task task = new Task(
                 SplashFrame.getInstance(), 
-                MemoryLoader.getInstance());
+                null,
+                this);
         task.execute();
+    }
+    
+    @Override
+    public String getName() {
+        return "icon";
     }
     
     public Collection<File> getIconThemes() {
@@ -70,8 +76,8 @@ public final class IconLoader extends AbstractLoader<Icon>{
     
     private class Task extends AbstractTask<Void> {
         
-        private Task(SplashFrame frame, AbstractLoader loader) {
-            super(frame, loader);
+        private Task(SplashFrame frame, AbstractLoader loader, AbstractLoader main) {
+            super(frame, loader, main);
         }
 
         @LogExceptions
@@ -86,6 +92,13 @@ public final class IconLoader extends AbstractLoader<Icon>{
             String iconThemeName = PropertyLoader.getInstance().calendar_icon_theme;
             String iconThemePath = String.format(MAIN_PATH, iconThemeName);
             File iconTheme = new File(iconThemePath);
+            
+            comboItems = new String[iconThemes.size()];
+            int j = 0;
+            for(File i : iconThemes) {
+                comboItems[j] = i.getName();
+                j++;
+            }
             
             if(!iconThemes.contains(iconTheme)) {
                 iconThemePath = String.format(MAIN_PATH, "default");
@@ -107,6 +120,7 @@ public final class IconLoader extends AbstractLoader<Icon>{
         
         @Override
         protected void done() {
+            super.done();
             publish("Event Planner is ready.");
             MainFrame.getInstance();
             frame.dispose();

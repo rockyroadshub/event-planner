@@ -27,6 +27,7 @@ import java.util.Map;
  */
 public abstract class AbstractLoader<L> {
     private boolean isLoaded = false;
+    protected String[] comboItems;
     /**
      * Loader Map where loaded entities are saved.
      * 
@@ -40,6 +41,13 @@ public abstract class AbstractLoader<L> {
         isLoaded = true;
     }
     
+    public synchronized String[] getComboItems() {
+        if(comboItems == null)
+            throw new IllegalStateException("There is no set Combo Box items.");
+        
+        return comboItems;
+    }
+    
     protected void add(String name, L entity) {
         loaderMap.put(name, entity);
     }
@@ -51,4 +59,6 @@ public abstract class AbstractLoader<L> {
     public synchronized Map<String, L> getMap() {
         return loaderMap;
     }
+    
+    public abstract String getName();
 }

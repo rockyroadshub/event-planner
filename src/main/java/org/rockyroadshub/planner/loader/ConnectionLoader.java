@@ -47,8 +47,14 @@ public final class ConnectionLoader extends AbstractLoader<Void> {
         super.load();
         Task task = new Task(
                 SplashFrame.getInstance(), 
-                FileLoader.getInstance());
+                FileLoader.getInstance(),
+                this);
         task.execute();
+    }
+    
+    @Override
+    public String getName() {
+        return "connection";
     }
     
     private void setupDriver() throws 
@@ -60,8 +66,8 @@ public final class ConnectionLoader extends AbstractLoader<Void> {
     
     private class Task extends AbstractTask<Connection> {
 
-        private Task(SplashFrame frame, FileLoader loader) {
-            super(frame, loader);
+        private Task(SplashFrame frame, AbstractLoader loader, AbstractLoader main) {
+            super(frame, loader, main);
         }
 
         @LogExceptions

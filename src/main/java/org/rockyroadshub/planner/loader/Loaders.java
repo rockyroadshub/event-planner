@@ -16,29 +16,23 @@
 
 package org.rockyroadshub.planner.loader;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  *
  * @author Arnell Christoper D. Dalid
  * @since 0.2.0
  */
-public enum Property {
-    CALENDAR_COLOR_EVENTDAY("calendar.color.eventday"),
-    CALENDAR_COLOR_CURRENTDAY("calendar.color.currentday"),
-    CALENDAR_COLOR_WEEKDAYS("calendar.color.weekdays"),
-    CALENDAR_COLOR_DEFAULTDAY("calendar.color.defaultday"),
-    CALENDAR_COLOR_FOREGROUND("calendar.color.foreground"),
-    CALENDAR_ICON_THEME("calendar.icon.theme"),
-    CHANGELOG_IS_DISPLAY("changelog.is.display"),
-    ;
-        
-    private final String key; 
+public final class Loaders {
+    private static final Map<String, AbstractLoader> MAP = new HashMap<>();
+    private Loaders(){}
     
-    Property(String key) {
-        this.key = key;
+    public static synchronized void addToMap(String name, AbstractLoader loader) {
+        MAP.put(name, loader);
     }
     
-    @Override
-    public String toString() {
-        return key;
+    public static synchronized AbstractLoader getLoader(String name) {
+        return MAP.get(name);
     }
 }
