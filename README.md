@@ -8,7 +8,7 @@ as a database backend.
 Event Planner is licensed under the **Apache License, Version 2.0**. For usage,  
 distribution and reproduction of this software, please see [LICENSE](http://www.apache.org/licenses/LICENSE-2.0)  
 
-![Event Planner](https://s5.postimg.org/45jrtkkjr/Event_Planner.jpg)
+[![Event Planner 0.2.0.jpg](https://s5.postimg.org/5msv9kcg7/Event_Planner_0_2_0.jpg)](https://postimg.org/image/ehtpk318j/)
 
 ## Changelogs  
   
@@ -27,6 +27,18 @@ computer)
 and set of icons (set as _default_) to be loaded (in the calendar)  
 - Systematic loading of files and memories for database  
 - Set the date panel GUI from _MigLayout_ to _GridLayout(7 by 7)_  
+  
+**To do's:**  
+
+- Plugin support  
+- Smart notifications  
+- Real time alarm (for registered schedules/events)  
+- Improve GUI (Look and Feel support)  
+- System tray (Windows)  
+- Error Handling  
+- Update Java docs  
+- Holiday memory database  
+- Contacts memory database  
 
 ### [\[0.1.1\]](https://github.com/rockyroadshub/event-planner/releases/tag/0.1.1)  
 
