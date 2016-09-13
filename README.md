@@ -8,6 +8,11 @@ as a database backend.
 Event Planner is licensed under the **Apache License, Version 2.0**. For usage,  
 distribution and reproduction of this software, please see [LICENSE](http://www.apache.org/licenses/LICENSE-2.0)  
 
+System Requirements:  
+- Java SE Runtime Environment 8  
+- 1 GB RAM  
+- 1 GB Hard Drive Memory
+
 [![Event Planner 0.2.0.jpg](https://s5.postimg.org/5msv9kcg7/Event_Planner_0_2_0.jpg)](https://postimg.org/image/ehtpk318j/)
 
 ## Changelogs  
