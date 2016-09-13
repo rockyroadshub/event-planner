@@ -16,6 +16,7 @@
 
 package org.rockyroadshub.planner.core.data;
 
+import com.jcabi.aspects.LogExceptions;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -24,7 +25,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import org.rockyroadshub.planner.core.database.Data;
-import org.rockyroadshub.planner.core.database.DataMapperException;
 import org.rockyroadshub.planner.core.database.DataMapper;
 import org.rockyroadshub.planner.core.database.DatabaseConnection;
 import org.rockyroadshub.planner.loader.MemoryLoader;
@@ -32,7 +32,7 @@ import org.rockyroadshub.planner.loader.MemoryLoader;
 /**
  *
  * @author Arnell Christoper D. Dalid
- * @since 0.2.0
+ * @since 0.2.1
  */
 public final class EventMapper extends DataMapper {
     private final List<Integer> dayList = new ArrayList<>();
@@ -60,10 +60,12 @@ public final class EventMapper extends DataMapper {
      * Finds an event from a given id
      * @param id primary/main key of the event
      * @return returns an event as in "Optional" container
+     * @throws java.sql.SQLException
      * @see java.util.Optional
      */
+    @LogExceptions
     @Override
-    public Optional<Data> find(int id) {
+    public Optional<Data> find(int id) throws SQLException {
         Connection conn = DatabaseConnection.getConnection();
         
         try(PreparedStatement stmt = 
@@ -85,19 +87,17 @@ public final class EventMapper extends DataMapper {
                 else 
                     return Optional.empty();
             }
-        } 
-        catch (SQLException ex) {
-            throw new DataMapperException(ex);
         }
     }
 
     /**
      * Inserts a new event data into memory
      * @param data data to be inserted
-     * @throws DataMapperException 
+     * @throws java.sql.SQLException 
      */
+    @LogExceptions
     @Override
-    public void insert(Data data) throws DataMapperException {
+    public void insert(Data data) throws SQLException {
         Event event = (Event)data;
         Connection conn = DatabaseConnection.getConnection();
         
@@ -114,19 +114,17 @@ public final class EventMapper extends DataMapper {
             stmt.setString(8, event.getStart());
             stmt.setString(9, event.getEnd());
             stmt.executeUpdate();
-        } 
-        catch (SQLException ex) {
-            throw new DataMapperException(ex);
         }
     }
 
     /**
      * Updates the selected event from the memory
      * @param data data to be used for updating an event
-     * @throws DataMapperException 
+     * @throws java.sql.SQLException
      */
+    @LogExceptions
     @Override
-    public void update(Data data) throws DataMapperException {
+    public void update(Data data) throws SQLException {
         Event event = (Event)data;
         Connection conn = DatabaseConnection.getConnection();
         
@@ -144,19 +142,17 @@ public final class EventMapper extends DataMapper {
             stmt.setString(9, event.getEnd());
             stmt.setInt(10, event.getID());
             stmt.executeUpdate();
-        } 
-        catch (SQLException ex) {
-            throw new DataMapperException(ex);
         }
     }
 
     /**
      * Deletes an event data
      * @param id primary/unique key of the data
-     * @throws DataMapperException 
+     * @throws java.sql.SQLException
      */
+    @LogExceptions
     @Override
-    public void delete(int id) throws DataMapperException {
+    public void delete(int id) throws SQLException {
         Connection conn = DatabaseConnection.getConnection();
         
         try(PreparedStatement stmt = 
@@ -164,9 +160,6 @@ public final class EventMapper extends DataMapper {
         {
             stmt.setInt(1, id);
             stmt.executeUpdate();
-        } 
-        catch (SQLException ex) {
-            throw new DataMapperException(ex);
         }
     }
     
@@ -174,8 +167,10 @@ public final class EventMapper extends DataMapper {
      * Gets the number of events in a given date
      * @param date date parameter
      * @return number of events
+     * @throws java.sql.SQLException
      */
-    public int getNumberOfEvents(String date) {
+    @LogExceptions
+    public int getNumberOfEvents(String date) throws SQLException {
         Connection conn = DatabaseConnection.getConnection();
         int i = 0;
         try(PreparedStatement stmt = 
@@ -187,9 +182,6 @@ public final class EventMapper extends DataMapper {
                     i++;
                 }
             }
-        } 
-        catch (SQLException ex) {
-            throw new DataMapperException(ex);
         }
         return i;
     }
@@ -199,8 +191,10 @@ public final class EventMapper extends DataMapper {
      * @param month month parameter
      * @param year year parameter
      * @return number of events
+     * @throws java.sql.SQLException
      */
-    public int getNumberOfEvents(String month, String year) {
+    @LogExceptions
+    public int getNumberOfEvents(String month, String year) throws SQLException {
         Connection conn = DatabaseConnection.getConnection();
         int i = 0;
         try(PreparedStatement stmt = 
@@ -213,9 +207,6 @@ public final class EventMapper extends DataMapper {
                     i++;
                 }
             }
-        } 
-        catch (SQLException ex) {
-            throw new DataMapperException(ex);
         }
         return i;
     }
@@ -224,8 +215,10 @@ public final class EventMapper extends DataMapper {
      * Gets all events registered in a given date
      * @param date date of the event
      * @return list of dates
+     * @throws java.sql.SQLException
      */
-    public synchronized List<Event> getEvents(String date) {
+    @LogExceptions
+    public synchronized List<Event> getEvents(String date) throws SQLException {
         Connection conn = DatabaseConnection.getConnection();
         
         try(PreparedStatement stmt = 
@@ -245,16 +238,8 @@ public final class EventMapper extends DataMapper {
                     event.setEnd(rs.getString(10));
                     evtList.add(event);
                 }
-            }
-            catch (SQLException ex) {
-                throw new DataMapperException(ex);
-            }
-            
-        } 
-        catch (SQLException ex) {
-            throw new DataMapperException(ex);
-        }
-        
+            }        
+        }      
         return evtList;
     }
     
@@ -263,9 +248,11 @@ public final class EventMapper extends DataMapper {
      * @param month month of the event
      * @param year year of the event
      * @return registered days with an event on a list
+     * @throws java.sql.SQLException
      */
+    @LogExceptions
     public synchronized List<Integer> getRegisteredDays
-        (String month, String year) 
+        (String month, String year) throws SQLException 
     {
         Connection conn = DatabaseConnection.getConnection();
         try(PreparedStatement stmt = 
@@ -279,15 +266,8 @@ public final class EventMapper extends DataMapper {
                     dayList.add(rs.getInt(8));
                 }
             }
-            catch (SQLException ex) {
-                throw new DataMapperException(ex);
-            }
             
-        }
-        catch (SQLException ex) {
-            throw new DataMapperException(ex);
-        }
-        
+        }      
         return dayList;
     }
     
@@ -295,8 +275,10 @@ public final class EventMapper extends DataMapper {
      * Deletes all the registered events in a given month and year
      * @param month month of the event
      * @param year year of the event
+     * @throws java.sql.SQLException
      */
-    public void deleteAll(String month, String year) {
+    @LogExceptions
+    public void deleteAll(String month, String year) throws SQLException {
         Connection conn = DatabaseConnection.getConnection();
         try(PreparedStatement stmt = 
             conn.prepareStatement(SELECT_EVENT_MONTH_YEAR))
@@ -307,14 +289,7 @@ public final class EventMapper extends DataMapper {
                 while(rs.next()) {
                     delete(rs.getInt(1));
                 }
-            }
-            catch (SQLException ex) {
-                throw new DataMapperException(ex);
-            }
-            
-        }
-        catch (SQLException ex) {
-            throw new DataMapperException(ex);
+            }           
         }
     }
 }

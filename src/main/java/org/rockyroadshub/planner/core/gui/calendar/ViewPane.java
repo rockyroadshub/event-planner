@@ -19,6 +19,7 @@ package org.rockyroadshub.planner.core.gui.calendar;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.SQLException;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFormattedTextField;
@@ -51,7 +52,7 @@ import org.rockyroadshub.planner.core.utils.Utilities;
 /**
  *
  * @author Arnell Christoper D. Dalid
- * @since 0.2.0
+ * @since 0.2.1
  */
 @SuppressWarnings("serial")
 public final class ViewPane extends AbstractPane {
@@ -328,7 +329,18 @@ public final class ViewPane extends AbstractPane {
             evt.setDate(date);
             evt.setStart(start);
             evt.setEnd(end);           
-            map.update(evt);
+            try {
+                map.update(evt);
+            } 
+            catch (SQLException ex) {
+                JOptionPane.showMessageDialog(
+                    MainFrame.getInstance(), 
+                    ex.getMessage(), 
+                    Globals.FRAME_TITLE, 
+                    JOptionPane.ERROR_MESSAGE);
+                clear();
+                return;
+            }
             
             DisplayPane.getInstance().getInstance().refresh();
             MainPane.getInstance().showPane(DisplayPane.NAME);

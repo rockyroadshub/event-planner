@@ -20,6 +20,7 @@ import java.awt.BorderLayout;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 import javax.swing.BorderFactory;
@@ -43,7 +44,7 @@ import org.rockyroadshub.planner.core.utils.Globals;
 /**
  *
  * @author Arnell Christoper D. Dalid
- * @since 0.2.0
+ * @since 0.2.1
  */
 @SuppressWarnings("serial")
 public final class DisplayPane extends AbstractPane {
@@ -115,13 +116,23 @@ public final class DisplayPane extends AbstractPane {
         clear();
         
         EventMapper map = EventMapper.getInstance();        
-        for(Event evt : map.getEvents(getDate())) {
-            rowData[0] = evt.getID();
-            rowData[1] = evt.getEvent();
-            rowData[2] = evt.getDate();
-            rowData[3] = evt.getStart();
-            rowData[4] = evt.getEnd();
-            tableModel.addRow(rowData);
+        try {
+            for(Event evt : map.getEvents(getDate())) {
+                rowData[0] = evt.getID();
+                rowData[1] = evt.getEvent();
+                rowData[2] = evt.getDate();
+                rowData[3] = evt.getStart();
+                rowData[4] = evt.getEnd();
+                tableModel.addRow(rowData);
+            }
+        } 
+        catch (SQLException ex) {
+            JOptionPane.showMessageDialog(
+                MainFrame.getInstance(), 
+                ex.getMessage(), 
+                Globals.FRAME_TITLE, 
+                JOptionPane.ERROR_MESSAGE);
+            return;
         }
         
         paneLabel.setText(getTitleLabel());
@@ -212,7 +223,18 @@ public final class DisplayPane extends AbstractPane {
         if(i != -1) {
             ViewPane view = ViewPane.getInstance();
             view.enableGUI(false);
-            view.set(EventMapper.getInstance().find(i).get());
+            try {
+                view.set(EventMapper.getInstance().find(i).get());
+            } 
+            catch (SQLException ex) {
+                JOptionPane.showMessageDialog(
+                    MainFrame.getInstance(), 
+                    ex.getMessage(), 
+                    Globals.FRAME_TITLE, 
+                    JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            
             MainPane.getInstance().showPane(ViewPane.NAME);
         }
     }
@@ -227,7 +249,17 @@ public final class DisplayPane extends AbstractPane {
             int    o = JOptionPane.OK_OPTION;
             if(JOptionPane.showConfirmDialog(f, m, t, q) == o) {
                 EventMapper map = EventMapper.getInstance();
-                map.delete(i);
+                try {
+                    map.delete(i);
+                } 
+                catch (SQLException ex) {
+                    JOptionPane.showMessageDialog(
+                        MainFrame.getInstance(), 
+                        ex.getMessage(), 
+                        Globals.FRAME_TITLE, 
+                        JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
                 refresh();
             }
         }

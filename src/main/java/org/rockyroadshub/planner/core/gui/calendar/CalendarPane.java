@@ -25,6 +25,7 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.sql.SQLException;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
@@ -49,7 +50,7 @@ import org.rockyroadshub.planner.loader.PropertyLoader;
 /**
  *
  * @author Arnell Christoper D. Dalid
- * @since 0.2.0
+ * @since 0.2.1
  */
 @SuppressWarnings("serial")
 public final class CalendarPane extends AbstractPane {
@@ -339,31 +340,54 @@ public final class CalendarPane extends AbstractPane {
         }
                 
         EventMapper map = EventMapper.getInstance();
-        List<Integer> dayList = map.getRegisteredDays(MONTHS[m], String.valueOf(y));
+        List<Integer> dayList = null;
+        try {
+            dayList = map.getRegisteredDays(MONTHS[m], String.valueOf(y));
+        } 
+        catch (SQLException ex) {
+            JOptionPane.showMessageDialog(
+                MainFrame.getInstance(), 
+                ex.getMessage(), 
+                Globals.FRAME_TITLE, 
+                JOptionPane.ERROR_MESSAGE);
+        }
+        finally {
+            for(int i = start + p; i < end + p; i++) {
+                int current = i - delta - p;
+                JButton button = dayButtons[i];
+                button.setText(String.valueOf(current)); 
+                button.setEnabled(true);
 
-        for(int i = start + p; i < end + p; i++) {
-            int current = i - delta - p;
-            JButton button = dayButtons[i];
-            button.setText(String.valueOf(current)); 
-            button.setEnabled(true);
-            
-            if(current == date && y == year && m == month) {
-                button.setForeground(properties.calendar_color_currentday);
-            }
-            
-            if(dayList != null && dayList.contains(current)) {
-                button.setBackground(properties.calendar_color_eventday);
-                int rows = map.getNumberOfEvents(Utilities.formatDate(y, m+1, current));
-                if(rows != 0) {
-                    button.setToolTipText(String.format(BUTTON_TOOLTIP, rows));
+                if(current == date && y == year && m == month) {
+                    button.setForeground(properties.calendar_color_currentday);
+                }
+
+                if(dayList != null && dayList.contains(current)) {
+                    button.setBackground(properties.calendar_color_eventday);
+                    int rows = 0;
+                    try {
+                        rows = map.getNumberOfEvents(Utilities.formatDate(y, m+1, current));
+                    } 
+                    catch (SQLException ex) {
+                        JOptionPane.showMessageDialog(
+                            MainFrame.getInstance(), 
+                            ex.getMessage(), 
+                            Globals.FRAME_TITLE, 
+                            JOptionPane.ERROR_MESSAGE);
+                    }
+                    finally {
+                        if(rows != 0) {
+                            button.setToolTipText(String.format(BUTTON_TOOLTIP, rows));
+                        }
+                    }
                 }
             }
-        }
-        
-        for(int i = end + p, j = 1; i < MAX; i++) {
-            JButton button = dayButtons[i];
-            button.setText(String.valueOf(j));             
-            j++;
+
+            for(int i = end + p, j = 1; i < MAX; i++) {
+                JButton button = dayButtons[i];
+                button.setText(String.valueOf(j));             
+                j++;
+            }
         }
     }    
     
@@ -403,8 +427,19 @@ public final class CalendarPane extends AbstractPane {
         int    o = JOptionPane.OK_OPTION;
         if(JOptionPane.showConfirmDialog(f, m, t, q) == o) {
             EventMapper map = EventMapper.getInstance();
-            map.deleteAll(m0,y0);
-            refresh();
+            try {
+                map.deleteAll(m0,y0);
+            } 
+            catch (SQLException ex) {
+                JOptionPane.showMessageDialog(
+                    MainFrame.getInstance(), 
+                    ex.getMessage(), 
+                    Globals.FRAME_TITLE, 
+                    JOptionPane.ERROR_MESSAGE);
+            }
+            finally {
+                refresh();
+            }
         }      
     }
     
