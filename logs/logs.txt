@@ -1,4 +1,4 @@
-[2016-09-12 16:37:36,739] [WARN] [Logger] [SwingWorker-pool-2-thread-4] java.lang.NullPointerException
+[2016-09-14 20:52:33,889] [WARN] [Logger] [SwingWorker-pool-1-thread-4] java.lang.NullPointerException
 	at org.rockyroadshub.planner.core.database.DatabaseControl.exists_aroundBody2(DatabaseControl.java:78)
 	at org.rockyroadshub.planner.core.database.DatabaseControl$AjcClosure3.run(DatabaseControl.java:1)
 	at org.aspectj.runtime.reflect.JoinPointImpl.proceed(JoinPointImpl.java:149)
@@ -18,47 +18,7 @@
 	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
 	at java.lang.Thread.run(Thread.java:745)
 
-[2016-09-12 16:37:37,318] [WARN] [Logger] [SwingWorker-pool-2-thread-4] java.lang.NullPointerException
-	at org.rockyroadshub.planner.core.database.DatabaseControl.exists_aroundBody2(DatabaseControl.java:78)
-	at org.rockyroadshub.planner.core.database.DatabaseControl$AjcClosure3.run(DatabaseControl.java:1)
-	at org.aspectj.runtime.reflect.JoinPointImpl.proceed(JoinPointImpl.java:149)
-	at com.jcabi.aspects.aj.ExceptionsLogger.wrap(ExceptionsLogger.java:70)
-	at org.rockyroadshub.planner.core.database.DatabaseControl.exists(DatabaseControl.java:72)
-	at org.rockyroadshub.planner.core.database.DatabaseControl.create_aroundBody0(DatabaseControl.java:54)
-	at org.rockyroadshub.planner.core.database.DatabaseControl$AjcClosure1.run(DatabaseControl.java:1)
-	at org.aspectj.runtime.reflect.JoinPointImpl.proceed(JoinPointImpl.java:149)
-	at com.jcabi.aspects.aj.ExceptionsLogger.wrap(ExceptionsLogger.java:70)
-	at org.rockyroadshub.planner.core.database.DatabaseControl.create(DatabaseControl.java:49)
-	at org.rockyroadshub.planner.loader.MemoryLoader$Task.doInBackground(MemoryLoader.java:125)
-	at org.rockyroadshub.planner.loader.MemoryLoader$Task.doInBackground(MemoryLoader.java:77)
-	at javax.swing.SwingWorker$1.call(SwingWorker.java:295)
-	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
-	at javax.swing.SwingWorker.run(SwingWorker.java:334)
-	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
-	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
-	at java.lang.Thread.run(Thread.java:745)
-
-[2016-09-12 23:57:30,704] [WARN] [Logger] [SwingWorker-pool-2-thread-4] java.lang.NullPointerException
-	at org.rockyroadshub.planner.core.database.DatabaseControl.exists_aroundBody2(DatabaseControl.java:78)
-	at org.rockyroadshub.planner.core.database.DatabaseControl$AjcClosure3.run(DatabaseControl.java:1)
-	at org.aspectj.runtime.reflect.JoinPointImpl.proceed(JoinPointImpl.java:149)
-	at com.jcabi.aspects.aj.ExceptionsLogger.wrap(ExceptionsLogger.java:70)
-	at org.rockyroadshub.planner.core.database.DatabaseControl.exists(DatabaseControl.java:72)
-	at org.rockyroadshub.planner.core.database.DatabaseControl.create_aroundBody0(DatabaseControl.java:54)
-	at org.rockyroadshub.planner.core.database.DatabaseControl$AjcClosure1.run(DatabaseControl.java:1)
-	at org.aspectj.runtime.reflect.JoinPointImpl.proceed(JoinPointImpl.java:149)
-	at com.jcabi.aspects.aj.ExceptionsLogger.wrap(ExceptionsLogger.java:70)
-	at org.rockyroadshub.planner.core.database.DatabaseControl.create(DatabaseControl.java:49)
-	at org.rockyroadshub.planner.loader.MemoryLoader$Task.doInBackground(MemoryLoader.java:125)
-	at org.rockyroadshub.planner.loader.MemoryLoader$Task.doInBackground(MemoryLoader.java:77)
-	at javax.swing.SwingWorker$1.call(SwingWorker.java:295)
-	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
-	at javax.swing.SwingWorker.run(SwingWorker.java:334)
-	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
-	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
-	at java.lang.Thread.run(Thread.java:745)
-
-[2016-09-12 23:57:31,463] [WARN] [Logger] [SwingWorker-pool-2-thread-4] java.lang.NullPointerException
+[2016-09-14 20:52:36,233] [WARN] [Logger] [SwingWorker-pool-1-thread-4] java.lang.NullPointerException
 	at org.rockyroadshub.planner.core.database.DatabaseControl.exists_aroundBody2(DatabaseControl.java:78)
 	at org.rockyroadshub.planner.core.database.DatabaseControl$AjcClosure3.run(DatabaseControl.java:1)
 	at org.aspectj.runtime.reflect.JoinPointImpl.proceed(JoinPointImpl.java:149)

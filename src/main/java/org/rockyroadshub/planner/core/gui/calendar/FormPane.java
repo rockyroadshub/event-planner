@@ -20,6 +20,9 @@ import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFormattedTextField;
@@ -34,9 +37,11 @@ import javax.swing.SpinnerNumberModel;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.DefaultStyledDocument;
+import javax.swing.text.JTextComponent;
 import javax.swing.text.NumberFormatter;
 import net.miginfocom.layout.LC;
 import net.miginfocom.swing.MigLayout;
+import org.apache.commons.lang.StringUtils;
 import org.rockyroadshub.planner.core.data.Event;
 import org.rockyroadshub.planner.core.data.EventMapper;
 import org.rockyroadshub.planner.core.gui.AbstractPane;
@@ -133,8 +138,13 @@ public final class FormPane extends AbstractPane {
     private String formatDsc; 
     private String formatLoc;
     
-    private static final String SAVE_DIALOG = "Are you sure to save this event?";
-    private static final String BORDER      = "Add an Event";
+    private static final String EVT_INPUT    = "Event Title Text Box";
+    private static final String DSC_INPUT    = "Description Text Box";
+    private static final String LOC_INPUT    = "Location Text Box";   
+    private static final String SAVE_DIALOG  = "Are you sure to save this event?";
+    private static final String BORDER       = "Add an Event";
+    private static final String START_VS_END = "Start time cannot be more advanced than End time.";
+    private static final String START_EQ_END = "Start time is the same with End time";
     
     private void initialize() {
         setOpaque(false);
@@ -177,6 +187,7 @@ public final class FormPane extends AbstractPane {
         formatEvt = Utilities.stamp(Globals.EVENT_TITLE_SIZE);
         eventInput.setFont(font);
         eventInput.setDocument(documentEvt);
+        eventInput.setName(EVT_INPUT);
         eventLimit.setText(String.format(formatEvt, 0));
         
         documentDsc = new DefaultStyledDocument();
@@ -185,6 +196,7 @@ public final class FormPane extends AbstractPane {
         formatDsc = Utilities.stamp(Globals.EVENT_DESCR_SIZE);
         descriptionInput.setFont(font);
         descriptionInput.setDocument(documentDsc);
+        descriptionInput.setName(DSC_INPUT);
         descriptionLimit.setText(String.format(formatDsc, 0));
         descriptionInput.setLineWrap(true);
        
@@ -194,6 +206,7 @@ public final class FormPane extends AbstractPane {
         formatLoc = Utilities.stamp(Globals.EVENT_LOCAT_SIZE);
         locationInput.setFont(font);
         locationInput.setDocument(documentLoc);
+        locationInput.setName(LOC_INPUT);
         locationLimit.setText(String.format(formatLoc, 0));
         locationInput.setLineWrap(true);
     }
@@ -288,7 +301,11 @@ public final class FormPane extends AbstractPane {
         }
     }
     
-    private void onSave() {      
+    private void onSave() {     
+        if(isEmpty(eventInput)) return;
+        if(isEmpty(locationInput)) return;
+        if(isEmpty(descriptionInput)) return;
+        
         event       = eventInput.getText();
         description = descriptionInput.getText();
         location    = locationInput.getText();
@@ -301,6 +318,8 @@ public final class FormPane extends AbstractPane {
         
         start = String.format("%d:%02d:00", sH, sM);
         end   = String.format("%d:%02d:00", eH, eM);   
+        
+        if(!compareTime(start, end)) return;
                         
         MainFrame  f = MainFrame.getInstance();
         String m = SAVE_DIALOG;
@@ -334,5 +353,43 @@ public final class FormPane extends AbstractPane {
             MainPane.getInstance().showPane(DisplayPane.NAME);
             clear();
         }
+    }
+    
+    private static boolean compareTime(String start, String end) {
+        try {
+            SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
+            Date startTime = dateFormat.parse(start);
+            Date endTime = dateFormat.parse(end);
+            int timeComparison = endTime.compareTo(startTime);
+            if(timeComparison == 0 || timeComparison == -1) {
+                JOptionPane.showMessageDialog(
+                    MainFrame.getInstance(), 
+                    (timeComparison == 0) ? START_EQ_END : START_VS_END, 
+                    Globals.FRAME_TITLE, 
+                    JOptionPane.ERROR_MESSAGE);
+                return false;
+            }
+            return true;
+        }
+        catch (ParseException ex) {
+            JOptionPane.showMessageDialog(
+                MainFrame.getInstance(), 
+                ex.getMessage(), 
+                Globals.FRAME_TITLE, 
+                JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+    }
+    
+    private static boolean isEmpty(JTextComponent comp) {
+        boolean b = StringUtils.isBlank(comp.getText());
+        if(b) {
+            JOptionPane.showMessageDialog(
+                MainFrame.getInstance(), 
+                comp.getName() + " is empty.", 
+                Globals.FRAME_TITLE, 
+                JOptionPane.ERROR_MESSAGE);
+        }
+        return b;
     }
 }

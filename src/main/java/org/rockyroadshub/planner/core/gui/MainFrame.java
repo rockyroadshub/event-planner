@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import org.rockyroadshub.planner.core.utils.Globals;
 import org.rockyroadshub.planner.core.utils.Utilities;
@@ -88,4 +89,23 @@ public final class MainFrame extends JFrame {
             }
         }
     };
+    
+    public static void showErrorDialog(String message) {
+        JOptionPane.showMessageDialog(
+            Holder.INSTANCE, 
+            message, 
+            Globals.FRAME_TITLE, 
+            JOptionPane.ERROR_MESSAGE
+        );
+    }
+    
+    public static int showConfirmDialog(String message) {
+        return  
+        JOptionPane.showConfirmDialog(
+            Holder.INSTANCE, 
+            message, 
+            Globals.FRAME_TITLE, 
+            JOptionPane.OK_CANCEL_OPTION
+        );
+    }
 }
