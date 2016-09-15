@@ -26,7 +26,6 @@ import java.util.Map;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -127,11 +126,7 @@ public final class DisplayPane extends AbstractPane {
             }
         } 
         catch (SQLException ex) {
-            JOptionPane.showMessageDialog(
-                MainFrame.getInstance(), 
-                ex.getMessage(), 
-                Globals.FRAME_TITLE, 
-                JOptionPane.ERROR_MESSAGE);
+            MainFrame.showErrorDialog(ex.getMessage());
             return;
         }
         
@@ -227,11 +222,7 @@ public final class DisplayPane extends AbstractPane {
                 view.set(EventMapper.getInstance().find(i).get());
             } 
             catch (SQLException ex) {
-                JOptionPane.showMessageDialog(
-                    MainFrame.getInstance(), 
-                    ex.getMessage(), 
-                    Globals.FRAME_TITLE, 
-                    JOptionPane.ERROR_MESSAGE);
+                MainFrame.showErrorDialog(ex.getMessage());
                 return;
             }
             
@@ -242,22 +233,14 @@ public final class DisplayPane extends AbstractPane {
     private void onDelete() {
         int i = getID();
         if(i != -1) {
-            MainFrame  f = MainFrame.getInstance();
-            String m = String.format(DELETE_DIALOG, getEventTitle());
-            String t = Globals.FRAME_TITLE;
-            int    q = JOptionPane.OK_CANCEL_OPTION;
-            int    o = JOptionPane.OK_OPTION;
-            if(JOptionPane.showConfirmDialog(f, m, t, q) == o) {
+            if(MainFrame.showConfirmDialog(String.format(DELETE_DIALOG, getEventTitle()))) 
+            {
                 EventMapper map = EventMapper.getInstance();
                 try {
                     map.delete(i);
                 } 
                 catch (SQLException ex) {
-                    JOptionPane.showMessageDialog(
-                        MainFrame.getInstance(), 
-                        ex.getMessage(), 
-                        Globals.FRAME_TITLE, 
-                        JOptionPane.ERROR_MESSAGE);
+                    MainFrame.showErrorDialog(ex.getMessage());
                     return;
                 }
                 refresh();

@@ -15,13 +15,17 @@
  */
 package org.rockyroadshub.planner.main;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 import org.rockyroadshub.planner.splash.SplashFrame;
 
 /**
  *
  * @author Arnell Christoper D. Dalid
- * @since 0.2.0
+ * @since 0.2.1
  */
 public final class SystemInit {    
     static {
@@ -29,6 +33,13 @@ public final class SystemInit {
     }
     
     public static void main(String[] args) {
+        try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (ClassNotFoundException ex) {
+        } catch (InstantiationException ex) {
+        } catch (IllegalAccessException ex) {
+        } catch (UnsupportedLookAndFeelException ex) {
+        }
         SwingUtilities.invokeLater(() -> {  
             SplashFrame.getInstance();
         });

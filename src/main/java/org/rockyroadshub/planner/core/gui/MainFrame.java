@@ -32,7 +32,7 @@ import org.rockyroadshub.planner.core.utils.Utilities;
 /**
  *
  * @author Arnell Christoper D. Dalid
- * @since 0.2.0
+ * @since 0.2.1
  */
 @SuppressWarnings("serial")
 public final class MainFrame extends JFrame {
@@ -99,13 +99,13 @@ public final class MainFrame extends JFrame {
         );
     }
     
-    public static int showConfirmDialog(String message) {
+    public static boolean showConfirmDialog(String message) {
         return  
         JOptionPane.showConfirmDialog(
             Holder.INSTANCE, 
             message, 
             Globals.FRAME_TITLE, 
-            JOptionPane.OK_CANCEL_OPTION
-        );
+            JOptionPane.OK_CANCEL_OPTION) 
+        ==  JOptionPane.OK_OPTION;
     }
 }

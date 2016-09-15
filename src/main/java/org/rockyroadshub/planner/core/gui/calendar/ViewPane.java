@@ -27,7 +27,6 @@ import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.JTextArea;
@@ -331,13 +330,8 @@ public final class ViewPane extends AbstractPane {
         end   = String.format("%d:%02d:00", eH, eM);  
                 
         if(!compareTime(start, end)) return;
-        
-        MainFrame  f = MainFrame.getInstance();
-        String m = SAVE_DIALOG;
-        String t = Globals.FRAME_TITLE;
-        int    q = JOptionPane.OK_CANCEL_OPTION;
-        int    o = JOptionPane.OK_OPTION;
-        if(JOptionPane.showConfirmDialog(f, m, t, q) == o) {
+
+        if(MainFrame.showConfirmDialog(SAVE_DIALOG)) {
             EventMapper map = EventMapper.getInstance();
             Event evt = new Event();
             
@@ -352,11 +346,7 @@ public final class ViewPane extends AbstractPane {
                 map.update(evt);
             } 
             catch (SQLException ex) {
-                JOptionPane.showMessageDialog(
-                    MainFrame.getInstance(), 
-                    ex.getMessage(), 
-                    Globals.FRAME_TITLE, 
-                    JOptionPane.ERROR_MESSAGE);
+                MainFrame.showErrorDialog(ex.getMessage());
                 clear();
                 return;
             }
@@ -414,21 +404,13 @@ public final class ViewPane extends AbstractPane {
             Date endTime = dateFormat.parse(end);
             int timeComparison = endTime.compareTo(startTime);
             if(timeComparison == 0 || timeComparison == -1) {
-                JOptionPane.showMessageDialog(
-                    MainFrame.getInstance(), 
-                    (timeComparison == 0) ? START_EQ_END : START_VS_END, 
-                    Globals.FRAME_TITLE, 
-                    JOptionPane.ERROR_MESSAGE);
+                MainFrame.showErrorDialog((timeComparison == 0) ? START_EQ_END : START_VS_END);
                 return false;
             }
             return true;
         }
         catch (ParseException ex) {
-            JOptionPane.showMessageDialog(
-                MainFrame.getInstance(), 
-                ex.getMessage(), 
-                Globals.FRAME_TITLE, 
-                JOptionPane.ERROR_MESSAGE);
+            MainFrame.showErrorDialog(ex.getMessage());
             return false;
         }
     }
@@ -436,11 +418,7 @@ public final class ViewPane extends AbstractPane {
     private static boolean isEmpty(JTextComponent comp) {
         boolean b = StringUtils.isBlank(comp.getText());
         if(b) {
-            JOptionPane.showMessageDialog(
-                MainFrame.getInstance(), 
-                comp.getName() + " is empty.", 
-                Globals.FRAME_TITLE, 
-                JOptionPane.ERROR_MESSAGE);
+            MainFrame.showErrorDialog(comp.getName() + " is empty.");
         }
         return b;
     }

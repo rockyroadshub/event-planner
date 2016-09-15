@@ -1,6 +1,6 @@
 package org.rockyroadshub.planner.core.gui.calendar;
 
-import org.rockyroadshub.planner.core.gui.CButton;
+import org.rockyroadshub.planner.core.gui.TButton;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
@@ -15,7 +15,6 @@ import javax.swing.JButton;
 import javax.swing.JColorChooser;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSeparator;
 import net.miginfocom.layout.LC;
@@ -49,7 +48,7 @@ import org.rockyroadshub.planner.loader.PropertyLoader;
 /**
  *
  * @author Arnell Christoper D. Dalid
- * @since 0.2.0
+ * @since 0.2.1
  */
 @SuppressWarnings("serial")
 public final class PropertiesPane extends AbstractPane {
@@ -153,15 +152,10 @@ public final class PropertiesPane extends AbstractPane {
     }
     
     private void onSave() {
-        MainFrame  f = MainFrame.getInstance();
-        String m = SAVE_DIALOG;
-        String t = Globals.FRAME_TITLE;
-        int    q = JOptionPane.OK_CANCEL_OPTION;
-        int    o = JOptionPane.OK_OPTION;
-        if(JOptionPane.showConfirmDialog(f, m, t, q) == o) {
+        if(MainFrame.showConfirmDialog(SAVE_DIALOG)) {
             for(ColorButtons cb : container.getColorButtonCache()) {
-                cb.setColor(cb.button.getBackground());
-                properties.setProperty(cb.property,cb.button.getBackground());
+                cb.setColor(cb.button.getFillColor());
+                properties.setProperty(cb.property,cb.button.getFillColor());
             }                             
                 
             for(ComboBoxes cmb : container.getComboCache()) {
@@ -177,12 +171,7 @@ public final class PropertiesPane extends AbstractPane {
     }
     
     private void onDefault() {
-        MainFrame  f = MainFrame.getInstance();
-        String m = DEFAULT_DIALOG;
-        String t = Globals.FRAME_TITLE;
-        int    q = JOptionPane.OK_CANCEL_OPTION;
-        int    o = JOptionPane.OK_OPTION;
-        if(JOptionPane.showConfirmDialog(f, m, t, q) == o) {
+        if(MainFrame.showConfirmDialog(DEFAULT_DIALOG)) {
             properties.reset();           
             container.reassess();
             this.refresh();
@@ -213,27 +202,29 @@ public final class PropertiesPane extends AbstractPane {
     }
     
     enum ColorButtons {
-        EVENT(new CButton(), new JLabel("Event Day Color"), Property.CALENDAR_COLOR_EVENTDAY),
-        CURRENT(new CButton(), new JLabel("Current Day Color"), Property.CALENDAR_COLOR_CURRENTDAY),
-        DEFAULT(new CButton(), new JLabel("Default Day Color"), Property.CALENDAR_COLOR_DEFAULTDAY),
-        FOREGROUND(new CButton(), new JLabel("Foreground Color"), Property.CALENDAR_COLOR_FOREGROUND),
-        WEEKDAYS(new CButton(), new JLabel("Weekdays Color"), Property.CALENDAR_COLOR_WEEKDAYS),
+        EVENT(new TButton(), new JLabel("Event Day Color"), Property.CALENDAR_COLOR_EVENTDAY),
+        CURRENT(new TButton(), new JLabel("Current Day Color"), Property.CALENDAR_COLOR_CURRENTDAY),
+        DEFAULT(new TButton(), new JLabel("Default Day Color"), Property.CALENDAR_COLOR_DEFAULTDAY),
+        FOREGROUND(new TButton(), new JLabel("Foreground Color"), Property.CALENDAR_COLOR_FOREGROUND),
+        WEEKDAYS(new TButton(), new JLabel("Weekdays Color"), Property.CALENDAR_COLOR_WEEKDAYS),
         ;
         
-        final CButton button;
+        final TButton button;
         final JLabel label;
         final Property property;
         Color color;
         
-        ColorButtons(CButton button, JLabel label, Property property) {
+        ColorButtons(TButton button, JLabel label, Property property) {
             this.button = button;
             this.label = label;
             this.property = property;
             this.color = PropertyLoader.getInstance().getColor(property);
+            this.button.setColorAttributes(color);
         }
         
         void setColor(Color color) {
             this.color = color;
+            this.button.setColorAttributes(color);
         }
     }
     
@@ -275,7 +266,7 @@ public final class PropertiesPane extends AbstractPane {
         private static final String COLOR_PANE   = "color";
              
         private ColorButtons colorButton = null;
-        private JButton targetButton;
+        private TButton targetButton;
         
         private final List<ColorButtons> colorButtonCache = new ArrayList<>();
         private final List<ComboBoxes> comboCache = new ArrayList<>();
@@ -309,7 +300,7 @@ public final class PropertiesPane extends AbstractPane {
         @Override
         public void refresh() {
             for(ColorButtons cb : ColorButtons.values()) {
-                cb.button.setBackground(cb.color);
+                cb.button.setFillColor(cb.color);
             }
             
             for(ComboBoxes cmb : ComboBoxes.values()) {
@@ -345,7 +336,7 @@ public final class PropertiesPane extends AbstractPane {
             for(ColorButtons cb : ColorButtons.values()) {
                 displayPane.add(cb.button, Globals.BUTTON_DIMENSIONS + ",split 2");
                 displayPane.add(cb.label, "wrap");
-                cb.button.setBackground(cb.color);
+                cb.button.setFillColor(cb.color);
                 cb.button.setName(cb.name());
                 cb.button.addActionListener(propertiesAction);
             }
@@ -387,15 +378,15 @@ public final class PropertiesPane extends AbstractPane {
         private void buttonTrigger(JButton button) {
             String name = button.getName();
             
-            if(button instanceof CButton) {
+            if(button instanceof TButton) {
                 colorButton = ColorButtons.valueOf(name);
                 name = COLOR_PANE;
-                targetButton = button;
+                targetButton = (TButton)button;
             }
             
             switch(name) {
                 case Globals.SET:
-                    targetButton.setBackground(colorChooser.getColor());
+                    targetButton.setFillColor(colorChooser.getColor());
                     colorButtonCache.add(colorButton);
                     break;
             }

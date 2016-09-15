@@ -26,7 +26,7 @@ import org.rockyroadshub.planner.splash.SplashFrame;
 /**
  *
  * @author Arnell Christoper D. Dalid
- * @since 0.2.0
+ * @since 0.2.1
  */
 public final class PropertyLoader extends AbstractLoader<Object> {
     private final PropertiesConfiguration plannerProperties = new PropertiesConfiguration();
@@ -158,7 +158,7 @@ public final class PropertyLoader extends AbstractLoader<Object> {
     public void reset() {
         setProperty(Property.CALENDAR_COLOR_EVENTDAY, new Color(50,130,180));
         setProperty(Property.CALENDAR_COLOR_CURRENTDAY, Color.YELLOW);
-        setProperty(Property.CALENDAR_COLOR_WEEKDAYS, new Color(100,100,100));
+        setProperty(Property.CALENDAR_COLOR_WEEKDAYS, new Color(0,51,102));
         setProperty(Property.CALENDAR_COLOR_DEFAULTDAY, new Color(50,50,50));
         setProperty(Property.CALENDAR_COLOR_FOREGROUND, Color.WHITE);  
         
