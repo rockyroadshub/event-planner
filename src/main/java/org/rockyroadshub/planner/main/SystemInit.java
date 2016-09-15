@@ -35,11 +35,15 @@ public final class SystemInit {
     public static void main(String[] args) {
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        } catch (ClassNotFoundException ex) {
-        } catch (InstantiationException ex) {
-        } catch (IllegalAccessException ex) {
-        } catch (UnsupportedLookAndFeelException ex) {
+        } 
+        catch (ClassNotFoundException | 
+                 InstantiationException | 
+                 IllegalAccessException | 
+                 UnsupportedLookAndFeelException ex) 
+        {
+            ex.printStackTrace(System.out);
         }
+        
         SwingUtilities.invokeLater(() -> {  
             SplashFrame.getInstance();
         });

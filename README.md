@@ -13,15 +13,14 @@ System Requirements:
 - 1 GB RAM  
 - 1 GB Hard Drive Memory
 
-[![Event Planner 0.2.0.jpg](https://s5.postimg.org/5msv9kcg7/Event_Planner_0_2_0.jpg)](https://postimg.org/image/ehtpk318j/)
+[![0.2.1.jpg](https://s5.postimg.org/5wniqfksn/0_2_1.jpg)](https://postimg.org/image/qtjqv3itf/)
 
 ### Latest Release  
-[\[0.2.0\] - September 13, 2016](https://github.com/rockyroadshub/event-planner/releases/tag/0.2.0)  
+[\[0.2.1\] - September 16, 2016](https://github.com/rockyroadshub/event-planner/releases/tag/0.2.1)  
 
 
 ### Old Releases  
 [\[0.1.1\] - August 30, 2016](https://github.com/rockyroadshub/event-planner/releases/tag/0.1.1)  
-[\[0.1.0\] - August 29, 2016](https://github.com/rockyroadshub/event-planner/releases/tag/0.1.0)  
 [\[0.0.0\] - August 20, 2016](https://github.com/rockyroadshub/event-planner/releases/tag/0.0.0)  
 
 **To do's:**  

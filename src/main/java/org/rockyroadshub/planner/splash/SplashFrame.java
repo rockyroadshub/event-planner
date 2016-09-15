@@ -56,7 +56,7 @@ public class SplashFrame extends JFrame implements PropertyChangeListener {
     private final Logo          logo            = new Logo();
         
     private static final Font   TITLE_FONT      = new Font("Calibri", 0, 30);
-    private static final String TITLE_TEXT      = "Event Planner 0.2.0";
+    private static final String TITLE_TEXT      = "Event Planner 0.2.1";
     private static final Font   LABEL_FONT      = new Font("Calibri", 0, 10);
     
     private static final Color  TEXT_COLOR      = Color.WHITE;

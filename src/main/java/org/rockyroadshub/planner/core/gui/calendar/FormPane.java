@@ -33,6 +33,8 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SpinnerModel;
 import javax.swing.SpinnerNumberModel;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.DefaultStyledDocument;
@@ -89,14 +91,14 @@ public final class FormPane extends AbstractPane {
     private final JTextArea    locationInput    = new JTextArea();
     
     private final JLabel       startLabel       = new JLabel("Start (HH:MM)");
-    private final SpinnerModel startModelH      = new SpinnerNumberModel(0,0,23,1);
-    private final SpinnerModel startModelM      = new SpinnerNumberModel(0,0,59,1);    
+    private final SpinnerModel startModelH      = new SpinnerNumberModel(0,0,24,1);
+    private final SpinnerModel startModelM      = new SpinnerNumberModel(0,0,60,1);    
     private final JSpinner     startHour        = new JSpinner(startModelH);
     private final JSpinner     startMinute      = new JSpinner(startModelM); 
     
     private final JLabel       endLabel         = new JLabel("End (HH:MM)");    
-    private final SpinnerModel endModelH        = new SpinnerNumberModel(0,0,23,1);
-    private final SpinnerModel endModelM        = new SpinnerNumberModel(0,0,59,1);
+    private final SpinnerModel endModelH        = new SpinnerNumberModel(0,0,24,1);
+    private final SpinnerModel endModelM        = new SpinnerNumberModel(0,0,60,1);
     private final JSpinner     endHour          = new JSpinner(endModelH);
     private final JSpinner     endMinute        = new JSpinner(endModelM);
     
@@ -212,9 +214,9 @@ public final class FormPane extends AbstractPane {
     
     private void initSpinners() {
         setAllowsInvalid(startHour);
-        setAllowsInvalid(startMinute);
+        setAllowsInvalid(startMinute, startHour);
         setAllowsInvalid(endHour);
-        setAllowsInvalid(endMinute);
+        setAllowsInvalid(endMinute, endHour);
     }
     
     private void initMenu() {
@@ -265,6 +267,23 @@ public final class FormPane extends AbstractPane {
     private void setAllowsInvalid(JSpinner s) {
         JFormattedTextField txt = ((JSpinner.NumberEditor)s.getEditor()).getTextField();
         ((NumberFormatter)txt.getFormatter()).setAllowsInvalid(false);
+        s.addChangeListener((ChangeEvent e) -> {
+            if(s.getValue().equals(24)) {
+                s.setValue(0);
+            }
+        });
+    }
+    
+    private void setAllowsInvalid(JSpinner s1, JSpinner s2) {
+        JFormattedTextField txt = ((JSpinner.NumberEditor)s1.getEditor()).getTextField();
+        ((NumberFormatter)txt.getFormatter()).setAllowsInvalid(false);
+        s1.addChangeListener((ChangeEvent e) -> {
+            if(s1.getValue().equals(60)) {
+                s1.setValue(0);
+                int i = (int)s2.getValue() + 1;
+                s2.setValue(i);
+            }
+        });
     }
     
     private void update(DocumentEvent e) {

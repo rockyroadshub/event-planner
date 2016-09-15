@@ -72,9 +72,8 @@ public final class DisplayPane extends AbstractPane {
     private final JTable        table         = new JTable();
     private final JScrollPane   tableScroll   = new JScrollPane(table);
     
-    private static final int    FONT_SIZE     = 40;
+    private static final int    FONT_SIZE     = 25;
     private static final int    FONT_STYLE    = Font.BOLD;
-    private static final String FONT_NAME     = "Calibri";
     private static final String GAP_RIGHT     = "gapright 20!";
     private static final String DELETE_DIALOG = "Are you sure to delete \"%s\" event?";
     private static final String BORDER        = "Display Panel";
@@ -140,7 +139,7 @@ public final class DisplayPane extends AbstractPane {
     }
     
     private void initTitle() {
-        paneLabel.setFont(new Font(FONT_NAME, FONT_STYLE, FONT_SIZE));
+        paneLabel.setFont(getFont().deriveFont(FONT_STYLE, FONT_SIZE));
     }
     
     private void initMenu() {

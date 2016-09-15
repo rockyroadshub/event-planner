@@ -33,6 +33,7 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SpinnerModel;
 import javax.swing.SpinnerNumberModel;
+import javax.swing.event.ChangeEvent;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.DefaultStyledDocument;
@@ -216,9 +217,9 @@ public final class ViewPane extends AbstractPane {
     
     private void initSpinners() {
         setAllowsInvalid(startHour);
-        setAllowsInvalid(startMinute);
+        setAllowsInvalid(startMinute, startHour);
         setAllowsInvalid(endHour);
-        setAllowsInvalid(endMinute);
+        setAllowsInvalid(endMinute, endHour);
     }
     
     private void initMenu() {
@@ -275,6 +276,23 @@ public final class ViewPane extends AbstractPane {
     private void setAllowsInvalid(JSpinner s) {
         JFormattedTextField txt = ((JSpinner.NumberEditor)s.getEditor()).getTextField();
         ((NumberFormatter)txt.getFormatter()).setAllowsInvalid(false);
+        s.addChangeListener((ChangeEvent e) -> {
+            if(s.getValue().equals(24)) {
+                s.setValue(0);
+            }
+        });
+    }
+    
+    private void setAllowsInvalid(JSpinner s1, JSpinner s2) {
+        JFormattedTextField txt = ((JSpinner.NumberEditor)s1.getEditor()).getTextField();
+        ((NumberFormatter)txt.getFormatter()).setAllowsInvalid(false);
+        s1.addChangeListener((ChangeEvent e) -> {
+            if(s1.getValue().equals(60)) {
+                s1.setValue(0);
+                int i = (int)s2.getValue() + 1;
+                s2.setValue(i);
+            }
+        });
     }
     
     private void update(DocumentEvent e) {
