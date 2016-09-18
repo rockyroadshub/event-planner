@@ -181,6 +181,11 @@ public final class FormPane extends AbstractPane {
         endMinute.setValue(0);  
     }    
     
+    public void setTimeValues(int value) {
+        startModelH.setValue(value);
+        endModelH.setValue(value);
+    }
+    
     private void initDocuments() {    
         documentEvt = new DefaultStyledDocument();
         documentEvt.setDocumentFilter(new TextLimiter(Globals.EVENT_TITLE_SIZE));

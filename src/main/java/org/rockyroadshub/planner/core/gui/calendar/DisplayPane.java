@@ -242,6 +242,8 @@ public final class DisplayPane extends AbstractPane {
             default:
                 CalendarPane.getInstance().refresh();
                 FormPane.getInstance().refresh();
+                int row = table.getSelectedRow();
+                if(row != -1) FormPane.getInstance().setTimeValues(row);
                 MainPane.getInstance().showPane(name);
                 clear();
                 break;
