@@ -1,4 +1,4 @@
-package org.rockyroadshub.planner.splash;
+package org.rockyroadshub.planner.core.gui;
 
 import java.awt.Canvas;
 import java.awt.Color;
@@ -18,7 +18,7 @@ import javax.swing.Timer;
  * @since 0.2.0
  */
 @SuppressWarnings("serial")
-public final class ProgressBar extends JPanel {
+public final class SProgressBar extends JPanel {
     private Color color;
     private double minimum = 0.0;
     private double maximum = 100.0;
@@ -32,7 +32,7 @@ public final class ProgressBar extends JPanel {
     private final int ballSize = 25;
     private boolean changeDirection = false;
     
-    public ProgressBar(Color color) {
+    public SProgressBar(Color color) {
         super();
         indeterminateTimer = new Timer(100, new AbstractAction() {
             @Override

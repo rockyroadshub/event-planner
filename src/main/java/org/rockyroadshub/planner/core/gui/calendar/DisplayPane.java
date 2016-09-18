@@ -46,6 +46,7 @@ import org.rockyroadshub.planner.core.gui.GUIUtils;
 import org.rockyroadshub.planner.loader.IconLoader;
 import org.rockyroadshub.planner.core.gui.MainPane;
 import org.rockyroadshub.planner.core.utils.Globals;
+import org.rockyroadshub.planner.loader.PropertyLoader;
 
 /**
  *
@@ -87,6 +88,7 @@ public final class DisplayPane extends AbstractPane {
     private static final String BORDER        = "Display Panel";
     
     private IconLoader iconLoader;
+    private PropertyLoader properties;
      
     private final DisplayTableModel    tableModel    = new DisplayTableModel();
     private final DisplayTableRenderer tableRenderer = new DisplayTableRenderer();
@@ -102,6 +104,7 @@ public final class DisplayPane extends AbstractPane {
         setLayout(new BorderLayout());
         
         iconLoader = IconLoader.getInstance();
+        properties = PropertyLoader.getInstance();
         
         initTitle();
         initMenu();
@@ -128,8 +131,8 @@ public final class DisplayPane extends AbstractPane {
                     int row = Integer.valueOf(s.group(1));
                     int eventLength = Integer.valueOf(e.group(1)) - row;
                     for(int i = 0; i < eventLength + 1; i++) {
-                        tableModel.setRowColor(i + row, HIGHLIGHT);
-                        tableModel.setRowForeground(i + row, Color.WHITE);
+                        tableModel.setRowColor(i + row, properties.calendar_color_eventday);
+                        tableModel.setRowForeground(i + row, properties.calendar_color_foreground);
                         tableModel.setIdentity(i + row, evt);
                     }                   
                     tableModel.setValueAt(evt.getEvent(), row, 1);

@@ -16,6 +16,7 @@
 
 package org.rockyroadshub.planner.splash;
 
+import org.rockyroadshub.planner.core.gui.SProgressBar;
 import java.awt.BorderLayout;
 import java.awt.Canvas;
 import java.awt.Color;
@@ -44,19 +45,19 @@ import org.rockyroadshub.planner.loader.ConnectionLoader;
 /**
  *
  * @author Arnell Christoper D. Dalid
- * @since 0.2.0
+ * @since 0.2.2
  */
 @SuppressWarnings("serial")
 public class SplashFrame extends JFrame implements PropertyChangeListener {
     private final JPanel        progressPane    = new JPanel();
     private final Title         progressTitle   = new Title();
-    private final ProgressBar   progressBar     = new ProgressBar(new Color(50, 130, 180, 200));   
+    private final SProgressBar  progressBar     = new SProgressBar(new Color(50, 130, 180, 200));   
     private final JLabel        progressLabel   = new JLabel();
     private final Background    background      = new Background();
     private final Logo          logo            = new Logo();
         
     private static final Font   TITLE_FONT      = new Font("Calibri", 0, 30);
-    private static final String TITLE_TEXT      = "Event Planner 0.2.1";
+    private static final String TITLE_TEXT      = "Event Planner 0.2.2";
     private static final Font   LABEL_FONT      = new Font("Calibri", 0, 10);
     
     private static final Color  TEXT_COLOR      = Color.WHITE;
@@ -87,7 +88,7 @@ public class SplashFrame extends JFrame implements PropertyChangeListener {
         return progressLabel;
     }
     
-    public ProgressBar getProgressBar() {
+    public SProgressBar getProgressBar() {
         return progressBar;
     }
     
