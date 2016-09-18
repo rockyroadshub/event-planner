@@ -34,7 +34,6 @@ import javax.swing.JTextField;
 import javax.swing.SpinnerModel;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.DefaultStyledDocument;
@@ -57,7 +56,7 @@ import org.rockyroadshub.planner.core.utils.Utilities;
 /**
  *
  * @author Arnell Christoper D. Dalid
- * @since 0.2.1
+ * @since 0.2.2
  */
 @SuppressWarnings("serial")
 public final class FormPane extends AbstractPane {
@@ -146,6 +145,7 @@ public final class FormPane extends AbstractPane {
     private static final String BORDER       = "Add an Event";
     private static final String START_VS_END = "Start time cannot be more advanced than End time.";
     private static final String START_EQ_END = "Start time is the same with End time";
+    private static final String OVERLAP      = "%s overlaps with another event";
     
     private void initialize() {
         setOpaque(false);
@@ -338,6 +338,7 @@ public final class FormPane extends AbstractPane {
         end   = String.format("%d:%02d:00", eH, eM);   
         
         if(!compareTime(start, end)) return;
+        if(isOverlapping(event, sH, eH)) return;
 
         if(MainFrame.showConfirmDialog(SAVE_DIALOG)) {
             EventMapper map = EventMapper.getInstance();
@@ -362,6 +363,17 @@ public final class FormPane extends AbstractPane {
             MainPane.getInstance().showPane(DisplayPane.NAME);
             clear();
         }
+    }
+    
+    private static boolean isOverlapping(String evt, int start, int end) {
+        DisplayPane disp = DisplayPane.getInstance();
+        for(int i = start; i < end + 1; i++) {
+            if(disp.getHourCache().contains(i)) {
+                MainFrame.showErrorDialog(String.format(OVERLAP, evt));
+                return true;
+            }
+        }
+        return false;
     }
     
     private static boolean compareTime(String start, String end) {

@@ -82,7 +82,6 @@ public final class DisplayPane extends AbstractPane {
     
     private static final int    FONT_SIZE     = 25;
     private static final int    FONT_STYLE    = Font.BOLD;
-    private static final Color  HIGHLIGHT     = new Color(50,130,180);
     private static final String GAP_RIGHT     = "gapright 20!";
     private static final String DELETE_DIALOG = "Are you sure to delete \"%s\" event?";
     private static final String BORDER        = "Display Panel";
@@ -92,6 +91,9 @@ public final class DisplayPane extends AbstractPane {
      
     private final DisplayTableModel    tableModel    = new DisplayTableModel();
     private final DisplayTableRenderer tableRenderer = new DisplayTableRenderer();
+    
+    private final List<Integer> hourCache = new ArrayList<>();
+    private final List<Integer> idCache = new ArrayList<>();
     
     private final ActionListener action = (ActionEvent ae) -> {    
         JButton button = (JButton)ae.getSource();
@@ -106,6 +108,7 @@ public final class DisplayPane extends AbstractPane {
         iconLoader = IconLoader.getInstance();
         properties = PropertyLoader.getInstance();
         
+        initIDCache();
         initTitle();
         initMenu();
         initButtons();
@@ -119,9 +122,9 @@ public final class DisplayPane extends AbstractPane {
     public void refresh() {
         clear();
         EventMapper map = EventMapper.getInstance();
-
         tableModel.generateTable();
-                                                            
+        hourCache.clear();
+        resetIDCache();
         try {
             for(Event evt : map.getEvents(getDate())) {               
                 Pattern p = Pattern.compile("(\\d+):(\\d{2}):(\\d{2})");
@@ -129,12 +132,15 @@ public final class DisplayPane extends AbstractPane {
                 Matcher e = p.matcher(evt.getEnd());
                 if(s.find() && e.find()) {
                     int row = Integer.valueOf(s.group(1));
-                    int eventLength = Integer.valueOf(e.group(1)) - row;
+                    int end = Integer.valueOf(e.group(1));
+                    int eventLength = end - row;
                     for(int i = 0; i < eventLength + 1; i++) {
                         tableModel.setRowColor(i + row, properties.calendar_color_eventday);
                         tableModel.setRowForeground(i + row, properties.calendar_color_foreground);
                         tableModel.setIdentity(i + row, evt);
-                    }                   
+                        hourCache.add(i + row);
+                        idCache.set(i + row, evt.getID());
+                    }
                     tableModel.setValueAt(evt.getEvent(), row, 1);
                 }
             }
@@ -147,12 +153,18 @@ public final class DisplayPane extends AbstractPane {
     }
 
     @Override
-    public void clear() {
+    public void clear() {        
         tableModel.resetColors();
         tableModel.resetIdentities();
         tableModel.resetForegrounds();
         tableModel.getDataVector().removeAllElements();
         tableModel.fireTableDataChanged();
+    }
+    
+    private void initIDCache() {
+        for(int i = 0; i < 24; i++) {
+            idCache.add(-1);
+        }
     }
     
     private void initTitle() {
@@ -285,6 +297,20 @@ public final class DisplayPane extends AbstractPane {
             return evt.getID();
         }
         return -1;
+    }
+    
+    private void resetIDCache() {
+        for(int i = 0; i < 24; i++) {
+            idCache.set(i, -1);
+        }
+    }
+    
+    public List<Integer> getHourCache() {
+        return hourCache;
+    }
+    
+    public List<Integer> getIDCache() {
+        return idCache;
     }
     
     private class DisplayTableRenderer extends DefaultTableCellRenderer {
