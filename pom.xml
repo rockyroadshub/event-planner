@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.rockyroadshub</groupId>
     <artifactId>planner</artifactId>
-    <version>0.2.1</version>
+    <version>0.2.2</version>
     <packaging>jar</packaging>
     
     <properties>
@@ -16,7 +16,7 @@
         <aspectj.weaveWith>true</aspectj.weaveWith>
         
         <!-- Versions -->
-        <project.exe.version>0.2.0.0</project.exe.version>
+        <project.exe.version>0.2.2.0</project.exe.version>
         <miglayout.version>5.0</miglayout.version>
         <derby.version>10.12.1.1</derby.version>
         

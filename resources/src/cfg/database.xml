@@ -34,11 +34,8 @@ limitations under the License.
                 <column name="EVENT_END"   type="TIME"         key="false"/>    
             </columns>
             <displays>
-                <display index="0" alt="ID"/>
-                <display index="1" alt="Title"/>
-                <display index="4" alt="Date"/>
-                <display index="8" alt="Start"/>
-                <display index="9" alt="End"/>
+                <display index="0" alt="Time"/>
+                <display index="1" alt="Event Title"/>
             </displays>
         </table>
     </tables>

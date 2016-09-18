@@ -17,18 +17,25 @@
 package org.rockyroadshub.planner.core.gui.calendar;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import net.miginfocom.swing.MigLayout;
 import org.rockyroadshub.planner.core.data.Event;
@@ -43,7 +50,7 @@ import org.rockyroadshub.planner.core.utils.Globals;
 /**
  *
  * @author Arnell Christoper D. Dalid
- * @since 0.2.1
+ * @since 0.2.2
  */
 @SuppressWarnings("serial")
 public final class DisplayPane extends AbstractPane {
@@ -74,19 +81,15 @@ public final class DisplayPane extends AbstractPane {
     
     private static final int    FONT_SIZE     = 25;
     private static final int    FONT_STYLE    = Font.BOLD;
+    private static final Color  HIGHLIGHT     = new Color(50,130,180);
     private static final String GAP_RIGHT     = "gapright 20!";
     private static final String DELETE_DIALOG = "Are you sure to delete \"%s\" event?";
     private static final String BORDER        = "Display Panel";
     
-    private Object[] rowData;
     private IconLoader iconLoader;
      
-    private final DefaultTableModel  tableModel   = new DefaultTableModel() {
-        @Override
-        public boolean isCellEditable(int row, int column){
-            return false;
-        }
-    };
+    private final DisplayTableModel    tableModel    = new DisplayTableModel();
+    private final DisplayTableRenderer tableRenderer = new DisplayTableRenderer();
     
     private final ActionListener action = (ActionEvent ae) -> {    
         JButton button = (JButton)ae.getSource();
@@ -103,7 +106,7 @@ public final class DisplayPane extends AbstractPane {
         initTitle();
         initMenu();
         initButtons();
-        initTableModel();
+        initTable();
         pack();
         
         GUIUtils.addToPaneList(this);
@@ -112,28 +115,39 @@ public final class DisplayPane extends AbstractPane {
     @Override
     public void refresh() {
         clear();
-        
-        EventMapper map = EventMapper.getInstance();        
+        EventMapper map = EventMapper.getInstance();
+
+        tableModel.generateTable();
+                                                            
         try {
-            for(Event evt : map.getEvents(getDate())) {
-                rowData[0] = evt.getID();
-                rowData[1] = evt.getEvent();
-                rowData[2] = evt.getDate();
-                rowData[3] = evt.getStart();
-                rowData[4] = evt.getEnd();
-                tableModel.addRow(rowData);
+            for(Event evt : map.getEvents(getDate())) {               
+                Pattern p = Pattern.compile("(\\d+):(\\d{2}):(\\d{2})");
+                Matcher s = p.matcher(evt.getStart());    
+                Matcher e = p.matcher(evt.getEnd());
+                if(s.find() && e.find()) {
+                    int row = Integer.valueOf(s.group(1));
+                    int eventLength = Integer.valueOf(e.group(1)) - row;
+                    for(int i = 0; i < eventLength + 1; i++) {
+                        tableModel.setRowColor(i + row, HIGHLIGHT);
+                        tableModel.setRowForeground(i + row, Color.WHITE);
+                        tableModel.setIdentity(i + row, evt);
+                    }                   
+                    tableModel.setValueAt(evt.getEvent(), row, 1);
+                }
             }
         } 
         catch (SQLException ex) {
             MainFrame.showErrorDialog(ex.getMessage());
             return;
         }
-        
         paneLabel.setText(getTitleLabel());
     }
 
     @Override
     public void clear() {
+        tableModel.resetColors();
+        tableModel.resetIdentities();
+        tableModel.resetForegrounds();
         tableModel.getDataVector().removeAllElements();
         tableModel.fireTableDataChanged();
     }
@@ -175,7 +189,7 @@ public final class DisplayPane extends AbstractPane {
         deleteButton.setIcon(iconLoader.get(Globals.DELETE));
     }
     
-    private void initTableModel() {
+    private void initTable() {
         EventMapper         map  = EventMapper.getInstance();
         List<String>        col  = map.getColumns();
         List<Integer>       disp = map.getDisplayColumns();
@@ -185,8 +199,15 @@ public final class DisplayPane extends AbstractPane {
             tableModel.addColumn(alt.get(col.get(i)));
         });
         
-        rowData = new Object[disp.size()];
         table.setModel(tableModel);
+        table.setDefaultRenderer(table.getColumnClass(0), tableRenderer);
+        table.setRowHeight(30);
+        table.setShowGrid(false);
+        table.setIntercellSpacing(new Dimension(0, 0));      
+        table.getColumnModel().getColumn(0).setMaxWidth(70);
+        table.setAutoResizeMode(JTable.AUTO_RESIZE_LAST_COLUMN);
+        table.getTableHeader().setResizingAllowed(false);
+        table.getTableHeader().setReorderingAllowed(false);
     }
     
     private void pack() {
@@ -247,17 +268,105 @@ public final class DisplayPane extends AbstractPane {
         }
     }
     
-    private Object getEventTitle() {        
-        return table.getValueAt(table.getSelectedRow(), 1);
+    private Object getEventTitle() {
+        int row = table.getSelectedRow();
+        Event evt = tableModel.getIdentity(row);
+        return evt.getEvent();
     }
     
     private int getID() {
         int row = table.getSelectedRow();
         if(row != -1) {
-            Object o = table.getValueAt(row, 0);
-            String n = String.valueOf(o);
-            return Integer.parseInt(n);
+            Event evt = tableModel.getIdentity(row);
+            if(evt == null) return -1;
+            return evt.getID();
         }
         return -1;
+    }
+    
+    private class DisplayTableRenderer extends DefaultTableCellRenderer {
+        
+        @Override
+	public Component getTableCellRendererComponent 
+        (JTable table, Object value, boolean selected, boolean focused, int row, int column)
+        {
+            super.getTableCellRendererComponent(table, value, selected, focused, row, column);
+            DisplayTableModel tableModel = (DisplayTableModel)table.getModel();
+            setBackground(tableModel.getRowColor(row));
+            setForeground(tableModel.getRowForeground(row));
+            return this;  
+	}
+    }
+    
+    private class DisplayTableModel extends DefaultTableModel {
+        final int rowCount = 24;
+        final Color defaultColor = Color.WHITE;
+        final Color defaultForeground = Color.BLACK;
+        final List<Color> colorSet = new ArrayList<>();
+        final List<Event> eventSet = new ArrayList<>();
+        final List<Color> foregroundSet = new ArrayList<>();
+        
+        DisplayTableModel() {
+            for(int i = 0; i < rowCount; i++) {
+                eventSet.add(null);
+                colorSet.add(defaultColor);
+                foregroundSet.add(defaultForeground);
+            }
+        }
+        
+        void generateTable() {
+            for(int i = 0; i < rowCount; i++) {
+                addRow(new Object[]{String.format("%d:00:00",i), null});
+            } 
+        }
+        
+        void resetColors() {
+            for(int i = 0; i < rowCount; i++) {
+                colorSet.set(i, defaultColor);
+            }
+        }
+        
+        void resetForegrounds() {
+            for(int i = 0; i < rowCount; i++) {
+                foregroundSet.set(i, defaultForeground);
+            }
+        }
+        
+        void resetIdentities() {
+            for(int i = 0; i < rowCount; i++) {
+                eventSet.set(i, null);
+            }
+        }
+        
+        void setRowColor(int row, Color color) {
+            colorSet.set(row, color);
+            fireTableRowsUpdated(row, row);
+        }
+        
+        Color getRowColor(int row) {
+            return colorSet.get(row);
+        }
+        
+        void setRowForeground(int row, Color color) {
+            foregroundSet.set(row, color);
+            fireTableRowsUpdated(row, row);
+        }
+        
+        Color getRowForeground(int row) {
+            return foregroundSet.get(row);
+        }
+        
+        void setIdentity(int row, Event evt) {
+            eventSet.set(row, evt);
+        }
+        
+        Event getIdentity(int row) {
+            return eventSet.get(row);
+        }
+                
+        @Override
+        public boolean isCellEditable(int row, int column){
+            return false;
+        }
     }
  }
