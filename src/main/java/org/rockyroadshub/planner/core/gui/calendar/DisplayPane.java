@@ -43,9 +43,10 @@ import org.rockyroadshub.planner.core.data.EventMapper;
 import org.rockyroadshub.planner.core.gui.AbstractPane;
 import org.rockyroadshub.planner.core.gui.MainFrame;
 import org.rockyroadshub.planner.core.gui.GUIUtils;
-import org.rockyroadshub.planner.loader.IconLoader;
 import org.rockyroadshub.planner.core.gui.MainPane;
+import org.rockyroadshub.planner.core.gui.TButton;
 import org.rockyroadshub.planner.core.utils.Globals;
+import org.rockyroadshub.planner.loader.Icons;
 import org.rockyroadshub.planner.loader.PropertyLoader;
 
 /**
@@ -72,10 +73,10 @@ public final class DisplayPane extends AbstractPane {
         
     private final JLabel        paneLabel     = new JLabel();
     private final JPanel        menuPanel     = new JPanel();
-    private final JButton       addButton     = new JButton();
-    private final JButton       homeButton    = new JButton();
-    private final JButton       viewButton    = new JButton();
-    private final JButton       deleteButton  = new JButton();
+    private final TButton       addButton     = new TButton();
+    private final TButton       homeButton    = new TButton();
+    private final TButton       viewButton    = new TButton();
+    private final TButton       deleteButton  = new TButton();
    
     private final JTable        table         = new JTable();
     private final JScrollPane   tableScroll   = new JScrollPane(table);
@@ -86,7 +87,6 @@ public final class DisplayPane extends AbstractPane {
     private static final String DELETE_DIALOG = "Are you sure to delete \"%s\" event?";
     private static final String BORDER        = "Display Panel";
     
-    private IconLoader iconLoader;
     private PropertyLoader properties;
      
     private final DisplayTableModel    tableModel    = new DisplayTableModel();
@@ -105,7 +105,6 @@ public final class DisplayPane extends AbstractPane {
         setName(NAME);
         setLayout(new BorderLayout());
         
-        iconLoader = IconLoader.getInstance();
         properties = PropertyLoader.getInstance();
         
         initIDCache();
@@ -173,11 +172,14 @@ public final class DisplayPane extends AbstractPane {
     
     private void initMenu() {
         menuPanel.setOpaque(false);
-        menuPanel.setLayout(new MigLayout());
-        menuPanel.add(paneLabel,    GAP_RIGHT);
-        menuPanel.add(homeButton,   Globals.BUTTON_DIMENSIONS);
-        menuPanel.add(addButton,    Globals.BUTTON_DIMENSIONS);
-        menuPanel.add(viewButton,   Globals.BUTTON_DIMENSIONS);
+        menuPanel.setLayout(new MigLayout(
+                Globals.BUTTON_INSETS,
+                Globals.BUTTON_GAPX,
+                Globals.BUTTON_GAPY));
+        menuPanel.add(paneLabel, GAP_RIGHT);
+        menuPanel.add(homeButton, Globals.BUTTON_DIMENSIONS);
+        menuPanel.add(addButton, Globals.BUTTON_DIMENSIONS);
+        menuPanel.add(viewButton, Globals.BUTTON_DIMENSIONS);
         menuPanel.add(deleteButton, Globals.BUTTON_DIMENSIONS);
         menuPanel.setBorder(BorderFactory.createTitledBorder(BORDER));
     }
@@ -186,22 +188,22 @@ public final class DisplayPane extends AbstractPane {
         homeButton.setToolTipText(Globals.HOME);
         homeButton.setName(CalendarPane.NAME);
         homeButton.addActionListener(action);
-        homeButton.setIcon(iconLoader.get(Globals.HOME));
+        homeButton.setIcon(Icons.HOME.icon());
                 
         addButton.setToolTipText(Globals.ADD);
         addButton.setName(FormPane.NAME);
         addButton.addActionListener(action);
-        addButton.setIcon(iconLoader.get(Globals.ADD));
+        addButton.setIcon(Icons.ADD.icon());
         
         viewButton.setToolTipText(Globals.VIEW);
         viewButton.setName(ViewPane.NAME);
         viewButton.addActionListener(action);
-        viewButton.setIcon(iconLoader.get(Globals.VIEW));
+        viewButton.setIcon(Icons.VIEW.icon());
         
         deleteButton.setToolTipText(Globals.DELETE);
         deleteButton.setName(Globals.DELETE);
         deleteButton.addActionListener(action);
-        deleteButton.setIcon(iconLoader.get(Globals.DELETE));
+        deleteButton.setIcon(Icons.DELETE.icon());
     }
     
     private void initTable() {

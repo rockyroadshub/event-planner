@@ -29,15 +29,17 @@ import javax.swing.JButton;
 /**
  *
  * @author Arnell Christoper D. Dalid
- * @since 0.2.1
+ * @since 0.2.2
  */
 @SuppressWarnings("serial")
 public class TButton extends JButton {
     private Color hoverColor;
     private Color fillColor;
     private Color pressColor;
+    private Color borderColor;
+    private boolean isBordered = false;
     private String string = null;
-    public static final Color DEFAULT_HOVER = new Color(180,200,255,80);
+    public static final Color DEFAULT_HOVER = new Color(50,200,255,80);
     public static final Color DEFAULT_FILLED = new Color(0,0,0,0);
     
     public TButton() {
@@ -92,6 +94,7 @@ public class TButton extends JButton {
     private void init() {
         this.setBorderPainted(false);
         this.setContentAreaFilled(false);
+        this.setFocusPainted(false);
         fillColor = DEFAULT_FILLED;
         setPressColor(DEFAULT_HOVER.darker());
         setHoverColor(DEFAULT_HOVER);
@@ -99,22 +102,31 @@ public class TButton extends JButton {
     
     @Override
     protected void paintComponent(Graphics g) {
-        super.paintComponent(g);
         Graphics2D g2d = (Graphics2D)g;
 
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         
-        if(getModel().isPressed()) {
-                g2d.setColor(pressColor);
+        if(getModel().isPressed()) {          
+            g2d.setColor(pressColor.darker());
+            g2d.drawRect(0, 0, getWidth()-1, getHeight()-1);
+            g2d.setColor(pressColor);
         } 
-        else if(getModel().isRollover()) {
-            g2d.setColor(hoverColor);
+        else if(getModel().isRollover()) {           
+            g2d.setColor(pressColor.darker());
+            g2d.drawRect(0, 0, getWidth()-1, getHeight()-1);
+            g2d.setColor(hoverColor);         
         } 
         else {
             g2d.setColor(fillColor);
         }
         
         g2d.fillRect(0, 0, getWidth(), getHeight());
+        
+        if(isBordered) {
+            g2d.setColor(borderColor);
+            g2d.drawRect(0, 0, getWidth()-1, getHeight()-1);
+        }
+        
         String s = (string == null) ? "" : string;
         Canvas c = new Canvas();
         FontMetrics fm = c.getFontMetrics(getFont());
@@ -123,6 +135,8 @@ public class TButton extends JButton {
         g2d.setColor(isEnabled() ? getForeground() : getForeground().darker());
         g2d.drawString(s, (getWidth()/2) - (stringWidth/2), 
                          ((getHeight()/2) + (stringHeight/2))-2);
+        
+        super.paintComponent(g);
     }
 
     public void setString(String string) {
@@ -164,10 +178,28 @@ public class TButton extends JButton {
     public Color getFillColor() {
         return fillColor;
     }
+
+    public void setBorderColor(Color color) {
+        borderColor = color;
+        revalidate();
+        repaint();
+    }
+
+    public Color getBorderColor() {
+        return borderColor;
+    }
     
     public void setColorAttributes(Color color) {
         setFillColor(color);
         setHoverColor(color.brighter());
         setPressColor(color.darker());
+    }
+    
+    public boolean getIsBordered() {
+        return isBordered;
+    }
+    
+    public void setIfBordered(boolean isBordered) {
+        this.isBordered = isBordered;
     }
 }

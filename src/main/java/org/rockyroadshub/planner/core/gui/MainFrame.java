@@ -23,11 +23,15 @@ import java.awt.event.WindowListener;
 import java.io.IOException;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.JToolBar;
 import javax.swing.SwingUtilities;
+import net.miginfocom.swing.MigLayout;
 import org.rockyroadshub.planner.core.utils.Globals;
 import org.rockyroadshub.planner.core.utils.Utilities;
+import org.rockyroadshub.planner.loader.Icons;
 
 /**
  *
@@ -36,6 +40,16 @@ import org.rockyroadshub.planner.core.utils.Utilities;
  */
 @SuppressWarnings("serial")
 public final class MainFrame extends JFrame {
+    private final JToolBar menuToolBar = new JToolBar();
+    
+    private final String[] buttons = {
+        "HOME",
+        "BACK",
+        "NEXT",
+        "SETTINGS",
+        "HELP",
+    };
+    
     private MainFrame() {
         initialize();
     }
@@ -61,11 +75,33 @@ public final class MainFrame extends JFrame {
         setPreferredSize(new Dimension(580, 670));
         addWindowListener(exit);
         setResizable(false);
+//        initToolBar();
+//        initButtons();
+//        add(menuToolBar, BorderLayout.PAGE_START);
         add(MainPane.getInstance(), BorderLayout.CENTER);
         initFrameIcon();
         pack();
         setLocationRelativeTo(null);
         setVisible(true);        
+    }
+    
+    private void initToolBar() {
+        menuToolBar.setLayout(new MigLayout(
+                Globals.BUTTON_INSETS,
+                Globals.BUTTON_GAPX,
+                Globals.BUTTON_GAPY));
+        menuToolBar.setRollover(true);
+    }
+    
+    private void initButtons() {
+        for(String btn : buttons) {
+            JButton b = new JButton();
+            b.setBorderPainted(false);
+            b.setFocusPainted(false);
+            b.setFocusable(false);
+            b.setIcon(Icons.valueOf(btn).icon());
+            menuToolBar.add(b, Globals.BUTTON_DIMENSIONS);
+        }
     }
     
     private void initFrameIcon() {

@@ -25,6 +25,7 @@ import org.rockyroadshub.planner.core.gui.GUIUtils;
 import org.rockyroadshub.planner.loader.IconLoader;
 import org.rockyroadshub.planner.core.gui.MainPane;
 import org.rockyroadshub.planner.core.utils.Globals;
+import org.rockyroadshub.planner.loader.Icons;
 import org.rockyroadshub.planner.loader.Loaders;
 import org.rockyroadshub.planner.loader.Property;
 import org.rockyroadshub.planner.loader.PropertyLoader;
@@ -48,7 +49,7 @@ import org.rockyroadshub.planner.loader.PropertyLoader;
 /**
  *
  * @author Arnell Christoper D. Dalid
- * @since 0.2.1
+ * @since 0.2.2
  */
 @SuppressWarnings("serial")
 public final class PropertiesPane extends AbstractPane {
@@ -68,14 +69,13 @@ public final class PropertiesPane extends AbstractPane {
     public static final String NAME = "propertiespane";
     
     private final JPanel        menuPanel        = new JPanel();
-    private final JButton       homeButton       = new JButton();
-    private final JButton       backButton       = new JButton();
-    private final JButton       saveButton       = new JButton();
-    private final JButton       defaultButton    = new JButton();
+    private final TButton       homeButton       = new TButton();
+    private final TButton       backButton       = new TButton();
+    private final TButton       saveButton       = new TButton();
+    private final TButton       defaultButton    = new TButton();
     
     private PropertiesContainer container;
     
-    private IconLoader iconLoader;
     private PropertyLoader properties;
     
     private final ActionListener action = (ActionEvent ae) -> {    
@@ -92,7 +92,6 @@ public final class PropertiesPane extends AbstractPane {
         setName(NAME);
         setLayout(new BorderLayout());
         
-        iconLoader = IconLoader.getInstance();
         properties = PropertyLoader.getInstance();
         container  = new PropertiesContainer();
         
@@ -118,27 +117,30 @@ public final class PropertiesPane extends AbstractPane {
         homeButton.setToolTipText(Globals.HOME);
         homeButton.setName(CalendarPane.NAME);
         homeButton.addActionListener(action);
-        homeButton.setIcon(iconLoader.get(Globals.HOME));
+        homeButton.setIcon(Icons.HOME.icon());
         
         backButton.setToolTipText(Globals.BACK);
         backButton.setName(Globals.BACK);
         backButton.addActionListener(action);
-        backButton.setIcon(iconLoader.get(Globals.BACK));
+        backButton.setIcon(Icons.BACK.icon());
         
         saveButton.setToolTipText(Globals.SAVE);
         saveButton.setName(Globals.SAVE);
         saveButton.addActionListener(action);
-        saveButton.setIcon(iconLoader.get(Globals.SAVE));
+        saveButton.setIcon(Icons.SAVE.icon());
         
         defaultButton.setToolTipText(Globals.DEFAULT);
         defaultButton.setName(Globals.DEFAULT);
         defaultButton.addActionListener(action);
-        defaultButton.setIcon(iconLoader.get(Globals.DEFAULT));
+        defaultButton.setIcon(Icons.DEFAULT.icon());
     }
     
     private void initMenu() {
         menuPanel.setOpaque(false);
-        menuPanel.setLayout(new MigLayout());
+        menuPanel.setLayout(new MigLayout(
+                Globals.BUTTON_INSETS,
+                Globals.BUTTON_GAPX,
+                Globals.BUTTON_GAPY));
         menuPanel.add(homeButton, Globals.BUTTON_DIMENSIONS);
         menuPanel.add(backButton, Globals.BUTTON_DIMENSIONS);
         menuPanel.add(saveButton, Globals.BUTTON_DIMENSIONS);
@@ -186,11 +188,11 @@ public final class PropertiesPane extends AbstractPane {
                 cp.refresh();
                 cp.refreshWeekdays();
                 MainPane.getInstance().showPane(name);
-                container.showPane(Globals.SET);
+                container.showPane(Globals.APPLY);
                 container.refresh();
                 break;
             case Globals.BACK:
-                container.showPane(Globals.SET);
+                container.showPane(Globals.APPLY);
                 break;
             case Globals.SAVE:
                 onSave();
@@ -260,7 +262,7 @@ public final class PropertiesPane extends AbstractPane {
         
         private final JPanel        colorPane    = new JPanel();
         private final JPanel        colorMenu    = new JPanel();
-        private final JButton       setButton    = new JButton();
+        private final TButton       applyButton  = new TButton();
         private final JColorChooser colorChooser = new JColorChooser();
         
         private static final String COLOR_PANE   = "color";
@@ -324,7 +326,7 @@ public final class PropertiesPane extends AbstractPane {
         }
         
         private void initDisplayPane() {
-            displayPane.setName(Globals.SET);
+            displayPane.setName(Globals.APPLY);
             displayPane.setLayout(new MigLayout(new LC().fillX()));
             initColorButtons();
             initComboBoxes();
@@ -339,6 +341,8 @@ public final class PropertiesPane extends AbstractPane {
                 cb.button.setFillColor(cb.color);
                 cb.button.setName(cb.name());
                 cb.button.addActionListener(propertiesAction);
+                cb.button.setIfBordered(true);
+                cb.button.setBorderColor(Color.BLACK);
             }
         }
         
@@ -355,14 +359,17 @@ public final class PropertiesPane extends AbstractPane {
         }
         
         private void initColorPane() {
-            setButton.setToolTipText(Globals.SET);
-            setButton.setName(Globals.SET);
-            setButton.addActionListener(propertiesAction);
-            setButton.setIcon(iconLoader.get(Globals.SET));
+            applyButton.setToolTipText(Globals.APPLY);
+            applyButton.setName(Globals.APPLY);
+            applyButton.addActionListener(propertiesAction);
+            applyButton.setIcon(Icons.APPLY.icon());
             
-            colorMenu.setLayout(new MigLayout());
+            colorMenu.setLayout(new MigLayout(
+                Globals.BUTTON_INSETS,
+                Globals.BUTTON_GAPX,
+                Globals.BUTTON_GAPY));
             colorMenu.setOpaque(false);            
-            colorMenu.add(setButton, Globals.BUTTON_DIMENSIONS);
+            colorMenu.add(applyButton, Globals.BUTTON_DIMENSIONS);
             
             colorPane.setLayout(new BorderLayout());
             colorPane.setOpaque(false);
@@ -371,21 +378,21 @@ public final class PropertiesPane extends AbstractPane {
         }
         
         private void pack() {
-            add(displayPane, Globals.SET);
+            add(displayPane, Globals.APPLY);
             add(colorPane, COLOR_PANE);
         }  
         
         private void buttonTrigger(JButton button) {
             String name = button.getName();
             
-            if(button instanceof TButton) {
+            if(button instanceof TButton && !name.equals(Globals.APPLY)) {
                 colorButton = ColorButtons.valueOf(name);
                 name = COLOR_PANE;
                 targetButton = (TButton)button;
             }
             
             switch(name) {
-                case Globals.SET:
+                case Globals.APPLY:
                     targetButton.setFillColor(colorChooser.getColor());
                     colorButtonCache.add(colorButton);
                     break;

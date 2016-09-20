@@ -19,7 +19,7 @@ package org.rockyroadshub.planner.core.utils;
 /**
  * Global configurations and constants used by the Event Planner
  * @author Arnell Christoper D. Dalid
- * @since 0.2.0
+ * @since 0.2.2
  */
 public final class Globals {
     private Globals(){}
@@ -31,14 +31,19 @@ public final class Globals {
     
     //================ Button Names =================
     public static final String ADD      = "Add";
+    public static final String APPLY    = "Apply";
     public static final String BACK     = "Back";
     public static final String CLOSE    = "Close";
+    public static final String CURRENT  = "Current";
+    public static final String CUT      = "Cut";
     public static final String DEFAULT  = "Default";
     public static final String DELETE   = "Delete";
     public static final String EDIT     = "Edit";
+    public static final String HELP     = "Help";
     public static final String HOME     = "Home";
+    public static final String NEXT     = "Next";
     public static final String SAVE     = "Save";
-    public static final String SET      = "Set";
+    public static final String SEARCH   = "Search";
     public static final String SETTINGS = "Settings";
     public static final String VIEW     = "View";
     //================================================
@@ -48,6 +53,12 @@ public final class Globals {
      */
     public static final String BUTTON_DIMENSIONS = "h 32!, w 32!";
     
+    public static final String BUTTON_INSETS = "insets 0";
+    
+    public static final String BUTTON_GAPX = "[32lp]0";
+    
+    public static final String BUTTON_GAPY = "[32lp]0";
+           
     /**
      * Path of the application's frame icon
      */

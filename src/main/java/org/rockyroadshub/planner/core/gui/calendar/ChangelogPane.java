@@ -39,15 +39,16 @@ import net.miginfocom.swing.MigLayout;
 import org.rockyroadshub.planner.core.gui.AbstractPane;
 import org.rockyroadshub.planner.core.gui.GUIUtils;
 import org.rockyroadshub.planner.core.gui.MainPane;
+import org.rockyroadshub.planner.core.gui.TButton;
 import org.rockyroadshub.planner.core.utils.Globals;
-import org.rockyroadshub.planner.loader.IconLoader;
+import org.rockyroadshub.planner.loader.Icons;
 import org.rockyroadshub.planner.loader.Property;
 import org.rockyroadshub.planner.loader.PropertyLoader;
 
 /**
  *
  * @author Arnell Christoper D. Dalid
- * @since 0.2.0
+ * @since 0.2.2
  */
 @SuppressWarnings("serial")
 public final class ChangelogPane extends AbstractPane {
@@ -77,12 +78,11 @@ public final class ChangelogPane extends AbstractPane {
     public static final String NAME = "ChangelogPane";
     
     private final JEditorPane readme = new JEditorPane();
-    private final JButton closeButton = new JButton();
+    private final TButton closeButton = new TButton();
     private final JPanel menuPane = new JPanel();
     private final JCheckBox checkBox = new JCheckBox("Show changelogs every startup");
     private JScrollPane scrollPane;
 
-    private IconLoader iconLoader;
     private PropertyLoader properties;
 
     private final ActionListener action = (ActionEvent ae) -> {
@@ -111,7 +111,6 @@ public final class ChangelogPane extends AbstractPane {
         setName(NAME);      
         setLayout(new BorderLayout());
 
-        iconLoader = IconLoader.getInstance();       
         properties = PropertyLoader.getInstance();
         
         initButtons();
@@ -135,7 +134,7 @@ public final class ChangelogPane extends AbstractPane {
         closeButton.setToolTipText(Globals.CLOSE);
         closeButton.setName(CalendarPane.NAME);
         closeButton.addActionListener(action);
-        closeButton.setIcon(iconLoader.get(Globals.CLOSE));
+        closeButton.setIcon(Icons.CLOSE.icon());
     }
     
     private void initCheckBox() {
@@ -144,7 +143,10 @@ public final class ChangelogPane extends AbstractPane {
     }
     
     private void initMenuPane() {      
-        menuPane.setLayout(new MigLayout());
+        menuPane.setLayout(new MigLayout(
+                Globals.BUTTON_INSETS,
+                Globals.BUTTON_GAPX,
+                Globals.BUTTON_GAPY));
         menuPane.setOpaque(false);
         menuPane.add(closeButton, Globals.BUTTON_DIMENSIONS);
         menuPane.add(checkBox);        

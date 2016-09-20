@@ -39,16 +39,16 @@ import org.rockyroadshub.planner.core.gui.AbstractPane;
 import org.rockyroadshub.planner.core.gui.DLabel;
 import org.rockyroadshub.planner.core.gui.MainFrame;
 import org.rockyroadshub.planner.core.gui.GUIUtils;
-import org.rockyroadshub.planner.loader.IconLoader;
 import org.rockyroadshub.planner.core.gui.MainPane;
 import org.rockyroadshub.planner.core.gui.TButton;
 import org.rockyroadshub.planner.core.utils.Globals;
+import org.rockyroadshub.planner.loader.Icons;
 import org.rockyroadshub.planner.loader.PropertyLoader;
 
 /**
  *
  * @author Arnell Christoper D. Dalid
- * @since 0.2.1
+ * @since 0.2.2
  */
 @SuppressWarnings("serial")
 public final class CalendarPane extends AbstractPane {
@@ -83,8 +83,9 @@ public final class CalendarPane extends AbstractPane {
     private final JPanel    menuPanel      = new JPanel();
     private final JPanel    buttonsPanel   = new JPanel();
     private final JPanel    daysPanel      = new JPanel();
-    private final JButton   settingsButton = new JButton();
-    private final JButton   deleteButton   = new JButton();
+    private final TButton   currentButton  = new TButton();
+    private final TButton   settingsButton = new TButton();
+    private final TButton   deleteButton   = new TButton();
     private final JPanel    dateMenu       = new JPanel();
     private final DLabel    dateLabel      = new DLabel("MMMM dd, yyyy");
     private final DLabel    timeLabel      = new DLabel("hh:mm:ss a");
@@ -112,7 +113,6 @@ public final class CalendarPane extends AbstractPane {
     
     private static final String DELETE_DIALOG = "Delete all events from %s %s?";
   
-    private IconLoader iconLoader;
     private PropertyLoader properties;
     
     private final ItemListener item = (ItemEvent ie) -> {
@@ -131,7 +131,6 @@ public final class CalendarPane extends AbstractPane {
         setName(NAME);
         setLayout(new BorderLayout());
        
-        iconLoader = IconLoader.getInstance();
         properties = PropertyLoader.getInstance();
         
         initDateMenu();
@@ -253,22 +252,31 @@ public final class CalendarPane extends AbstractPane {
     
     private void initButtonsPane() {
         buttonsPanel.setOpaque(false);
-        buttonsPanel.setLayout(new MigLayout());
+        buttonsPanel.setLayout(new MigLayout(
+                Globals.BUTTON_INSETS,
+                Globals.BUTTON_GAPX,
+                Globals.BUTTON_GAPY));
+        buttonsPanel.add(currentButton, Globals.BUTTON_DIMENSIONS);
         buttonsPanel.add(settingsButton, Globals.BUTTON_DIMENSIONS);
         buttonsPanel.add(deleteButton, Globals.BUTTON_DIMENSIONS);
         initButtons();
     }
     
     private void initButtons() {
+        currentButton.setToolTipText(Globals.CURRENT);
+        currentButton.setName(Globals.CURRENT);
+        currentButton.addActionListener(action);
+        currentButton.setIcon(Icons.CURRENT.icon());
+        
         settingsButton.setToolTipText(Globals.SETTINGS);
         settingsButton.setName(PropertiesPane.NAME);
         settingsButton.addActionListener(action);
-        settingsButton.setIcon(iconLoader.get(Globals.SETTINGS));
+        settingsButton.setIcon(Icons.SETTINGS.icon());
         
         deleteButton.setToolTipText(Globals.DELETE);
         deleteButton.setName(Globals.DELETE);
         deleteButton.addActionListener(action);
-        deleteButton.setIcon(iconLoader.get(Globals.DELETE));
+        deleteButton.setIcon(Icons.DELETE.icon());
     }
     
     private void pack() {
@@ -368,7 +376,9 @@ public final class CalendarPane extends AbstractPane {
             case WEEKDAY_BUTTON      : onWeekday();
                                        break;
             case Globals.DELETE      : onDelete();
-                                       break;                                     
+                                       break;         
+            case Globals.CURRENT     : onCurrent();
+                                       break;
             case DAY_BUTTON          : TButton tbutton = (TButton)button;
                                        int y = getSelectedYear();
                                        int m = getSelectedMonth();
@@ -403,6 +413,16 @@ public final class CalendarPane extends AbstractPane {
                 refresh();
             }
         }      
+    }
+    
+    private void onCurrent() {
+        calendar.clear();
+        calendar.set(year, month, 1);
+        SwingUtilities.invokeLater(() -> {
+            monthCombo.setSelectedIndex(month);
+            yearCombo.setSelectedItem(year);
+            printDates0(calendar);
+        });
     }
     
     private int getSelectedMonth() {

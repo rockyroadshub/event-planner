@@ -47,11 +47,12 @@ import org.rockyroadshub.planner.core.data.EventMapper;
 import org.rockyroadshub.planner.core.gui.AbstractPane;
 import org.rockyroadshub.planner.core.gui.MainFrame;
 import org.rockyroadshub.planner.core.gui.GUIUtils;
-import org.rockyroadshub.planner.loader.IconLoader;
 import org.rockyroadshub.planner.core.gui.MainPane;
+import org.rockyroadshub.planner.core.gui.TButton;
 import org.rockyroadshub.planner.core.utils.Globals;
 import org.rockyroadshub.planner.core.utils.TextLimiter;
 import org.rockyroadshub.planner.core.utils.Utilities;
+import org.rockyroadshub.planner.loader.Icons;
 
 /**
  *
@@ -102,9 +103,9 @@ public final class FormPane extends AbstractPane {
     private final JSpinner     endMinute        = new JSpinner(endModelM);
     
     private final JPanel       menuPanel        = new JPanel();
-    private final JButton      homeButton       = new JButton();
-    private final JButton      backButton       = new JButton();
-    private final JButton      saveButton       = new JButton();
+    private final TButton      homeButton       = new TButton();
+    private final TButton      backButton       = new TButton();
+    private final TButton      saveButton       = new TButton();
    
     private final Font font = new Font("MONOSPACED", 0, 12);   
     
@@ -117,7 +118,6 @@ public final class FormPane extends AbstractPane {
     private String day;
     private String start;
     private String end;
-    private IconLoader iconLoader;
 
     private final ActionListener action = (ActionEvent ae) -> {
         JButton button = (JButton)ae.getSource();
@@ -151,9 +151,7 @@ public final class FormPane extends AbstractPane {
         setOpaque(false);
         setLayout(new MigLayout(new LC().fill()));
         setName(NAME);
-        
-        iconLoader = IconLoader.getInstance();
-        
+                
         initDocuments();
         initSpinners();
         initMenu();
@@ -225,7 +223,10 @@ public final class FormPane extends AbstractPane {
     }
     
     private void initMenu() {
-        menuPanel.setLayout(new MigLayout());
+        menuPanel.setLayout(new MigLayout(
+                Globals.BUTTON_INSETS,
+                Globals.BUTTON_GAPX,
+                Globals.BUTTON_GAPY));
         menuPanel.add(dateLabel, "h 32!, gapright 35");
         menuPanel.add(homeButton, Globals.BUTTON_DIMENSIONS);
         menuPanel.add(backButton, Globals.BUTTON_DIMENSIONS);
@@ -237,17 +238,17 @@ public final class FormPane extends AbstractPane {
         homeButton.setToolTipText(Globals.HOME);
         homeButton.setName(CalendarPane.NAME);
         homeButton.addActionListener(action);
-        homeButton.setIcon(iconLoader.get(Globals.HOME));
+        homeButton.setIcon(Icons.HOME.icon());
         
         backButton.setToolTipText(Globals.BACK);
         backButton.setName(DisplayPane.NAME);
         backButton.addActionListener(action);
-        backButton.setIcon(iconLoader.get(Globals.BACK));
+        backButton.setIcon(Icons.BACK.icon());
         
         saveButton.setToolTipText(Globals.SAVE);
         saveButton.setName(Globals.SAVE);
         saveButton.addActionListener(action);
-        saveButton.setIcon(iconLoader.get(Globals.SAVE));
+        saveButton.setIcon(Icons.SAVE.icon());
     }
     
     private void pack() {

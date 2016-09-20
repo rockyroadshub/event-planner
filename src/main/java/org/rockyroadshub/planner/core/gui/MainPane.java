@@ -22,7 +22,6 @@ import org.rockyroadshub.planner.core.gui.calendar.CalendarPane;
 import org.rockyroadshub.planner.core.gui.calendar.PropertiesPane;
 import org.rockyroadshub.planner.core.gui.calendar.DisplayPane;
 import java.awt.CardLayout;
-import javax.swing.JComponent;
 import org.rockyroadshub.planner.core.gui.calendar.ChangelogPane;
 
 /**
