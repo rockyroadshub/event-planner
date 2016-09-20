@@ -13,10 +13,10 @@ System Requirements:
 - 1 GB RAM  
 - 1 GB Hard Drive Memory
 
-[![0.2.1.jpg](https://s5.postimg.org/5wniqfksn/0_2_1.jpg)](https://postimg.org/image/qtjqv3itf/)
+[![0.2.2-front.jpg](http://s5.postimg.org/yyoxqs0sn/0_2_2_front.jpg)](http://postimg.org/image/9fwldrh8j/)
 
 ### Latest Release  
-[\[0.2.1\] - September 16, 2016](https://github.com/rockyroadshub/event-planner/releases/tag/0.2.1)  
+[\[0.2.2\] - September 21, 2016](https://github.com/rockyroadshub/event-planner/releases/tag/0.2.2)  
 
 
 ### Old Releases  
@@ -33,5 +33,10 @@ System Requirements:
 - Update Java docs  
 - Holiday memory database  
 - Contacts memory database  
+
+### Other softwares/applications used
+| Part of the Application |                Author                |                                    License                                       |
+| ----------------------- |:------------------------------------:| :-------------------------------------------------------------------------------:|
+|     Default Icon Set    | [Aha-Soft](http://www.aha-soft.com/) | [Attribution 3.0 United States](https://creativecommons.org/licenses/by/3.0/us/) |
 
 [Please visit Rocky Roads Hub!](https://rockyroadshub.wordpress.com)

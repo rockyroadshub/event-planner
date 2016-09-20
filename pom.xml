@@ -103,7 +103,7 @@
                                 <directory>${project.basedir}/src/images/icons/default</directory>
                                      <filtering>true</filtering>
                                      <includes>
-                                        <include>**/*.*</include>
+                                        <include>**/*.png</include>
                                      </includes>
                                 </resource>
                             </resources>              
