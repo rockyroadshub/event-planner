@@ -46,13 +46,13 @@ import org.rockyroadshub.planner.core.gui.GUIUtils;
 import org.rockyroadshub.planner.core.gui.MainPane;
 import org.rockyroadshub.planner.core.gui.TButton;
 import org.rockyroadshub.planner.core.utils.Globals;
-import org.rockyroadshub.planner.loader.Icons;
+import org.rockyroadshub.planner.core.gui.Buttons;
 import org.rockyroadshub.planner.loader.PropertyLoader;
 
 /**
  *
  * @author Arnell Christoper D. Dalid
- * @since 0.2.2
+ * @since 0.2.3
  */
 @SuppressWarnings("serial")
 public final class DisplayPane extends AbstractPane {
@@ -73,8 +73,6 @@ public final class DisplayPane extends AbstractPane {
         
     private final JLabel        paneLabel     = new JLabel();
     private final JPanel        menuPanel     = new JPanel();
-    private final TButton       addButton     = new TButton();
-    private final TButton       homeButton    = new TButton();
     private final TButton       viewButton    = new TButton();
     private final TButton       deleteButton  = new TButton();
    
@@ -114,7 +112,7 @@ public final class DisplayPane extends AbstractPane {
         initTable();
         pack();
         
-        GUIUtils.addToPaneList(this);
+        GUIUtils.addToPaneList(NAME, this);
     }
 
     @Override
@@ -177,33 +175,21 @@ public final class DisplayPane extends AbstractPane {
                 Globals.BUTTON_GAPX,
                 Globals.BUTTON_GAPY));
         menuPanel.add(paneLabel, GAP_RIGHT);
-        menuPanel.add(homeButton, Globals.BUTTON_DIMENSIONS);
-        menuPanel.add(addButton, Globals.BUTTON_DIMENSIONS);
         menuPanel.add(viewButton, Globals.BUTTON_DIMENSIONS);
         menuPanel.add(deleteButton, Globals.BUTTON_DIMENSIONS);
         menuPanel.setBorder(BorderFactory.createTitledBorder(BORDER));
     }
     
     private void initButtons() {
-        homeButton.setToolTipText(Globals.HOME);
-        homeButton.setName(CalendarPane.NAME);
-        homeButton.addActionListener(action);
-        homeButton.setIcon(Icons.HOME.icon());
-                
-        addButton.setToolTipText(Globals.ADD);
-        addButton.setName(FormPane.NAME);
-        addButton.addActionListener(action);
-        addButton.setIcon(Icons.ADD.icon());
-        
         viewButton.setToolTipText(Globals.VIEW);
         viewButton.setName(ViewPane.NAME);
         viewButton.addActionListener(action);
-        viewButton.setIcon(Icons.VIEW.icon());
+        viewButton.setIcon(Buttons.VIEW.icon());
         
         deleteButton.setToolTipText(Globals.DELETE);
         deleteButton.setName(Globals.DELETE);
         deleteButton.addActionListener(action);
-        deleteButton.setIcon(Icons.DELETE.icon());
+        deleteButton.setIcon(Buttons.DELETE.icon());
     }
     
     private void initTable() {

@@ -53,12 +53,12 @@ import org.rockyroadshub.planner.core.gui.TButton;
 import org.rockyroadshub.planner.core.utils.Globals;
 import org.rockyroadshub.planner.core.utils.TextLimiter;
 import org.rockyroadshub.planner.core.utils.Utilities;
-import org.rockyroadshub.planner.loader.Icons;
+import org.rockyroadshub.planner.core.gui.Buttons;
 
 /**
  *
  * @author Arnell Christoper D. Dalid
- * @since 0.2.2
+ * @since 0.2.3
  */
 @SuppressWarnings("serial")
 public final class ViewPane extends AbstractPane {
@@ -161,7 +161,7 @@ public final class ViewPane extends AbstractPane {
         initButtons();
         pack();
         
-        GUIUtils.addToPaneList(this);
+        GUIUtils.addToPaneList(NAME, this);
     }
 
     @Override
@@ -237,22 +237,22 @@ public final class ViewPane extends AbstractPane {
         homeButton.setToolTipText(Globals.HOME);
         homeButton.setName(CalendarPane.NAME);
         homeButton.addActionListener(action);
-        homeButton.setIcon(Icons.HOME.icon());
+        homeButton.setIcon(Buttons.HOME.icon());
         
         backButton.setToolTipText(Globals.BACK);
         backButton.setName(DisplayPane.NAME);
         backButton.addActionListener(action);
-        backButton.setIcon(Icons.BACK.icon());
+        backButton.setIcon(Buttons.BACK.icon());
         
         saveButton.setToolTipText(Globals.SAVE);
         saveButton.setName(Globals.SAVE);
         saveButton.addActionListener(action);
-        saveButton.setIcon(Icons.SAVE.icon());
+        saveButton.setIcon(Buttons.SAVE.icon());
         
         editButton.setToolTipText(Globals.EDIT);
         editButton.setName(Globals.EDIT);
         editButton.addActionListener(action);     
-        editButton.setIcon(Icons.EDIT.icon());
+        editButton.setIcon(Buttons.EDIT.icon());
     }
     
     private void pack() {

@@ -41,14 +41,14 @@ import org.rockyroadshub.planner.core.gui.GUIUtils;
 import org.rockyroadshub.planner.core.gui.MainPane;
 import org.rockyroadshub.planner.core.gui.TButton;
 import org.rockyroadshub.planner.core.utils.Globals;
-import org.rockyroadshub.planner.loader.Icons;
+import org.rockyroadshub.planner.core.gui.Buttons;
 import org.rockyroadshub.planner.loader.Property;
 import org.rockyroadshub.planner.loader.PropertyLoader;
 
 /**
  *
  * @author Arnell Christoper D. Dalid
- * @since 0.2.2
+ * @since 0.2.3
  */
 @SuppressWarnings("serial")
 public final class ChangelogPane extends AbstractPane {
@@ -130,11 +130,15 @@ public final class ChangelogPane extends AbstractPane {
         }
     }
     
+    public boolean isDisplay() {
+        return checkBox.isSelected();
+    }
+    
     private void initButtons() {
         closeButton.setToolTipText(Globals.CLOSE);
         closeButton.setName(CalendarPane.NAME);
         closeButton.addActionListener(action);
-        closeButton.setIcon(Icons.CLOSE.icon());
+        closeButton.setIcon(Buttons.CLOSE.icon());
     }
     
     private void initCheckBox() {
@@ -158,7 +162,7 @@ public final class ChangelogPane extends AbstractPane {
         StyleSheet styleSheet = kit.getStyleSheet();
         styleSheet.addRule("a:hover{color:red;}");
         Document doc = kit.createDefaultDocument();
-        GUIUtils.addToPaneList(this);
+        GUIUtils.addToPaneList(NAME, this);
         readme.setDocument(doc);
         readme.setPage(new File("changelogs/README.html").toURI().toURL());
         readme.setEditable(false);

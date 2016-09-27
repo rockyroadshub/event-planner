@@ -35,8 +35,8 @@ System Requirements:
 - Contacts memory database  
 
 ### Other softwares/applications used
-| Part of the Application |                Author                |                                    License                                       |
-| ----------------------- |:------------------------------------:| :-------------------------------------------------------------------------------:|
-|     Default Icon Set    | [Aha-Soft](http://www.aha-soft.com/) | [Attribution 3.0 United States](https://creativecommons.org/licenses/by/3.0/us/) |
+|          Name           |                Author                |                                      License                                        |
+| ----------------------- |:------------------------------------:| :----------------------------------------------------------------------------------:|
+| Free Application Icons  | [Aha-Soft](http://www.aha-soft.com/) | [CC Attribution 3.0 United States](https://creativecommons.org/licenses/by/3.0/us/) |
 
 [Please visit Rocky Roads Hub!](https://rockyroadshub.wordpress.com)

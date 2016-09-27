@@ -42,13 +42,13 @@ public final class PropertyLoader extends AbstractLoader<Object> {
     }
     
     public void setProperty(Property property, Object value) {
-        String val;
+        Object val;
         if(value instanceof Color) {
             Color color = (Color)value;
             val = String.format("#%08x", color.getRGB());
         }
         else {
-            val = (String)value;
+            val = value;
         }
         plannerProperties.setProperty(property.toString(), val);
     }
@@ -163,6 +163,8 @@ public final class PropertyLoader extends AbstractLoader<Object> {
         setProperty(Property.CALENDAR_COLOR_FOREGROUND, Color.WHITE);  
         
         setProperty(Property.CALENDAR_ICON_THEME, "default");
+        
+        setProperty(Property.CHANGELOG_IS_DISPLAY, true);
         
         commit();
     }

@@ -17,14 +17,14 @@
 package org.rockyroadshub.planner.core.gui;
 
 import java.awt.CardLayout;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 import javax.swing.JComponent;
 
 /**
  *
  * @author Arnell Christoper D. Dalid
- * @since 0.1.0
+ * @since 0.2.3
  */
 public final class GUIUtils {
     private GUIUtils(){}
@@ -33,22 +33,22 @@ public final class GUIUtils {
      * List of objects that implements {@code AbstractPane}
      * @see org.rockyroadshub.planner.core.gui.AbstractPane
      */
-    public static final List<AbstractPane> PANE_LIST = new ArrayList<>();
+    private static final Map<String, AbstractPane> PANE_LIST = new HashMap<>();
     
-    public static void addToPaneList(AbstractPane pane) {
-        PANE_LIST.add(pane);
+    public static void addToPaneList(String name, AbstractPane pane) {
+        PANE_LIST.put(name, pane);
     }
     
-    public static List<AbstractPane> getPaneList() {
-        return PANE_LIST;
+    public static AbstractPane getPane(String name) {
+        return PANE_LIST.get(name);
     }
     
     public static void packPanels(JComponent component) {
         if(!(component.getLayout() instanceof CardLayout))
             throw new IllegalArgumentException("Component's layout is not 'CardLayout'");
         
-        PANE_LIST.stream().forEach((pane) -> {
+        for(AbstractPane pane : PANE_LIST.values()) {
             component.add(pane, pane.getName());
-        });
+        }
     }
 }

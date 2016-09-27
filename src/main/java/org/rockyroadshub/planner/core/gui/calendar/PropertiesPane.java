@@ -1,3 +1,18 @@
+/*
+ * Copyright 2016 Arnell Christoper D. Dalid.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.rockyroadshub.planner.core.gui.calendar;
 
 import org.rockyroadshub.planner.core.gui.TButton;
@@ -17,39 +32,22 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSeparator;
+import javax.swing.JToolBar;
 import net.miginfocom.layout.LC;
 import net.miginfocom.swing.MigLayout;
 import org.rockyroadshub.planner.core.gui.AbstractPane;
 import org.rockyroadshub.planner.core.gui.MainFrame;
 import org.rockyroadshub.planner.core.gui.GUIUtils;
-import org.rockyroadshub.planner.loader.IconLoader;
-import org.rockyroadshub.planner.core.gui.MainPane;
 import org.rockyroadshub.planner.core.utils.Globals;
-import org.rockyroadshub.planner.loader.Icons;
+import org.rockyroadshub.planner.core.gui.Buttons;
 import org.rockyroadshub.planner.loader.Loaders;
 import org.rockyroadshub.planner.loader.Property;
 import org.rockyroadshub.planner.loader.PropertyLoader;
 
-/*
- * Copyright 2016 Arnell Christoper D. Dalid.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 /**
  *
  * @author Arnell Christoper D. Dalid
- * @since 0.2.2
+ * @since 0.2.3
  */
 @SuppressWarnings("serial")
 public final class PropertiesPane extends AbstractPane {
@@ -66,22 +64,20 @@ public final class PropertiesPane extends AbstractPane {
         private static final PropertiesPane INSTANCE = new PropertiesPane();
     }
 
-    public static final String NAME = "propertiespane";
-    
-    private final JPanel        menuPanel        = new JPanel();
-    private final TButton       homeButton       = new TButton();
-    private final TButton       backButton       = new TButton();
-    private final TButton       saveButton       = new TButton();
-    private final TButton       defaultButton    = new TButton();
-    
-    private PropertiesContainer container;
-    
+    public static final String NAME = "propertiespane";   
+    private final JToolBar toolBar = new JToolBar();    
+    private PropertiesContainer container;    
     private PropertyLoader properties;
     
     private final ActionListener action = (ActionEvent ae) -> {    
         JButton button = (JButton)ae.getSource();
         onTrigger(button);
-    };    
+    }; 
+    
+    private final String[] buttons = {
+        "SAVE",
+        "DEFAULT"
+    };   
     
     private static final String SAVE_DIALOG      = "Are you sure to save these changes?";
     private static final String DEFAULT_DIALOG   = "Are you sure to revert properties to default?";
@@ -95,17 +91,16 @@ public final class PropertiesPane extends AbstractPane {
         properties = PropertyLoader.getInstance();
         container  = new PropertiesContainer();
         
-        initButtons();
         initMenu();
         pack();
         
-        GUIUtils.addToPaneList(this);
+        GUIUtils.addToPaneList(NAME, this);
     }
 
     @Override
     public void refresh() {
-        properties.refresh();
         container.refresh();
+        container.showPane(container.colorMainPane);
     }
 
     @Override
@@ -113,62 +108,51 @@ public final class PropertiesPane extends AbstractPane {
         throw new UnsupportedOperationException("Not supported yet.");
     }
     
-    private void initButtons() {
-        homeButton.setToolTipText(Globals.HOME);
-        homeButton.setName(CalendarPane.NAME);
-        homeButton.addActionListener(action);
-        homeButton.setIcon(Icons.HOME.icon());
-        
-        backButton.setToolTipText(Globals.BACK);
-        backButton.setName(Globals.BACK);
-        backButton.addActionListener(action);
-        backButton.setIcon(Icons.BACK.icon());
-        
-        saveButton.setToolTipText(Globals.SAVE);
-        saveButton.setName(Globals.SAVE);
-        saveButton.addActionListener(action);
-        saveButton.setIcon(Icons.SAVE.icon());
-        
-        defaultButton.setToolTipText(Globals.DEFAULT);
-        defaultButton.setName(Globals.DEFAULT);
-        defaultButton.addActionListener(action);
-        defaultButton.setIcon(Icons.DEFAULT.icon());
-    }
-    
     private void initMenu() {
-        menuPanel.setOpaque(false);
-        menuPanel.setLayout(new MigLayout(
-                Globals.BUTTON_INSETS,
-                Globals.BUTTON_GAPX,
-                Globals.BUTTON_GAPY));
-        menuPanel.add(homeButton, Globals.BUTTON_DIMENSIONS);
-        menuPanel.add(backButton, Globals.BUTTON_DIMENSIONS);
-        menuPanel.add(saveButton, Globals.BUTTON_DIMENSIONS);
-        menuPanel.add(defaultButton, Globals.BUTTON_DIMENSIONS);
-        menuPanel.setBorder(BorderFactory.createTitledBorder(BORDER));
+        toolBar.setRollover(true);
+        toolBar.setFloatable(false);
+                
+        for(String b : buttons) {
+            JButton btn = new JButton();
+            Buttons atr = Buttons.valueOf(b);          
+            btn.setBorderPainted(false);
+            btn.setFocusPainted(false);
+            btn.setFocusable(false);
+            btn.setToolTipText(atr.toolTip());
+            btn.setName(atr.toString());
+            btn.setIcon(atr.icon());
+            btn.addActionListener(action);
+            toolBar.add(btn);
+        }
     }
     
     private void pack() {
-        add(menuPanel, BorderLayout.NORTH);
+        add(toolBar, BorderLayout.PAGE_START);
         add(container, BorderLayout.CENTER);
+        setBorder(BorderFactory.createTitledBorder(BORDER));
     }
     
     private void onSave() {
         if(MainFrame.showConfirmDialog(SAVE_DIALOG)) {
-            for(ColorButtons cb : container.getColorButtonCache()) {
+            container.getColorButtonCache().stream().map((cb) -> {
                 cb.setColor(cb.button.getFillColor());
+                return cb;
+            }).forEach((cb) -> {
                 properties.setProperty(cb.property,cb.button.getFillColor());
-            }                             
+            });                             
                 
-            for(ComboBoxes cmb : container.getComboCache()) {
+            container.getComboCache().stream().map((cmb) -> {
                 cmb.setItemName((String)cmb.combo.getSelectedItem());
+                return cmb;
+            }).forEach((cmb) -> {
                 properties.setProperty(cmb.property,cmb.combo.getSelectedItem());
-            }
+            });
             
             container.getColorButtonCache().clear();
             container.getComboCache().clear();
-            properties.commit();   
-            this.refresh();
+            properties.commit();  
+            properties.refresh(); 
+            refresh();
         }
     }
     
@@ -176,30 +160,18 @@ public final class PropertiesPane extends AbstractPane {
         if(MainFrame.showConfirmDialog(DEFAULT_DIALOG)) {
             properties.reset();           
             container.reassess();
-            this.refresh();
+            properties.refresh();
+            refresh();
         } 
     }
     
     private void onTrigger(JButton button) {
         String name = button.getName();
         switch(name) {
-            case CalendarPane.NAME:
-                CalendarPane cp = CalendarPane.getInstance();
-                cp.refresh();
-                cp.refreshWeekdays();
-                MainPane.getInstance().showPane(name);
-                container.showPane(Globals.APPLY);
-                container.refresh();
-                break;
-            case Globals.BACK:
-                container.showPane(Globals.APPLY);
-                break;
-            case Globals.SAVE:
-                onSave();
-                break;
-            case Globals.DEFAULT:
-                onDefault();
-                break;
+            case Globals.SAVE    : onSave();
+                                   break;
+            case Globals.DEFAULT : onDefault();
+                                   break;
         }
     }
     
@@ -261,17 +233,23 @@ public final class PropertiesPane extends AbstractPane {
         private final JSeparator separator1      = new JSeparator();
         
         private final JPanel        colorPane    = new JPanel();
-        private final JPanel        colorMenu    = new JPanel();
-        private final TButton       applyButton  = new TButton();
+        private final JToolBar      colorToolBar = new JToolBar();
         private final JColorChooser colorChooser = new JColorChooser();
         
-        private static final String COLOR_PANE   = "color";
+        private final String colorMainPane = "display";
+        private final String colorChooserPane = "color";
+        private final String back = "back";
              
         private ColorButtons colorButton = null;
         private TButton targetButton;
         
         private final List<ColorButtons> colorButtonCache = new ArrayList<>();
         private final List<ComboBoxes> comboCache = new ArrayList<>();
+        
+        private final String[][] containerButtons = {
+            {"BACK",back},
+            {"APPLY",colorMainPane}
+        };
         
         private final ActionListener propertiesAction = (ActionEvent ae) -> {    
             JButton button = (JButton)ae.getSource();
@@ -326,7 +304,7 @@ public final class PropertiesPane extends AbstractPane {
         }
         
         private void initDisplayPane() {
-            displayPane.setName(Globals.APPLY);
+            displayPane.setName(colorMainPane);
             displayPane.setLayout(new MigLayout(new LC().fillX()));
             initColorButtons();
             initComboBoxes();
@@ -359,42 +337,46 @@ public final class PropertiesPane extends AbstractPane {
         }
         
         private void initColorPane() {
-            applyButton.setToolTipText(Globals.APPLY);
-            applyButton.setName(Globals.APPLY);
-            applyButton.addActionListener(propertiesAction);
-            applyButton.setIcon(Icons.APPLY.icon());
+            colorToolBar.setRollover(true); 
+            colorToolBar.setFloatable(false);
             
-            colorMenu.setLayout(new MigLayout(
-                Globals.BUTTON_INSETS,
-                Globals.BUTTON_GAPX,
-                Globals.BUTTON_GAPY));
-            colorMenu.setOpaque(false);            
-            colorMenu.add(applyButton, Globals.BUTTON_DIMENSIONS);
+            for(String[] b : containerButtons) {
+                JButton btn = new JButton();
+                Buttons atr = Buttons.valueOf(b[0]);
+                btn.setToolTipText(atr.toolTip());
+                btn.setName(b[1]);
+                btn.addActionListener(propertiesAction);
+                btn.setIcon(atr.icon());
+                colorToolBar.add(btn);
+            }
             
             colorPane.setLayout(new BorderLayout());
             colorPane.setOpaque(false);
-            colorPane.add(colorMenu, BorderLayout.NORTH);
+            colorPane.add(colorToolBar, BorderLayout.NORTH);
             colorPane.add(colorChooser, BorderLayout.CENTER);
         }
         
         private void pack() {
-            add(displayPane, Globals.APPLY);
-            add(colorPane, COLOR_PANE);
+            add(displayPane, colorMainPane);
+            add(colorPane, colorChooserPane);
         }  
         
         private void buttonTrigger(JButton button) {
             String name = button.getName();
             
-            if(button instanceof TButton && !name.equals(Globals.APPLY)) {
+            if(button instanceof TButton) {
                 colorButton = ColorButtons.valueOf(name);
-                name = COLOR_PANE;
+                name = colorChooserPane;
                 targetButton = (TButton)button;
             }
             
             switch(name) {
-                case Globals.APPLY:
+                case colorMainPane:
                     targetButton.setFillColor(colorChooser.getColor());
                     colorButtonCache.add(colorButton);
+                    break;
+                case back: 
+                    name = colorMainPane;
                     break;
             }
             

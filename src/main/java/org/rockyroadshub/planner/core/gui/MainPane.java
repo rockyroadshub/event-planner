@@ -27,7 +27,7 @@ import org.rockyroadshub.planner.core.gui.calendar.ChangelogPane;
 /**
  *
  * @author Arnell Christoper D. Dalid
- * @since 0.2.0
+ * @since 0.2.3
  */
 @SuppressWarnings("serial")
 public final class MainPane extends AbstractPane {    
@@ -54,14 +54,18 @@ public final class MainPane extends AbstractPane {
     }
     
     private void pack() {
-        ChangelogPane.getInstance();
-        CalendarPane.getInstance();
+        ChangelogPane chg = ChangelogPane.getInstance();
+        CalendarPane clp = CalendarPane.getInstance();
+        
         DisplayPane.getInstance();
         FormPane.getInstance();
         ViewPane.getInstance();
         PropertiesPane.getInstance();
         
         GUIUtils.packPanels(this);
+        
+        String page = chg.isDisplay()? chg.getName() : clp.getName();
+        showPane(page);
     }
 
     @Override

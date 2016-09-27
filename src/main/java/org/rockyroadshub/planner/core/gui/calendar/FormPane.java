@@ -20,11 +20,13 @@ import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -52,12 +54,12 @@ import org.rockyroadshub.planner.core.gui.TButton;
 import org.rockyroadshub.planner.core.utils.Globals;
 import org.rockyroadshub.planner.core.utils.TextLimiter;
 import org.rockyroadshub.planner.core.utils.Utilities;
-import org.rockyroadshub.planner.loader.Icons;
+import org.rockyroadshub.planner.core.gui.Buttons;
 
 /**
  *
  * @author Arnell Christoper D. Dalid
- * @since 0.2.2
+ * @since 0.2.3
  */
 @SuppressWarnings("serial")
 public final class FormPane extends AbstractPane {
@@ -77,6 +79,9 @@ public final class FormPane extends AbstractPane {
     public static final String NAME = "formpane";
     
     private final JLabel       dateLabel        = new JLabel();
+    
+    DateFormat format = new SimpleDateFormat("mm/dd/yyyy");
+    JFormattedTextField dateTextField = new JFormattedTextField(format);
    
     private final JLabel       eventLimit       = new JLabel();
     private final JLabel       eventLabel       = new JLabel("Event Title");
@@ -103,7 +108,6 @@ public final class FormPane extends AbstractPane {
     private final JSpinner     endMinute        = new JSpinner(endModelM);
     
     private final JPanel       menuPanel        = new JPanel();
-    private final TButton      homeButton       = new TButton();
     private final TButton      backButton       = new TButton();
     private final TButton      saveButton       = new TButton();
    
@@ -158,12 +162,14 @@ public final class FormPane extends AbstractPane {
         initButtons();
         pack();
         
-        GUIUtils.addToPaneList(this);
+        GUIUtils.addToPaneList(NAME, this);
     }
 
     @Override
     public void refresh() {
         clear();
+        CalendarPane calendar = CalendarPane.getInstance();
+        setDate(calendar.getSelectedYear(), calendar.getSelectedMonth() + 1, 1);
         dateLabel.setText(getTitleLabel());
     }
 
@@ -228,27 +234,20 @@ public final class FormPane extends AbstractPane {
                 Globals.BUTTON_GAPX,
                 Globals.BUTTON_GAPY));
         menuPanel.add(dateLabel, "h 32!, gapright 35");
-        menuPanel.add(homeButton, Globals.BUTTON_DIMENSIONS);
         menuPanel.add(backButton, Globals.BUTTON_DIMENSIONS);
         menuPanel.add(saveButton, Globals.BUTTON_DIMENSIONS);
-        menuPanel.setBorder(BorderFactory.createTitledBorder(BORDER));
     }
     
     private void initButtons() {
-        homeButton.setToolTipText(Globals.HOME);
-        homeButton.setName(CalendarPane.NAME);
-        homeButton.addActionListener(action);
-        homeButton.setIcon(Icons.HOME.icon());
-        
         backButton.setToolTipText(Globals.BACK);
         backButton.setName(DisplayPane.NAME);
         backButton.addActionListener(action);
-        backButton.setIcon(Icons.BACK.icon());
+        backButton.setIcon(Buttons.BACK.icon());
         
         saveButton.setToolTipText(Globals.SAVE);
         saveButton.setName(Globals.SAVE);
         saveButton.addActionListener(action);
-        saveButton.setIcon(Icons.SAVE.icon());
+        saveButton.setIcon(Buttons.SAVE.icon());
     }
     
     private void pack() {
@@ -268,6 +267,7 @@ public final class FormPane extends AbstractPane {
         add(endLabel, "h 32!, growx, split");
         add(endHour, "h 32!, w 64!");
         add(endMinute, "h 32!, w 64!, wrap");
+        setBorder(BorderFactory.createTitledBorder(BORDER));
     }
     
     private void setAllowsInvalid(JSpinner s) {

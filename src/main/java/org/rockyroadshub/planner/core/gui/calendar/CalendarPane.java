@@ -42,13 +42,13 @@ import org.rockyroadshub.planner.core.gui.GUIUtils;
 import org.rockyroadshub.planner.core.gui.MainPane;
 import org.rockyroadshub.planner.core.gui.TButton;
 import org.rockyroadshub.planner.core.utils.Globals;
-import org.rockyroadshub.planner.loader.Icons;
+import org.rockyroadshub.planner.core.gui.Buttons;
 import org.rockyroadshub.planner.loader.PropertyLoader;
 
 /**
  *
  * @author Arnell Christoper D. Dalid
- * @since 0.2.2
+ * @since 0.2.3
  */
 @SuppressWarnings("serial")
 public final class CalendarPane extends AbstractPane {
@@ -84,7 +84,6 @@ public final class CalendarPane extends AbstractPane {
     private final JPanel    buttonsPanel   = new JPanel();
     private final JPanel    daysPanel      = new JPanel();
     private final TButton   currentButton  = new TButton();
-    private final TButton   settingsButton = new TButton();
     private final TButton   deleteButton   = new TButton();
     private final JPanel    dateMenu       = new JPanel();
     private final DLabel    dateLabel      = new DLabel("MMMM dd, yyyy");
@@ -139,7 +138,7 @@ public final class CalendarPane extends AbstractPane {
         initDaysPane();
         pack();
         
-        GUIUtils.addToPaneList(this);
+        GUIUtils.addToPaneList(NAME, this);
     }
 
     @Override
@@ -257,7 +256,6 @@ public final class CalendarPane extends AbstractPane {
                 Globals.BUTTON_GAPX,
                 Globals.BUTTON_GAPY));
         buttonsPanel.add(currentButton, Globals.BUTTON_DIMENSIONS);
-        buttonsPanel.add(settingsButton, Globals.BUTTON_DIMENSIONS);
         buttonsPanel.add(deleteButton, Globals.BUTTON_DIMENSIONS);
         initButtons();
     }
@@ -266,17 +264,12 @@ public final class CalendarPane extends AbstractPane {
         currentButton.setToolTipText(Globals.CURRENT);
         currentButton.setName(Globals.CURRENT);
         currentButton.addActionListener(action);
-        currentButton.setIcon(Icons.CURRENT.icon());
-        
-        settingsButton.setToolTipText(Globals.SETTINGS);
-        settingsButton.setName(PropertiesPane.NAME);
-        settingsButton.addActionListener(action);
-        settingsButton.setIcon(Icons.SETTINGS.icon());
+        currentButton.setIcon(Buttons.CURRENT.icon());
         
         deleteButton.setToolTipText(Globals.DELETE);
         deleteButton.setName(Globals.DELETE);
         deleteButton.addActionListener(action);
-        deleteButton.setIcon(Icons.DELETE.icon());
+        deleteButton.setIcon(Buttons.DELETE.icon());
     }
     
     private void pack() {
@@ -425,11 +418,11 @@ public final class CalendarPane extends AbstractPane {
         });
     }
     
-    private int getSelectedMonth() {
+    public int getSelectedMonth() {
         return (int)monthCombo.getSelectedIndex();
     }
     
-    private int getSelectedYear() {
+    public int getSelectedYear() {
         return (int)yearCombo.getSelectedItem();
     }
 }

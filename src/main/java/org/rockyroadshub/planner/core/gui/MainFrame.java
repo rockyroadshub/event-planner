@@ -17,37 +17,59 @@ package org.rockyroadshub.planner.core.gui;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.io.IOException;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JToolBar;
 import javax.swing.SwingUtilities;
-import net.miginfocom.swing.MigLayout;
+import org.apache.commons.lang.StringUtils;
+import org.rockyroadshub.planner.core.gui.calendar.CalendarPane;
+import org.rockyroadshub.planner.core.gui.calendar.FormPane;
+import org.rockyroadshub.planner.core.gui.calendar.PropertiesPane;
 import org.rockyroadshub.planner.core.utils.Globals;
 import org.rockyroadshub.planner.core.utils.Utilities;
-import org.rockyroadshub.planner.loader.Icons;
 
 /**
  *
  * @author Arnell Christoper D. Dalid
- * @since 0.2.1
+ * @since 0.2.3
  */
 @SuppressWarnings("serial")
 public final class MainFrame extends JFrame {
     private final JToolBar menuToolBar = new JToolBar();
     
-    private final String[] buttons = {
-        "HOME",
-        "BACK",
-        "NEXT",
-        "SETTINGS",
-        "HELP",
+    private final DLabel dateLabel = new DLabel("MMMM dd, yyyy EEEE | hh:mm:ss a ");
+    
+    private final String[][] buttons = {
+        {"HOME",CalendarPane.NAME},
+        {"SETTINGS",PropertiesPane.NAME},
+        {"EVENT",FormPane.NAME},
+        {"HELP",""},
+        {"ABOUT",""},
+        {"EXIT","Exit"}
+    };
+    
+    private final ActionListener action = (ActionEvent ae) -> {
+        JButton button = (JButton)ae.getSource();
+        String name = button.getName();
+        if(name.equals("Exit")) {
+            systemExit();
+        }
+        else if(!StringUtils.isEmpty(name)) {
+            SwingUtilities.invokeLater(() -> {
+                GUIUtils.getPane(name).refresh();
+                MainPane.getInstance().showPane(name);
+            });
+        }
     };
     
     private MainFrame() {
@@ -75,9 +97,9 @@ public final class MainFrame extends JFrame {
         setPreferredSize(new Dimension(580, 670));
         addWindowListener(exit);
         setResizable(false);
-//        initToolBar();
-//        initButtons();
-//        add(menuToolBar, BorderLayout.PAGE_START);
+        initToolBar();
+        initButtons();
+        add(menuToolBar, BorderLayout.PAGE_START);
         add(MainPane.getInstance(), BorderLayout.CENTER);
         initFrameIcon();
         pack();
@@ -86,21 +108,29 @@ public final class MainFrame extends JFrame {
     }
     
     private void initToolBar() {
-        menuToolBar.setLayout(new MigLayout(
-                Globals.BUTTON_INSETS,
-                Globals.BUTTON_GAPX,
-                Globals.BUTTON_GAPY));
         menuToolBar.setRollover(true);
     }
     
     private void initButtons() {
-        for(String btn : buttons) {
+        int i = 0;
+        for (String[] button : buttons) {
             JButton b = new JButton();
+            Buttons atr = Buttons.valueOf(button[0]);
             b.setBorderPainted(false);
             b.setFocusPainted(false);
             b.setFocusable(false);
-            b.setIcon(Icons.valueOf(btn).icon());
-            menuToolBar.add(b, Globals.BUTTON_DIMENSIONS);
+            b.setIcon(atr.icon());
+            b.setToolTipText(atr.toolTip());
+            b.setName(button[1]);
+            b.addActionListener(action);
+            menuToolBar.add(b);
+            i++;
+            switch (i) {
+                case 3  : menuToolBar.add(new JToolBar.Separator(), "FILL");
+                          break;
+                case 5  : menuToolBar.add(Box.createGlue());
+                          break;
+            }
         }
     }
     
@@ -116,15 +146,19 @@ public final class MainFrame extends JFrame {
     private final WindowListener exit = new WindowAdapter(){
         @Override
         public void windowClosing(WindowEvent we) {
-            try {
-                DriverManager.getConnection("jdbc:derby:;shutdown=true");
-            }
-            catch (SQLException ex) {}
-            finally {
-                System.exit(0);
-            }
+            systemExit();
         }
     };
+    
+    private void systemExit() {
+        try {
+            DriverManager.getConnection("jdbc:derby:;shutdown=true");
+        }
+        catch (SQLException ex) {}
+        finally {
+            System.exit(0);
+        }
+    }
     
     public static void showErrorDialog(String message) {
         JOptionPane.showMessageDialog(
@@ -143,5 +177,10 @@ public final class MainFrame extends JFrame {
             Globals.FRAME_TITLE, 
             JOptionPane.OK_CANCEL_OPTION) 
         ==  JOptionPane.OK_OPTION;
+    }
+    
+    public static void home() {
+        CalendarPane.getInstance().refresh();
+        MainPane.getInstance().showPane(CalendarPane.NAME);
     }
 }
