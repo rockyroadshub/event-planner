@@ -28,6 +28,7 @@ public interface GUI {
     
     String getDate();
     void setDate(int year, int month, int day);
+    void setDate(String date);
     
     String getTitleLabel();
     void setTitleLabel(String titleLabel);

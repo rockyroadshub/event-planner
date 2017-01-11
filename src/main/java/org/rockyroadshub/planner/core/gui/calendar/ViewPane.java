@@ -16,6 +16,7 @@
 
 package org.rockyroadshub.planner.core.gui.calendar;
 
+import java.awt.BorderLayout;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -31,8 +32,10 @@ import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.JToolBar;
 import javax.swing.SpinnerModel;
 import javax.swing.SpinnerNumberModel;
+import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
@@ -49,7 +52,6 @@ import org.rockyroadshub.planner.core.gui.AbstractPane;
 import org.rockyroadshub.planner.core.gui.MainFrame;
 import org.rockyroadshub.planner.core.gui.GUIUtils;
 import org.rockyroadshub.planner.core.gui.MainPane;
-import org.rockyroadshub.planner.core.gui.TButton;
 import org.rockyroadshub.planner.core.utils.Globals;
 import org.rockyroadshub.planner.core.utils.TextLimiter;
 import org.rockyroadshub.planner.core.utils.Utilities;
@@ -77,6 +79,7 @@ public final class ViewPane extends AbstractPane {
     
     public static final String NAME = "viewpane";
     
+    private final JLabel       dateTitle        = new JLabel("Date: ");
     private final JLabel       dateLabel        = new JLabel();
    
     private final JLabel       eventLimit       = new JLabel();
@@ -103,11 +106,8 @@ public final class ViewPane extends AbstractPane {
     private final JSpinner     endHour          = new JSpinner(endModelH);
     private final JSpinner     endMinute        = new JSpinner(endModelM);
     
-    private final JPanel       menuPanel        = new JPanel();
-    private final TButton      homeButton       = new TButton();
-    private final TButton      backButton       = new TButton();
-    private final TButton      saveButton       = new TButton();
-    private final TButton      editButton       = new TButton();
+    private final JToolBar     menuToolBar      = new JToolBar();
+    private final JPanel       viewContainer    = new JPanel();
    
     private final Font font = new Font("MONOSPACED", 0, 12);   
     
@@ -121,6 +121,14 @@ public final class ViewPane extends AbstractPane {
     private String day;
     private String start;
     private String end;
+    
+    private final String[][] buttons = {
+        {"BACK", DisplayPane.NAME},
+        {"SAVE", Globals.SAVE},
+        {"EDIT", Globals.EDIT}
+    };
+    
+    private final JButton[] menuButtons = new JButton[buttons.length];
     
     private final ActionListener action = (ActionEvent ae) -> {
         JButton button = (JButton)ae.getSource();
@@ -150,9 +158,10 @@ public final class ViewPane extends AbstractPane {
     private static final String START_EQ_END = "Start time is the same with End time";
     private static final String OVERLAP      = "%s overlaps with another event";
     
+    
     private void initialize() {
         setOpaque(false);
-        setLayout(new MigLayout(new LC().fill()));
+        setLayout(new BorderLayout());
         setName(NAME);
                 
         initDocuments();
@@ -167,12 +176,10 @@ public final class ViewPane extends AbstractPane {
     @Override
     public void refresh() {
         clear();
-        dateLabel.setText(getTitleLabel());
     }
 
     @Override
     public void clear() {
-        dateLabel.setText("");
         eventInput.setText("");
         descriptionInput.setText("");
         locationInput.setText("");
@@ -182,7 +189,17 @@ public final class ViewPane extends AbstractPane {
         endMinute.setValue(0);  
     }    
     
+    @Override
+    public void setDate(int year, int month, int day) {
+        super.setDate(year, month, day);
+        SwingUtilities.invokeLater(() -> {
+            dateLabel.setText(getTitleLabel());
+        });
+    }
+    
     private void initDocuments() {    
+        dateLabel.setFont(font);
+        
         documentEvt = new DefaultStyledDocument();
         documentEvt.setDocumentFilter(new TextLimiter(Globals.EVENT_TITLE_SIZE));
         documentEvt.addDocumentListener(document);
@@ -221,57 +238,50 @@ public final class ViewPane extends AbstractPane {
     }
     
     private void initMenu() {
-        menuPanel.setLayout(new MigLayout(
-                Globals.BUTTON_INSETS,
-                Globals.BUTTON_GAPX,
-                Globals.BUTTON_GAPY));
-        menuPanel.add(dateLabel, "h 32!, gapright 35");
-        menuPanel.add(homeButton, Globals.BUTTON_DIMENSIONS);
-        menuPanel.add(backButton, Globals.BUTTON_DIMENSIONS);
-        menuPanel.add(saveButton, Globals.BUTTON_DIMENSIONS);
-        menuPanel.add(editButton, Globals.BUTTON_DIMENSIONS);    
-        menuPanel.setBorder(BorderFactory.createTitledBorder(BORDER));
+        menuToolBar.setRollover(true);
+        menuToolBar.setFloatable(false);
     }
     
     private void initButtons() {
-        homeButton.setToolTipText(Globals.HOME);
-        homeButton.setName(CalendarPane.NAME);
-        homeButton.addActionListener(action);
-        homeButton.setIcon(Buttons.HOME.icon());
-        
-        backButton.setToolTipText(Globals.BACK);
-        backButton.setName(DisplayPane.NAME);
-        backButton.addActionListener(action);
-        backButton.setIcon(Buttons.BACK.icon());
-        
-        saveButton.setToolTipText(Globals.SAVE);
-        saveButton.setName(Globals.SAVE);
-        saveButton.addActionListener(action);
-        saveButton.setIcon(Buttons.SAVE.icon());
-        
-        editButton.setToolTipText(Globals.EDIT);
-        editButton.setName(Globals.EDIT);
-        editButton.addActionListener(action);     
-        editButton.setIcon(Buttons.EDIT.icon());
+        int i = 0;
+        for (String[] button : buttons) {
+            menuButtons[i] = new JButton();
+            Buttons atr = Buttons.valueOf(button[0]);
+            menuButtons[i].setBorderPainted(false);
+            menuButtons[i].setFocusPainted(false);
+            menuButtons[i].setFocusable(false);
+            menuButtons[i].setIcon(atr.icon());
+            menuButtons[i].setToolTipText(atr.toolTip());
+            menuButtons[i].setName(button[1]);
+            menuButtons[i].addActionListener(action);
+            menuToolBar.add(menuButtons[i]);
+            i++;
+        }
     }
     
     private void pack() {
-        add(menuPanel, "growx, wrap");
-        add(eventLabel, "h 32!");
-        add(eventLimit, "h 32!, align right, wrap");
-        add(eventInput, "growx, h 32!, span 3, wrap");
-        add(locationLabel, "h 32!");
-        add(locationLimit, "h 32!, align right, wrap");
-        add(locationInput, "growx, h 150!, span 3, wrap"); 
-        add(descriptionLabel, "h 32!");
-        add(descriptionLimit, "h 32!, align right, wrap");
-        add(descriptionInput, "growx, h 150!, span 3, wrap");
-        add(startLabel, "h 32!, growx, split");
-        add(startHour, "h 32!, w 64!");
-        add(startMinute, "h 32!, w 64!, wrap");
-        add(endLabel, "h 32!, growx, split");
-        add(endHour, "h 32!, w 64!");
-        add(endMinute, "h 32!, w 64!, wrap");
+        viewContainer.setLayout(new MigLayout(new LC().fill()));
+        viewContainer.setOpaque(false);
+        viewContainer.add(dateTitle, "h 32!, split");
+        viewContainer.add(dateLabel, "growx, h 32!, wrap");
+        viewContainer.add(eventLabel, "h 32!");
+        viewContainer.add(eventLimit, "h 32!, align right, wrap");
+        viewContainer.add(eventInput, "growx, h 32!, span 3, wrap");
+        viewContainer.add(locationLabel, "h 32!");
+        viewContainer.add(locationLimit, "h 32!, align right, wrap");
+        viewContainer.add(locationInput, "growx, h 75!, span 3, wrap"); 
+        viewContainer.add(descriptionLabel, "h 32!");
+        viewContainer.add(descriptionLimit, "h 32!, align right, wrap");
+        viewContainer.add(descriptionInput, "growx, h 75!, span 3, wrap");
+        viewContainer.add(startLabel, "h 32!, growx, split");
+        viewContainer.add(startHour, "h 32!, w 64!");
+        viewContainer.add(startMinute, "h 32!, w 64!, wrap");
+        viewContainer.add(endLabel, "h 32!, growx, split");
+        viewContainer.add(endHour, "h 32!, w 64!");
+        viewContainer.add(endMinute, "h 32!, w 64!, wrap");
+        add(menuToolBar, BorderLayout.PAGE_START);
+        add(viewContainer, BorderLayout.CENTER);
+        setBorder(BorderFactory.createTitledBorder(BORDER));
     }
     
     private void setAllowsInvalid(JSpinner s) {
@@ -389,8 +399,8 @@ public final class ViewPane extends AbstractPane {
         startMinute.setEnabled(bool);      
         endHour.setEnabled(bool);          
         endMinute.setEnabled(bool);
-        editButton.setEnabled(!bool);
-        saveButton.setEnabled(bool);
+        menuButtons[1].setEnabled(bool);
+        menuButtons[2].setEnabled(!bool);
     }
     
     public void set(Data data) {        

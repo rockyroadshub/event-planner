@@ -16,6 +16,7 @@
 
 package org.rockyroadshub.planner.core.gui.calendar;
 
+import java.awt.BorderLayout;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -26,15 +27,16 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
-import javax.swing.JComboBox;
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.JToolBar;
 import javax.swing.SpinnerModel;
 import javax.swing.SpinnerNumberModel;
+import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
@@ -50,7 +52,6 @@ import org.rockyroadshub.planner.core.gui.AbstractPane;
 import org.rockyroadshub.planner.core.gui.MainFrame;
 import org.rockyroadshub.planner.core.gui.GUIUtils;
 import org.rockyroadshub.planner.core.gui.MainPane;
-import org.rockyroadshub.planner.core.gui.TButton;
 import org.rockyroadshub.planner.core.utils.Globals;
 import org.rockyroadshub.planner.core.utils.TextLimiter;
 import org.rockyroadshub.planner.core.utils.Utilities;
@@ -77,11 +78,12 @@ public final class FormPane extends AbstractPane {
     }
     
     public static final String NAME = "formpane";
-    
-    private final JLabel       dateLabel        = new JLabel();
-    
+        
     DateFormat format = new SimpleDateFormat("mm/dd/yyyy");
     JFormattedTextField dateTextField = new JFormattedTextField(format);
+    
+    private final JLabel       dateTitle        = new JLabel("Date: ");
+    private final JLabel       dateLabel        = new JLabel();
    
     private final JLabel       eventLimit       = new JLabel();
     private final JLabel       eventLabel       = new JLabel("Event Title");
@@ -107,9 +109,10 @@ public final class FormPane extends AbstractPane {
     private final JSpinner     endHour          = new JSpinner(endModelH);
     private final JSpinner     endMinute        = new JSpinner(endModelM);
     
-    private final JPanel       menuPanel        = new JPanel();
-    private final TButton      backButton       = new TButton();
-    private final TButton      saveButton       = new TButton();
+    private final JToolBar     menuToolBar      = new JToolBar();
+    private final JPanel       formContainer    = new JPanel();
+    private final JButton      backButton       = new JButton();
+    private final JButton      saveButton       = new JButton();
    
     private final Font font = new Font("MONOSPACED", 0, 12);   
     
@@ -153,7 +156,7 @@ public final class FormPane extends AbstractPane {
     
     private void initialize() {
         setOpaque(false);
-        setLayout(new MigLayout(new LC().fill()));
+        setLayout(new BorderLayout());
         setName(NAME);
                 
         initDocuments();
@@ -168,14 +171,15 @@ public final class FormPane extends AbstractPane {
     @Override
     public void refresh() {
         clear();
-        CalendarPane calendar = CalendarPane.getInstance();
-        setDate(calendar.getSelectedYear(), calendar.getSelectedMonth() + 1, 1);
-        dateLabel.setText(getTitleLabel());
+        backButton.setEnabled(false);
+    }
+    
+    public void setBackEnabled(boolean isEnabled) {
+        backButton.setEnabled(isEnabled);
     }
 
     @Override
     public void clear() {
-        dateLabel.setText("");
         eventInput.setText("");
         descriptionInput.setText("");
         locationInput.setText("");
@@ -183,7 +187,15 @@ public final class FormPane extends AbstractPane {
         startMinute.setValue(0);      
         endHour.setValue(0);          
         endMinute.setValue(0);  
-    }    
+    }
+    
+    @Override
+    public void setDate(int year, int month, int day) {
+        super.setDate(year, month, day);
+        SwingUtilities.invokeLater(() -> {
+            dateLabel.setText(getTitleLabel());
+        });
+    }
     
     public void setTimeValues(int value) {
         startModelH.setValue(value);
@@ -191,6 +203,8 @@ public final class FormPane extends AbstractPane {
     }
     
     private void initDocuments() {    
+        dateLabel.setFont(font);
+        
         documentEvt = new DefaultStyledDocument();
         documentEvt.setDocumentFilter(new TextLimiter(Globals.EVENT_TITLE_SIZE));
         documentEvt.addDocumentListener(document);
@@ -229,13 +243,10 @@ public final class FormPane extends AbstractPane {
     }
     
     private void initMenu() {
-        menuPanel.setLayout(new MigLayout(
-                Globals.BUTTON_INSETS,
-                Globals.BUTTON_GAPX,
-                Globals.BUTTON_GAPY));
-        menuPanel.add(dateLabel, "h 32!, gapright 35");
-        menuPanel.add(backButton, Globals.BUTTON_DIMENSIONS);
-        menuPanel.add(saveButton, Globals.BUTTON_DIMENSIONS);
+        menuToolBar.setRollover(true);
+        menuToolBar.setFloatable(false);
+        menuToolBar.add(backButton);
+        menuToolBar.add(saveButton);
     }
     
     private void initButtons() {
@@ -251,22 +262,27 @@ public final class FormPane extends AbstractPane {
     }
     
     private void pack() {
-        add(menuPanel, "growx, wrap");
-        add(eventLabel, "h 32!");
-        add(eventLimit, "h 32!, align right, wrap");
-        add(eventInput, "growx, h 32!, span 3, wrap");
-        add(locationLabel, "h 32!");
-        add(locationLimit, "h 32!, align right, wrap");
-        add(locationInput, "growx, h 150!, span 3, wrap"); 
-        add(descriptionLabel, "h 32!");
-        add(descriptionLimit, "h 32!, align right, wrap");
-        add(descriptionInput, "growx, h 150!, span 3, wrap");
-        add(startLabel, "h 32!, growx, split");
-        add(startHour, "h 32!, w 64!");
-        add(startMinute, "h 32!, w 64!, wrap");
-        add(endLabel, "h 32!, growx, split");
-        add(endHour, "h 32!, w 64!");
-        add(endMinute, "h 32!, w 64!, wrap");
+        formContainer.setLayout(new MigLayout(new LC().fill()));
+        formContainer.setOpaque(false);
+        formContainer.add(dateTitle, "h 32!, split");
+        formContainer.add(dateLabel, "growx, h 32!, wrap");
+        formContainer.add(eventLabel, "h 32!");
+        formContainer.add(eventLimit, "h 32!, align right, wrap");
+        formContainer.add(eventInput, "growx, h 32!, span 3, wrap");
+        formContainer.add(locationLabel, "h 32!");
+        formContainer.add(locationLimit, "h 32!, align right, wrap");
+        formContainer.add(locationInput, "growx, h 75!, span 3, wrap"); 
+        formContainer.add(descriptionLabel, "h 32!");
+        formContainer.add(descriptionLimit, "h 32!, align right, wrap");
+        formContainer.add(descriptionInput, "growx, h 75!, span 3, wrap");
+        formContainer.add(startLabel, "h 32!, growx, split");
+        formContainer.add(startHour, "h 32!, w 64!");
+        formContainer.add(startMinute, "h 32!, w 64!, wrap");
+        formContainer.add(endLabel, "h 32!, growx, split");
+        formContainer.add(endHour, "h 32!, w 64!");
+        formContainer.add(endMinute, "h 32!, w 64!, wrap");
+        add(menuToolBar, BorderLayout.PAGE_START);
+        add(formContainer, BorderLayout.CENTER);
         setBorder(BorderFactory.createTitledBorder(BORDER));
     }
     
@@ -333,7 +349,7 @@ public final class FormPane extends AbstractPane {
         event       = eventInput.getText();
         description = descriptionInput.getText();
         location    = locationInput.getText();
-        date        = getDate();       
+        date        = getDate();
         
         int sH = (int)startModelH.getValue();
         int sM = (int)startModelM.getValue();

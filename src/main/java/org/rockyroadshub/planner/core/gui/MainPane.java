@@ -77,8 +77,11 @@ public final class MainPane extends AbstractPane {
     public void clear() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
-    
     public void showPane(String name) {
         ((CardLayout)getLayout()).show(this, name);
+    }
+    
+    public void showPane(AbstractPane pane) {
+        showPane(pane.getName());
     }
  }

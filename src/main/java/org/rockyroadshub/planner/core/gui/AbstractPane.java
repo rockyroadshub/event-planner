@@ -48,6 +48,11 @@ public abstract class AbstractPane extends JPanel implements GUI {
     }
     
     @Override
+    public void setDate(String date) {
+        targetDate = date;
+    }
+    
+    @Override
     public String getTitleLabel() {
         return titleLabel;
     }
@@ -55,9 +60,5 @@ public abstract class AbstractPane extends JPanel implements GUI {
     @Override
     public void setTitleLabel(String titleLabel) {
         this.titleLabel = titleLabel;
-    }
-    
-    public static AbstractPane getInstance(){
-        return null;
     }
 }

@@ -24,6 +24,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
+import java.util.regex.Pattern;
 import javax.imageio.ImageIO;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.io.FileUtils;
@@ -35,6 +36,8 @@ import org.apache.commons.io.FileUtils;
  */
 public final class Utilities {
     private Utilities(){}
+    
+    public static final Pattern DATE_FORMAT = Pattern.compile("(\\d{4})-(\\d{2})-(\\d{2})");
 
     public static String formatDate(int year, int month, int day) {
         return String.format("%d-%02d-%02d", year, month, day);

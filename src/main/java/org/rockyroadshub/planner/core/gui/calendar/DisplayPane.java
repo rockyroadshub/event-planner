@@ -32,19 +32,17 @@ import java.util.regex.Pattern;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.JToolBar;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
-import net.miginfocom.swing.MigLayout;
 import org.rockyroadshub.planner.core.data.Event;
 import org.rockyroadshub.planner.core.data.EventMapper;
 import org.rockyroadshub.planner.core.gui.AbstractPane;
 import org.rockyroadshub.planner.core.gui.MainFrame;
 import org.rockyroadshub.planner.core.gui.GUIUtils;
 import org.rockyroadshub.planner.core.gui.MainPane;
-import org.rockyroadshub.planner.core.gui.TButton;
 import org.rockyroadshub.planner.core.utils.Globals;
 import org.rockyroadshub.planner.core.gui.Buttons;
 import org.rockyroadshub.planner.loader.PropertyLoader;
@@ -69,12 +67,11 @@ public final class DisplayPane extends AbstractPane {
         private static final DisplayPane INSTANCE = new DisplayPane();
     }
     
-    public static final String NAME = "displaypane";  
+    public static final String NAME = "displaypane";               
+    public static final Pattern TIME_PATTERN = Pattern.compile("(\\d+):(\\d{2}):(\\d{2})");  
         
     private final JLabel        paneLabel     = new JLabel();
-    private final JPanel        menuPanel     = new JPanel();
-    private final TButton       viewButton    = new TButton();
-    private final TButton       deleteButton  = new TButton();
+    private final JToolBar      menuToolBar   = new JToolBar();
    
     private final JTable        table         = new JTable();
     private final JScrollPane   tableScroll   = new JScrollPane(table);
@@ -92,6 +89,12 @@ public final class DisplayPane extends AbstractPane {
     
     private final List<Integer> hourCache = new ArrayList<>();
     private final List<Integer> idCache = new ArrayList<>();
+    
+    private final String[][] buttons = {
+        {"ADD",    FormPane.NAME},
+        {"VIEW",   ViewPane.NAME},
+        {"DELETE", Globals.DELETE}
+    };
     
     private final ActionListener action = (ActionEvent ae) -> {    
         JButton button = (JButton)ae.getSource();
@@ -123,10 +126,9 @@ public final class DisplayPane extends AbstractPane {
         hourCache.clear();
         resetIDCache();
         try {
-            for(Event evt : map.getEvents(getDate())) {               
-                Pattern p = Pattern.compile("(\\d+):(\\d{2}):(\\d{2})");
-                Matcher s = p.matcher(evt.getStart());    
-                Matcher e = p.matcher(evt.getEnd());
+            for(Event evt : map.getEvents(getDate())) {
+                Matcher s = TIME_PATTERN.matcher(evt.getStart());    
+                Matcher e = TIME_PATTERN.matcher(evt.getEnd());
                 if(s.find() && e.find()) {
                     int row = Integer.valueOf(s.group(1));
                     int end = Integer.valueOf(e.group(1));
@@ -169,27 +171,26 @@ public final class DisplayPane extends AbstractPane {
     }
     
     private void initMenu() {
-        menuPanel.setOpaque(false);
-        menuPanel.setLayout(new MigLayout(
-                Globals.BUTTON_INSETS,
-                Globals.BUTTON_GAPX,
-                Globals.BUTTON_GAPY));
-        menuPanel.add(paneLabel, GAP_RIGHT);
-        menuPanel.add(viewButton, Globals.BUTTON_DIMENSIONS);
-        menuPanel.add(deleteButton, Globals.BUTTON_DIMENSIONS);
-        menuPanel.setBorder(BorderFactory.createTitledBorder(BORDER));
+        menuToolBar.setRollover(true);
+        menuToolBar.setFloatable(false);
+        menuToolBar.add(paneLabel);
+        menuToolBar.add(new JToolBar.Separator(), "FILL");
+        menuToolBar.setBorder(BorderFactory.createTitledBorder(BORDER));
     }
     
     private void initButtons() {
-        viewButton.setToolTipText(Globals.VIEW);
-        viewButton.setName(ViewPane.NAME);
-        viewButton.addActionListener(action);
-        viewButton.setIcon(Buttons.VIEW.icon());
-        
-        deleteButton.setToolTipText(Globals.DELETE);
-        deleteButton.setName(Globals.DELETE);
-        deleteButton.addActionListener(action);
-        deleteButton.setIcon(Buttons.DELETE.icon());
+        for (String[] button : buttons) {
+            JButton b = new JButton();
+            Buttons atr = Buttons.valueOf(button[0]);
+            b.setBorderPainted(false);
+            b.setFocusPainted(false);
+            b.setFocusable(false);
+            b.setIcon(atr.icon());
+            b.setToolTipText(atr.toolTip());
+            b.setName(button[1]);
+            b.addActionListener(action);
+            menuToolBar.add(b);
+        }
     }
     
     private void initTable() {
@@ -214,7 +215,7 @@ public final class DisplayPane extends AbstractPane {
     }
     
     private void pack() {
-        add(menuPanel, BorderLayout.NORTH);
+        add(menuToolBar, BorderLayout.NORTH);
         add(tableScroll, BorderLayout.CENTER);
     }
     
@@ -228,8 +229,8 @@ public final class DisplayPane extends AbstractPane {
                 onDelete();
                 break;
             default:
-                CalendarPane.getInstance().refresh();
                 FormPane.getInstance().refresh();
+                FormPane.getInstance().setBackEnabled(true);
                 int row = table.getSelectedRow();
                 if(row != -1) FormPane.getInstance().setTimeValues(row);
                 MainPane.getInstance().showPane(name);
@@ -376,8 +377,8 @@ public final class DisplayPane extends AbstractPane {
         }
         
         void setIdentity(int row, Event evt) {
-            eventSet.set(row, evt);
-        }
+            eventSet.set(row, evt); 
+       }
         
         Event getIdentity(int row) {
             return eventSet.get(row);

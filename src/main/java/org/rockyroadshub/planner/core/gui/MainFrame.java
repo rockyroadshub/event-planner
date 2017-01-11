@@ -33,7 +33,6 @@ import javax.swing.JToolBar;
 import javax.swing.SwingUtilities;
 import org.apache.commons.lang.StringUtils;
 import org.rockyroadshub.planner.core.gui.calendar.CalendarPane;
-import org.rockyroadshub.planner.core.gui.calendar.FormPane;
 import org.rockyroadshub.planner.core.gui.calendar.PropertiesPane;
 import org.rockyroadshub.planner.core.utils.Globals;
 import org.rockyroadshub.planner.core.utils.Utilities;
@@ -52,7 +51,6 @@ public final class MainFrame extends JFrame {
     private final String[][] buttons = {
         {"HOME",CalendarPane.NAME},
         {"SETTINGS",PropertiesPane.NAME},
-        {"EVENT",FormPane.NAME},
         {"HELP",""},
         {"ABOUT",""},
         {"EXIT","Exit"}
@@ -126,9 +124,9 @@ public final class MainFrame extends JFrame {
             menuToolBar.add(b);
             i++;
             switch (i) {
-                case 3  : menuToolBar.add(new JToolBar.Separator(), "FILL");
+                case 2  : menuToolBar.add(new JToolBar.Separator(), "FILL");
                           break;
-                case 5  : menuToolBar.add(Box.createGlue());
+                case 4  : menuToolBar.add(Box.createGlue());
                           break;
             }
         }
