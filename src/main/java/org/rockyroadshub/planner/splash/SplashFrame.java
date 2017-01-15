@@ -16,7 +16,7 @@
 
 package org.rockyroadshub.planner.splash;
 
-import org.rockyroadshub.planner.core.gui.SProgressBar;
+import org.rockyroadshub.planner.gui.core.SProgressBar;
 import java.awt.BorderLayout;
 import java.awt.Canvas;
 import java.awt.Color;
@@ -38,8 +38,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import net.miginfocom.swing.MigLayout;
-import org.rockyroadshub.planner.core.utils.Globals;
-import org.rockyroadshub.planner.core.utils.Utilities;
+import org.rockyroadshub.planner.utils.Globals;
+import org.rockyroadshub.planner.utils.Utilities;
 import org.rockyroadshub.planner.loader.ConnectionLoader;
 
 /**

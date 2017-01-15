@@ -26,7 +26,7 @@ import org.rockyroadshub.planner.core.database.DatabaseControl;
 import org.rockyroadshub.planner.core.database.Members;
 import org.rockyroadshub.planner.core.database.Memory;
 import org.rockyroadshub.planner.splash.SplashFrame;
-import org.rockyroadshub.planner.core.utils.Utilities;
+import org.rockyroadshub.planner.utils.Utilities;
 
 /**
  *

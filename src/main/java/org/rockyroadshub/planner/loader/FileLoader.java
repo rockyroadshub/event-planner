@@ -20,7 +20,7 @@ import com.jcabi.aspects.LogExceptions;
 import java.io.File;
 import org.apache.commons.io.FilenameUtils;
 import org.rockyroadshub.planner.splash.SplashFrame;
-import org.rockyroadshub.planner.core.utils.Utilities;
+import org.rockyroadshub.planner.utils.Utilities;
 
 /**
  *

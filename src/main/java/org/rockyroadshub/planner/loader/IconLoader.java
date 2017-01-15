@@ -29,9 +29,9 @@ import javax.swing.ImageIcon;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.filefilter.DirectoryFileFilter;
-import org.rockyroadshub.planner.core.gui.MainFrame;
+import org.rockyroadshub.planner.gui.core.MainFrame;
 import org.rockyroadshub.planner.splash.SplashFrame;
-import org.rockyroadshub.planner.core.utils.Utilities;
+import org.rockyroadshub.planner.utils.Utilities;
 
 /**
  *

@@ -38,5 +38,17 @@ limitations under the License.
                 <display index="1" alt="Event Title"/>
             </displays>
         </table>
+        
+        <table mapper="AlarmMapper" schema="PLANNER" name="ALARMS">
+            <columns>
+                <column name="ALARM_ID" 
+                type="INT NOT NULL PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1)"
+                key="true"/>
+                <column name="ALARM"        type="VARCHAR(25)"  key="false"/>
+                <column name="DESCRIPTION"  type="VARCHAR(200)" key="false"/>
+                <column name="ALARM_TIME"   type="TIME"         key="false"/>
+                <column name="ALARM_DAYS"   type="VARCHAR(3)"   key="false"/>         
+            </columns>
+        </table>
     </tables>
 </database>
